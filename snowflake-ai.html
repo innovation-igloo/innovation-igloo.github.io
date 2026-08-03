@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="snowflake-source" content="cortex-agent-authored" />
+<title>What's New in AI at Snowflake</title>
+<script type="application/json" id="snowflake-report-metadata">
+{
+  "generated": "2026-08-02",
+  "intent": "Customer-facing, high-level breakdown of Snowflake's new and upcoming AI features, refreshed against Snowflake release notes as of early August 2026. Generic and shareable. Grouped by functional area for readability only. Every non-generally-available feature is tagged per Snowflake's external-sharing requirement. Availability reflects the current state, so several capabilities that were previously 'coming soon' now show GA or Public Preview.",
+  "sections": [
+    { "id": "overview", "title": "Overview", "producerNotes": "The agentic shift thesis, the four components of an agentic enterprise, and how to read the availability tags." },
+    { "id": "cowork", "title": "Snowflake CoWork", "producerNotes": "The business-user AI workspace, formerly Snowflake Intelligence. Personal Agent, Autonomous Agents, Dashboards and Collaboration, Cortex Sense, Agent Studio." },
+    { "id": "coco", "title": "Snowflake CoCo", "producerNotes": "Cortex Code, the AI coding agent for data. Surfaces, Desktop, Cloud Agents, Skills and Plugin Sharing, Agent SDK." },
+    { "id": "ai-models-ml", "title": "AI Models and ML", "producerNotes": "Model training and fine-tuning, AI Function Studio, Online Feature Store, multimodal and document AI functions. Capabilities that are live or in preview." },
+    { "id": "horizon-context", "title": "Horizon Context", "producerNotes": "The AI context and semantic layer. Semantic Views, Autopilot, Semantic Studio, Metadata Connectors, Universal Search, OSI." },
+    { "id": "ai-security", "title": "AI Security and Governance", "producerNotes": "Intent-Driven Governance, Sensitive Data Classification, AI Governance Dashboard, AI Guardrails, AI SPM, Agent Identity, Data Exfiltration Protection." },
+    { "id": "ai-data-engineering", "title": "AI-Powered Data Engineering", "producerNotes": "CoCo at every layer of connectivity, Snowpipe Automatic Setup, AI-Assisted Troubleshooting, AI-Native Observability, Snowflake AIM, protect sensitive data at ingest." },
+    { "id": "ai-sharing", "title": "AI in Sharing and Marketplace", "producerNotes": "Auto-gen Agents for Data Shares and Listings, Cortex Agent Sharing, AI-powered Marketplace Discovery." },
+    { "id": "availability", "title": "Availability Summary", "producerNotes": "One table of every feature with its availability status. The new and upcoming answer on a single page." }
+  ]
+}
+</script>
+<style>
+:root {
+  --sf-blue: #29B5E8;
+  --sf-blue-deep: #11567F;
+  --sf-blue-darker: #0A3D5A;
+  --sf-cyan: #71D3DC;
+  --sf-blue-pale: #E8F6FC;
+  --bg: #FFFFFF;
+  --bg-alt: #F7F9FB;
+  --bg-code: #F5F7FA;
+  --text: #1E1E1E;
+  --text-muted: #5A6872;
+  --border: #E5EAF0;
+  --border-strong: #CFD7E0;
+  --success: #2E7D32;
+  --warning: #E65100;
+  --error: #C62828;
+  --radius: 6px;
+  --radius-lg: 10px;
+  --shadow-sm: 0 1px 2px rgba(17, 86, 127, 0.06);
+  --shadow-md: 0 4px 12px rgba(17, 86, 127, 0.08);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", Menlo, Consolas, "Courier New", monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+.site-header {
+  background: linear-gradient(135deg, var(--sf-blue-deep) 0%, var(--sf-blue-darker) 100%);
+  color: white;
+  padding: 1.5rem 0;
+  border-bottom: 3px solid var(--sf-blue);
+}
+.brand { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; }
+.brand-mark { font-size: 1.5rem; color: var(--sf-blue); }
+.brand-text .divider { color: var(--sf-cyan); margin: 0 0.5rem; font-weight: 300; }
+.meta { display: flex; flex-wrap: wrap; gap: 0.25rem 2rem; font-size: 0.875rem; color: rgba(255,255,255,0.85); }
+.meta-label { color: var(--sf-cyan); font-weight: 600; margin-right: 0.5rem; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+.tab-nav { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 100; box-shadow: var(--shadow-sm); }
+.tab-nav .container { display: flex; gap: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+.tab-nav .container::-webkit-scrollbar { height: 5px; }
+.tab-nav .container::-webkit-scrollbar-track { background: transparent; }
+.tab-nav .container::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; }
+.tab-nav .container:hover::-webkit-scrollbar-thumb { background: var(--sf-blue); }
+.tab-btn { background: transparent; border: none; padding: 1rem 1.5rem; font-family: inherit; font-size: 0.95rem; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s ease; white-space: nowrap; }
+.tab-btn:hover { color: var(--sf-blue-deep); background: var(--bg-alt); }
+.tab-btn.is-active { color: var(--sf-blue-deep); border-bottom-color: var(--sf-blue); font-weight: 600; }
+.tab-panel { display: none; padding: 2.5rem 0 4rem; animation: fadeIn 0.2s ease; }
+.tab-panel.is-active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+h1 { font-size: 2.25rem; font-weight: 700; color: var(--sf-blue-deep); margin: 0 0 0.5rem; letter-spacing: -0.02em; }
+h2 { font-size: 1.5rem; font-weight: 600; color: var(--sf-blue-deep); margin: 2.5rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+h2 .tag, h3 .tag, h4 .tag { margin-left: 0.5rem; }
+h3 { font-size: 1.15rem; font-weight: 600; color: var(--text); margin: 1.75rem 0 0.75rem; }
+h4 { font-size: 1rem; font-weight: 600; margin: 1rem 0 0.5rem; color: var(--text); }
+.lead { font-size: 1.125rem; color: var(--text-muted); margin: 0 0 2rem; max-width: 68ch; }
+p { margin: 0.75rem 0; }
+ul, ol { margin: 0.75rem 0; padding-left: 1.35rem; }
+li { margin-bottom: 0.4rem; }
+code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-code); padding: 0.15em 0.4em; border-radius: 3px; color: var(--sf-blue-darker); border: 1px solid var(--border); }
+.muted { color: var(--text-muted); }
+.tag { display:inline-block; font-size:0.7rem; font-weight:700; padding:0.15em 0.5em; border-radius:4px; text-transform:uppercase; letter-spacing:0.04em; vertical-align:middle; }
+.tag-new { background:var(--sf-blue-pale); color:var(--sf-blue-deep); border:1px solid var(--sf-blue); }
+.tag-oob { background:#F1F8F4; color:var(--success); border:1px solid #A5D6A7; }
+.tag-custom { background:#FFF7ED; color:var(--warning); border:1px solid #FBBF24; }
+.tag-confirm { background:#FEF2F2; color:var(--error); border:1px solid #FCA5A5; }
+.tag-soon { background:#EEF1F4; color:#5A6872; border:1px solid var(--border-strong); }
+.tag-research { background:#F3E8FF; color:#6B21A8; border:1px solid #D8B4FE; }
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+.metric-tile { background: linear-gradient(135deg, var(--sf-blue-pale) 0%, #FFFFFF 100%); border: 1px solid var(--border); border-left: 4px solid var(--sf-blue); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm); }
+.metric-value { font-size: 1.5rem; font-weight: 700; color: var(--sf-blue-deep); line-height: 1.2; margin-bottom: 0.25rem; }
+.metric-label { font-size: 0.875rem; color: var(--text-muted); }
+.metric-sublabel { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+.data-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.925rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+.data-table th { background: var(--sf-blue-deep); color: white; text-align: left; padding: 0.75rem 1rem; font-weight: 600; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.data-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:nth-child(even) td { background: var(--bg-alt); }
+.data-table.compact { font-size: 0.875rem; }
+.data-table.compact td, .data-table.compact th { padding: 0.5rem 0.75rem; }
+.data-table .area-cell { font-weight: 600; color: var(--sf-blue-deep); white-space: nowrap; }
+.callout { border-radius: var(--radius); padding: 1rem 1.25rem; margin: 1.5rem 0; border-left: 4px solid var(--sf-blue); background: var(--sf-blue-pale); }
+.callout h4 { margin-top: 0; color: var(--sf-blue-deep); }
+.callout.callout-info { border-left-color: var(--sf-blue); background: var(--sf-blue-pale); }
+.callout.callout-warn { border-left-color: #F59E0B; background: #FFFBEB; }
+.callout.callout-key { border-left-color: var(--success); background: #F1F8F4; }
+.callout.callout-spotlight { border-left-color: var(--sf-blue); background: linear-gradient(135deg, var(--sf-blue-deep) 0%, var(--sf-blue-darker) 100%); color: #EAF6FC; }
+.callout.callout-spotlight h4 { color: #FFFFFF; }
+.callout.callout-spotlight a { color: var(--sf-blue); }
+.callout ol, .callout ul { margin: 0.5rem 0; padding-left: 1.25rem; }
+.callout li { margin-bottom: 0.5rem; }
+.site-footer { background: var(--sf-blue-darker); color: rgba(255,255,255,0.75); padding: 1.25rem 0; margin-top: 4rem; font-size: 0.875rem; text-align: center; }
+.site-footer strong { color: var(--sf-cyan); }
+.subtab-nav { display:flex; gap:0.5rem; flex-wrap:wrap; margin:1.5rem 0 2rem; }
+.subtab-btn { background:var(--bg-alt); border:1px solid var(--border-strong); color:var(--text-muted); padding:0.5rem 1.1rem; font-family:inherit; font-size:0.9rem; font-weight:600; border-radius:999px; cursor:pointer; transition:all 0.15s ease; white-space:nowrap; }
+.subtab-btn:hover { color:var(--sf-blue-deep); border-color:var(--sf-blue); background:var(--sf-blue-pale); }
+.subtab-btn.is-active { background:var(--sf-blue-deep); color:#fff; border-color:var(--sf-blue-deep); }
+.subtab-panel { display:none; animation:fadeIn 0.2s ease; }
+.subtab-panel.is-active { display:block; }
+.subtab-panel > h2:first-child { margin-top:0; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin:1.5rem 0; align-items:stretch; }
+.two-col .callout { margin:0; height:100%; }
+@media (max-width:760px){ .two-col { grid-template-columns:1fr; } }
+.legend { display:flex; flex-wrap:wrap; gap:0.75rem 1.5rem; margin:1rem 0; }
+.legend-item { display:inline-flex; align-items:center; gap:0.5rem; font-size:0.875rem; }
+.legend-note { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
+.learn-more { margin: 1.75rem 0 0; padding: 0.9rem 1.1rem; background: var(--bg-alt); border: 1px solid var(--border); border-left: 4px solid var(--sf-cyan); border-radius: var(--radius); }
+.learn-more .lm-label { display:block; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color: var(--sf-blue-deep); margin-bottom: 0.55rem; }
+.learn-more .lm-links { display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; }
+.learn-more a { display:inline-block; font-size:0.85rem; padding:0.3rem 0.7rem; border-radius:999px; background:#fff; border:1px solid var(--border-strong); color:var(--sf-blue-deep); text-decoration:none; transition: all 0.15s ease; line-height:1.3; }
+.learn-more a:hover { border-color: var(--sf-blue); background: var(--sf-blue-pale); }
+.learn-more .lm-status { font-size:0.68rem; font-weight:700; color: var(--text-muted); margin-left:0.4rem; text-transform:uppercase; letter-spacing:0.03em; }
+.learn-more .lm-note { display:block; font-size:0.8rem; color: var(--text-muted); margin-top:0.6rem; }
+@media (max-width: 900px) { .metric-grid { grid-template-columns: repeat(2, 1fr); } h1 { font-size: 1.75rem; } }
+@media (max-width: 600px) { .metric-grid { grid-template-columns: 1fr; } .tab-btn { padding: 0.75rem 1rem; font-size: 0.875rem; } .container { padding: 0 1rem; } .data-table { font-size: 0.8rem; } .data-table td, .data-table th { padding: 0.5rem; } }
+@media print { body { font-size: 12px; } .tab-nav { display:none; } .tab-panel { display:block !important; page-break-after: always; } .callout, .metric-tile { box-shadow:none; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <div class="brand">
+      <span class="brand-mark">&#10052;</span>
+      <span class="brand-text">Snowflake <span class="divider">|</span> What's New in AI</span>
+    </div>
+    <div class="meta">
+      <div class="meta-row"><span class="meta-label">Source</span> Snowflake AI announcements, 2026</div>
+      <div class="meta-row"><span class="meta-label">Scope</span> New and upcoming AI features</div>
+      <div class="meta-row"><span class="meta-label">Purpose</span> High-level overview for discussion</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tab-nav" aria-label="Sections">
+  <div class="container" id="tab-buttons"><!-- populated by script --></div>
+</nav>
+
+<main class="container">
+
+<!-- ============================================================ -->
+<!-- TAB: overview                                                 -->
+<!-- ============================================================ -->
+<section class="tab-panel is-active" data-tab="overview">
+  <h1>What's New in AI at Snowflake</h1>
+  <p class="lead">AI is no longer a promise. It is creating real opportunity today, and the shift is fundamental: work is becoming a partnership with intelligent agents that operate across your business, continuously and autonomously. This is the agentic enterprise, and these are Snowflake's new and upcoming AI features, grouped by functional area.</p>
+
+  <div class="callout callout-info">
+    <h4>How to read this doc</h4>
+    <p>Each tab covers one functional area. Every feature carries a status tag so you can see at a glance what is available now and what is coming. Grouping is for readability only; nothing here is ranked by priority. The final tab, Availability Summary, lists every feature and its status on a single page.</p>
+    <div class="legend">
+      <span class="legend-item"><span class="tag tag-oob">GA</span> Generally available now</span>
+      <span class="legend-item"><span class="tag tag-new">Public Preview</span> In public preview</span>
+      <span class="legend-item"><span class="tag tag-custom">Private Preview</span> In private preview</span>
+      <span class="legend-item"><span class="tag tag-soon">Coming Soon</span> In development or on the near roadmap</span>
+      <span class="legend-item"><span class="tag tag-research">Research Preview</span> Early research release</span>
+    </div>
+    <p class="legend-note">Roadmap items are directional and subject to change. For anything not generally available, the tag reflects its current state.</p>
+  </div>
+
+  <h2>The agentic enterprise, in four parts</h2>
+  <p>To securely and effectively scale intelligent systems, an agentic enterprise rests on four core components. The AI Data Cloud delivers them as one unified platform, not four products bolted together.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Governed data foundation</div>
+      <div class="metric-label">One governed source of truth for AI</div>
+      <div class="metric-sublabel">Enterprise data, operational context, and policy guardrails that ground AI decisions in a shared, trusted understanding of the business.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Agentic control plane</div>
+      <div class="metric-label">Build, deploy, and govern agents in one place</div>
+      <div class="metric-sublabel">The coordination and governance layer that translates intelligence into authorized enterprise action.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Model choice</div>
+      <div class="metric-label">Any model, any provider, no lock-in</div>
+      <div class="metric-sublabel">Bring AI to your data instead of moving your data to the model, and use the best model for each need.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Universal interoperability</div>
+      <div class="metric-label">Connect to any data or system where work happens</div>
+      <div class="metric-sublabel">Open standards like MCP let agents securely reach data and workflows across the enterprise.</div>
+    </div>
+  </div>
+
+  <h2>What is in this doc</h2>
+  <p>Seven functional areas, then a summary table. Each area is a tab above.</p>
+  <table class="data-table compact">
+    <thead>
+      <tr><th>Area</th><th>What it covers</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="area-cell">Snowflake CoWork</td><td>The business-user AI workspace, formerly Snowflake Intelligence. Personal Agent, Autonomous Agents, Dashboards and Collaboration, Cortex Sense, Agent Studio.</td></tr>
+      <tr><td class="area-cell">Snowflake CoCo</td><td>Cortex Code, the AI coding agent for data. Surfaces, Desktop, Cloud Agents, Skills and Plugin Sharing, the Agent SDK.</td></tr>
+      <tr><td class="area-cell">AI Models and ML</td><td>Train and fine-tune models on your data. Cortex Training, Cortex AI Function Studio, Online Feature Store, multimodal and document AI functions.</td></tr>
+      <tr><td class="area-cell">Horizon Context</td><td>The AI context and semantic layer. Semantic Views, Autopilot, Semantic Studio, Metadata Connectors, Universal Search, the Open Semantic Interchange.</td></tr>
+      <tr><td class="area-cell">AI Security and Governance</td><td>Intent-Driven Governance, Sensitive Data Classification, the AI Governance Dashboard, AI Guardrails, AI Security Posture Management, Agent Identity, Data Exfiltration Protection.</td></tr>
+      <tr><td class="area-cell">AI-Powered Data Engineering</td><td>CoCo at every layer of connectivity, Snowpipe Automatic Setup, AI-Assisted Troubleshooting, AI-Native Observability, Snowflake AIM, protecting sensitive data at ingest.</td></tr>
+      <tr><td class="area-cell">AI in Sharing and Marketplace</td><td>Auto-gen Agents for Data Shares and Listings, Cortex Agent Sharing, AI-powered Marketplace Discovery.</td></tr>
+      <tr><td class="area-cell">Availability Summary</td><td>One table of every feature with its status.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-key">
+    <h4>One thread through all of it</h4>
+    <p>Every area here is built on the same governed foundation. Agents reason over your data, act within your systems, and scale with the trust the enterprise requires. The pieces are designed to reinforce each other rather than drift apart.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB: cowork                                                  -->
+<!-- ============================================================ -->
+<section class="tab-panel" data-tab="cowork">
+  <h1>Snowflake CoWork</h1>
+  <p class="lead">Snowflake Intelligence is now Snowflake CoWork. The name evolved and the vision sharpened: one AI workspace where every enterprise context comes together and work gets done. CoWork reached general availability on November 4, 2025, and several capabilities have gone GA or Public Preview since.</p>
+
+  <div class="callout callout-info">
+    <h4>How CoWork works under the hood</h4>
+    <p>CoWork is a ready-to-use agentic application powered by Cortex Agents. When a user asks a question in natural language, an orchestrator LLM interprets intent, selects the right tools, and plans the sequence of actions. It may use one tool, chain several together, or decide the question is out of scope. Tools run and return results, then the orchestrator refines and generates the final answer, including summaries, tables, or charts.</p>
+    <ul>
+      <li><strong>Cortex Analyst</strong>: turns natural language into SQL against your semantic views for structured data.</li>
+      <li><strong>Cortex Search</strong>: searches unstructured data to return relevant document text.</li>
+      <li><strong>Custom tools</strong>: run user-defined functions or stored procedures to take actions.</li>
+    </ul>
+    <p>Built-in visualization supports most Vega-Lite chart types (area, heatmaps, box plots, dual-axis, layered, faceted small-multiples, error bars, and text annotations, plus bar, line, pie, and scatter). Geographic map charts are not supported. Administrators can use existing identity providers to give teams access only to CoWork, so users interact only with the data experiences built for them.</p>
+  </div>
+
+  <div class="callout callout-spotlight">
+    <h4>One workspace. Every context. Any outcome.</h4>
+    <p>CoWork is your chief of staff, turning context into clarity and clarity into action. It brings company data, enterprise context, email, team conversations, apps, presentations, and dashboards into one governed place, then turns them into self-service insights, agentic work, and conversational intelligence.</p>
+  </div>
+
+  <div class="subtabs">
+  <div class="subtab-nav">
+    <button class="subtab-btn is-active" data-subtab="cw-personal">Personal Agent</button>
+    <button class="subtab-btn" data-subtab="cw-autonomous">Autonomous Agents</button>
+    <button class="subtab-btn" data-subtab="cw-dashboards">Dashboards and Collaboration</button>
+  </div>
+
+  <div class="subtab-panel is-active" data-subtab="cw-personal">
+    <h2>Personal Agent <span class="tag tag-oob">GA</span></h2>
+    <p>The Personal Agent is the entry point for every knowledge worker. It knows all of your enterprise data, routes automatically to the right tools and sub-agents, and remembers and learns across sessions. It follows you to mobile and the tools you already use.</p>
+    <div class="metric-grid">
+      <div class="metric-tile">
+        <div class="metric-value">Knows your data</div>
+        <div class="metric-label">All enterprise context</div>
+        <div class="metric-sublabel">Operates inside your existing permissions, so it only ever sees what your role permits.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">Routes automatically</div>
+        <div class="metric-label">Right tools for each question</div>
+        <div class="metric-sublabel">One agent, many sub-agents, each specialized for a domain like sales, finance, ops, or product.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">Remembers and learns</div>
+        <div class="metric-label">Across sessions</div>
+        <div class="metric-sublabel">Holds your preferences, role, and recurring tasks so the experience feels custom-built for you.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">On the go</div>
+        <div class="metric-label">Mobile and existing tools</div>
+        <div class="metric-sublabel">Follows you to a mobile app and the surfaces you already work in.</div>
+      </div>
+    </div>
+
+    <h3>Memory, Skills, and Prebuilt Plugins</h3>
+    <p>Three capabilities make the Personal Agent feel custom-built for each role, without anyone starting from zero.</p>
+    <div class="metric-grid">
+      <div class="metric-tile">
+        <div class="metric-value">User Memory <span class="tag tag-soon">Coming Soon</span></div>
+        <div class="metric-label">Remembers you</div>
+        <div class="metric-sublabel">CoWork remembers your preferences, role, and recurring tasks across sessions.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">User Skills <span class="tag tag-soon">Coming Soon</span></div>
+        <div class="metric-label">Repeatable workflows, one line</div>
+        <div class="metric-sublabel">Codify a repeatable workflow as a one-line skill in plain language, like "pull my pipeline recap."</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">Prebuilt Plugins <span class="tag tag-soon">Coming Soon</span></div>
+        <div class="metric-label">Finance and Sales bundles</div>
+        <div class="metric-sublabel">Bundles of skills, business logic, and connectors so teams are not starting from zero. Skills are discoverable and shareable across the org.</div>
+      </div>
+    </div>
+
+    <h3>Your Agent, On the Go <span class="tag tag-oob">GA</span></h3>
+    <p>An iOS app with Face ID unlock, complete conversation history on mobile, and the full CoWork experience on a phone. The app is available on the App Store and supports the same features as the web app: chat, agents, file and image attachments, voice input, citations, and role and warehouse selection. Think of it as the morning briefing that greets a leader before they open the laptop. Generally available July 13, 2026.</p>
+
+    <h3>Automations <span class="tag tag-soon">Coming Soon</span></h3>
+    <p>Schedule briefings in plain language, set once conversationally, and they are delivered automatically. Every delivery includes a full AI analysis of what changed, why it matters, and suggested next steps. A follow-up question is one click away, with full context preserved. It is enterprise-governed by default, running with RBAC, cost visibility, and a full audit trail.</p>
+  </div>
+
+  <div class="subtab-panel" data-subtab="cw-autonomous">
+    <h2>Autonomous Agents</h2>
+    <p>Autonomous Agents go beyond answering. They produce finished deliverables, run proactive checks, auto-learn business context, and do deep, analytical research.</p>
+
+    <h3>Answers dashboards cannot reach <span class="tag tag-soon">Coming Soon</span></h3>
+    <p>For structured or unstructured, strategic or operational questions, one fully cited answer.</p>
+    <div class="metric-grid">
+      <div class="metric-tile">
+        <div class="metric-value">Deep Research <span class="tag tag-oob">GA</span></div>
+        <div class="metric-label">Multi-source investigation</div>
+        <div class="metric-sublabel">An investigation mode for complex, open-ended questions. CoWork decomposes the question into multiple sub-investigations, runs them in parallel across your structured and unstructured data, and synthesizes the findings into a structured report. Every claim is traced back to its source data and queries. Generally available July 7, 2026.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">Analytical Search <span class="tag tag-new">Public Preview</span></div>
+        <div class="metric-label">Quantitative over large corpora</div>
+        <div class="metric-sublabel">Quantitative queries over large unstructured corpora, the questions RAG cannot answer. Adaptive Search plus multi-step AI SQL compute. Public Preview as of June 30, 2026.</div>
+      </div>
+    </div>
+    <div class="callout callout-info">
+      <h4>A measurable lift</h4>
+      <p>In CoWork's Hybrid Deep Research Benchmark, this multi-agent approach delivered a 52.2% relative improvement over single-agent systems.</p>
+    </div>
+
+    <h3>Cortex Sense <span class="tag tag-custom">Private Preview</span></h3>
+    <p>The managed context runtime that lifts CoWork's accuracy by auto-learning your business from query history, metadata, and BI connections, with zero manual ontology setup. In Snowflake's testing it delivered 3.5x higher accuracy on enterprise business questions compared with Claude Code. Cortex Sense spans CoCo, CoWork, and Cortex Agents, so the full treatment lives in the Horizon Context tab.</p>
+
+    <h3>The agent does not just answer, it produces <span class="tag tag-custom">Private Preview</span></h3>
+    <p>A Code Execution Tool runs secure Python inside CoWork with filesystem and network isolation, so your data never leaves the Snowflake perimeter. The output is finished deliverables: PDF reports, PPTX presentations, advanced analysis, and custom documents, all produced under governed, autonomous agent execution.</p>
+
+    <h3>One Agent. Every Question. Right Tools. <span class="tag tag-oob">GA</span></h3>
+    <p>Inside each user's existing permissions, a Personal Agent routes to specialized sub-agents: Sales, Finance, Ops, Product, and more. Each can produce PDF reports, PPTX presentations, advanced analysis, and other deliverables through Skills.</p>
+    <div class="callout callout-info">
+      <h4>Multi-agent routing is real, and refining</h4>
+      <p>An LLM-powered router (the "Personal Work Agent" or Main Agent) automatically dispatches a question to the right specialized agent without manual selection. It is in Private Preview and being refined for latency and routing quality, so for now some teams guide users to pick the right agent explicitly while the router matures.</p>
+    </div>
+  </div>
+
+  <div class="subtab-panel" data-subtab="cw-dashboards">
+    <h2>Dashboards and Collaboration</h2>
+    <p>One finding becomes everyone's starting point. CoWork turns a single answer into shared, live, governed artifacts the whole team builds on.</p>
+
+    <h3>Artifacts: Live Dashboards <span class="tag tag-oob">GA</span></h3>
+    <div class="metric-grid">
+      <div class="metric-tile">
+        <div class="metric-value">Save and share</div>
+        <div class="metric-label">Rich outputs that stay live</div>
+        <div class="metric-sublabel">Save once, share across the org, and rerun anytime. Artifacts refresh with data and respect role-based access per viewer.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">Live and governed</div>
+        <div class="metric-label">Viewer sees only what they may</div>
+        <div class="metric-sublabel">A viewer sees only what they are entitled to, so sharing is safe across teams.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">Talk to your data</div>
+        <div class="metric-label">Follow-ups in plain English</div>
+        <div class="metric-sublabel">Ask for follow-ups on any chart, right inside the artifact.</div>
+      </div>
+    </div>
+
+    <h3>Multi-tile Artifacts for Northstar Dashboards <span class="tag tag-soon">Coming Soon</span></h3>
+    <p>Build on CoCo, publish on CoWork. Analysts create on Workspaces with SQL or natural language through CoCo. Publishing on CoWork is privileged, so you govern what knowledge workers consume. Sharing is role-based, and every dashboard supports high-quality conversational follow-up questions.</p>
+
+    <h3>Conversation Sharing <span class="tag tag-soon">Coming Soon</span></h3>
+    <p>Collaborate around real answers with full citations included, no more static screenshots.</p>
+  </div>
+  </div><!-- /subtabs -->
+
+  <h2>Agent Studio: build, manage, and govern every agent in one place</h2>
+  <p>One pane of glass for every agent in your organization. <span class="tag tag-oob">GA</span></p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Build</div>
+      <div class="metric-label">Chat-driven build interface</div>
+      <div class="metric-sublabel">Cortex Code as your build interface, an agent readiness checklist, and a simplified path from prototype to production.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Manage</div>
+      <div class="metric-label">Usage, latency, eval scores</div>
+      <div class="metric-sublabel">Tool utilization across every agent in the org. Quality issues are visible, not buried.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Govern</div>
+      <div class="metric-label">RBAC and audit trail</div>
+      <div class="metric-sublabel">Admin-defined policy boundaries and a complete audit trail for every agent action.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-key">
+    <h4>Where to start today</h4>
+    <p>The platform is ready. Start building. Try the CoWork quickstart to deploy your first agent today, read the Snowflake CoWork blog, and use Agent Studio to go from prototype to production in hours.</p>
+  </div>
+  <div class="learn-more">
+    <span class="lm-label">Learn more</span>
+    <div class="lm-links">
+      <a href="https://www.snowflake.com/en/blog/snowflake-cowork-personal-work-agent" target="_blank" rel="noopener">Snowflake CoWork blog</a>
+      <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/snowflake-cowork" target="_blank" rel="noopener">CoWork docs</a>
+      <a href="https://www.snowflake.com/en/blog/enterprise-ai-agents-grounded-context/" target="_blank" rel="noopener">Cortex Sense blog<span class="lm-status">Private Preview</span></a>
+      <a href="https://www.snowflake.com/en/blog/enterprise-ai-agent-platform/" target="_blank" rel="noopener">Cortex Agents platform blog</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB: coco                                                     -->
+<!-- ============================================================ -->
+<section class="tab-panel" data-tab="coco">
+  <h1>Snowflake CoCo <span class="tag tag-new">Cortex Code</span></h1>
+  <p class="lead">Snowflake CoCo is the AI coding agent for data. It moves you from "I have an idea" to "it's deployed" fast, turning data engineering, machine learning, and agent-building tasks into simple conversations. It is deeply aware of enterprise data, compute, governance, and operational semantics across the stack, and it is governed by Snowflake's RBAC wherever you build.</p>
+
+  <div class="subtabs">
+  <div class="subtab-nav">
+    <button class="subtab-btn is-active" data-subtab="coco-overview">Overview &amp; ADE Bench</button>
+    <button class="subtab-btn" data-subtab="coco-surfaces">Surfaces</button>
+    <button class="subtab-btn" data-subtab="coco-build">Build on CoCo</button>
+  </div>
+
+  <div class="subtab-panel is-active" data-subtab="coco-overview">
+  <h2>The data-native agent harness</h2>
+  <p>CoCo is built on a live connection to Snowflake, with a custom system prompt focused on data operations rather than general world knowledge. It carries more than 100 domain-specific skills (data governance, machine learning, Iceberg, dynamic tables, cost intelligence, and more), custom tools tuned for data tasks like SQL execution and dbt, and snowflake-hosted LLMs that keep everything inside the security perimeter.</p>
+
+  <h2>State of the art for data engineering</h2>
+  <p>CoCo outperformed leading coding agents on ADE Bench and pulled even further ahead on real Snowflake dbt project tasks. ADE Bench is a framework created by dbt for evaluating AI agents on real-world analytics and data engineering tasks.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">72.1%</div>
+      <div class="metric-label">ADE Bench pass rate</div>
+      <div class="metric-sublabel">CoCo on Snowflake, versus 65.1% for both Claude Code and OpenAI Codex. Higher is better.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">51% fewer tokens</div>
+      <div class="metric-label">vs Claude Code on Opus 4.7</div>
+      <div class="metric-sublabel">A targeted, not exhaustive, exploration approach dramatically cuts IO operations.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">~1 hour less</div>
+      <div class="metric-label">vs Claude Code on Opus 4.7</div>
+      <div class="metric-sublabel">A SQL-native approach leans on native execution instead of heavy bash-based workflows.</div>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="subtab-panel" data-subtab="coco-surfaces">
+  <h2>Use CoCo where you work today <span class="tag tag-oob">GA</span></h2>
+  <p>Four core surfaces are available today.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">CoCo CLI</div>
+      <div class="metric-label">Any terminal</div>
+      <div class="metric-sublabel">A native binary you can install and spin up in any terminal.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">CoCo in Snowsight</div>
+      <div class="metric-label">Where you already work</div>
+      <div class="metric-sublabel">CoCo built into Snowsight, with new skills like SQL Author, MCP Connectors, auto-navigation to pages, and Snap and Ask.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">CoCo for VS Code</div>
+      <div class="metric-label">In your IDE</div>
+      <div class="metric-sublabel">A VS Code extension that brings CoCo directly into your editor.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">CoCo Plugin for Claude Code</div>
+      <div class="metric-label">As a subagent</div>
+      <div class="metric-sublabel">A plugin available in Claude Code or Codex so other coding agents can call CoCo as a subagent for data tasks.</div>
+    </div>
+  </div>
+
+  <h2>CoCo Desktop <span class="tag tag-oob">GA</span></h2>
+  <p>The newest surface: a native, VS Code-based application for full agentic development on data. CoCo Desktop reached general availability on July 21, 2026 (v1.20.0 shipped July 22).</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">One governed surface</div>
+      <div class="metric-label">Across the data stack</div>
+      <div class="metric-sublabel">Build data pipelines, apps, and agents, debug notebooks, and visualize data flows, all in CoCo.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Run on schedule</div>
+      <div class="metric-label">Not just on demand</div>
+      <div class="metric-sublabel">Schedule tasks and execute multi-step workflows even when you are not at the keyboard.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Extensible by design</div>
+      <div class="metric-label">Skills, MCPs, plugins</div>
+      <div class="metric-sublabel">Works out of the box with your favorite skills, MCPs, and plugins, turning best practices into reusable team expertise. Git is included out of the box.</div>
+    </div>
+  </div>
+
+  <h2>Cloud Agents power CoCo in Snowsight <span class="tag tag-oob">GA</span></h2>
+  <p>All the power of the CoCo CLI with the same robust agent loop, skills, tool execution, and runtime, securely inside Snowflake.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Zero installation</div>
+      <div class="metric-label">Start coding in seconds</div>
+      <div class="metric-sublabel">No local setup required.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Isolation</div>
+      <div class="metric-label">Dedicated compute per user</div>
+      <div class="metric-sublabel">Each user gets their own isolated runtime.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Persistence</div>
+      <div class="metric-label">Tasks continue after logoff</div>
+      <div class="metric-sublabel">Long-running work survives a closed session.</div>
+    </div>
+  </div>
+  <p>Cloud Agents enable bash and Python script execution, web search, file read and write, and dbt execution.</p>
+  <div class="learn-more">
+    <span class="lm-label">Learn more</span>
+    <div class="lm-links">
+      <a href="https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code-snowsight/cloud-agents" target="_blank" rel="noopener">Cloud Agents docs</a>
+      <a href="https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code-snowsight" target="_blank" rel="noopener">CoCo in Snowsight docs</a>
+    </div>
+    <span class="lm-note">Cloud Agents are generally available in all commercial regions on AWS, Azure, and Google Cloud.</span>
+  </div>
+
+  <h2>Interact with CoCo on Slack or on the go</h2>
+  <div class="two-col">
+    <div class="callout callout-info">
+      <h4>CoCo Slack Bot <span class="tag tag-soon">Coming Soon</span></h4>
+      <p>Ask questions, kick off workflows, review outputs, and unblock tasks, all from Slack. Get a quick notification, allow CoCo to continue an action, and stay unblocked without sitting at the keyboard.</p>
+    </div>
+    <div class="callout callout-info">
+      <h4>CoCo Mobile App <span class="tag tag-soon">Coming Soon</span></h4>
+      <p>The same API that powers Cloud Agents enabled a CoCo mobile app, so you can keep work moving from a phone.</p>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="subtab-panel" data-subtab="coco-build">
+  <h2>Skills and Plugin Sharing <span class="tag tag-custom">Private Preview</span></h2>
+  <p>Individual productivity compounds into organizational leverage. A top customer ask, now in private preview.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Frictionless sharing</div>
+      <div class="metric-label">Paste a link, use it instantly</div>
+      <div class="metric-sublabel">Share any skill or plugin via a link, paste it anywhere, and use it instantly.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Intelligent discovery</div>
+      <div class="metric-label">The right skill finds you</div>
+      <div class="metric-sublabel">Ask a question and the platform finds, installs, and invokes the right skill.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Enterprise governance</div>
+      <div class="metric-label">RBAC and security scanning</div>
+      <div class="metric-sublabel">RBAC, automatic security scanning (coming soon), and admin certification built in. Works across CoCo and CoWork.</div>
+    </div>
+  </div>
+
+  <h2>CoCo Agent SDK <span class="tag tag-new">NEW</span> <span class="tag tag-oob">GA</span></h2>
+  <p>CoCo is now an agent platform with an SDK. The same engine that powers CoCo for thousands of customers is now an installable library you can embed in your own applications and workflows.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Build production-grade agents</div>
+      <div class="metric-label">Orchestrate multi-step data workflows</div>
+      <div class="metric-sublabel">Use the same engine that powers CoCo to orchestrate complex, multi-step data workflows in your own applications.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Embed CoCo anywhere</div>
+      <div class="metric-label">Apps, pipelines, backends</div>
+      <div class="metric-sublabel">Call the SDK from your own code to embed CoCo's agentic capabilities in applications, pipelines, backend services, or custom internal tools.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Safeguards built in</div>
+      <div class="metric-label">Not bolted on</div>
+      <div class="metric-sublabel">Scoped permissions, typed JSON output, lifecycle hooks, and MCP integration, every production guardrail built in.</div>
+    </div>
+  </div>
+  <p>The SDK packages CoCo's tools and agent loop with built-in tool execution (Read, Write, Edit, Bash, Glob, Grep, SQL), sessions, streaming, hooks, structured output, and MCP, so your agent can start working immediately without you implementing that infrastructure yourself.</p>
+
+  <h2>Build on CoCo programmatically <span class="tag tag-oob">GA</span></h2>
+  <div class="two-col">
+    <div class="callout callout-key">
+      <h4>Model Context Protocol (MCP) Server</h4>
+      <p>Interact with CoCo programmatically through an MCP server, so other agents and tools can call CoCo for data tasks.</p>
+    </div>
+    <div class="callout callout-key">
+      <h4>Agent Client Protocol (ACP) Support</h4>
+      <p>ACP support lets you integrate CoCo into broader agent client workflows.</p>
+    </div>
+  </div>
+
+  </div>
+  </div><!-- /subtabs -->
+
+  <div class="learn-more">
+    <span class="lm-label">Learn more</span>
+    <div class="lm-links">
+      <a href="https://www.snowflake.com/en/blog/cortex-code-governed-agent-data-stack/" target="_blank" rel="noopener">Cortex Code blog</a>
+      <a href="https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code" target="_blank" rel="noopener">Cortex Code docs</a>
+      <a href="https://docs.snowflake.com/en/user-guide/cortex-code-agent-sdk/cortex-code-agent-sdk" target="_blank" rel="noopener">CoCo Agent SDK docs</a>
+      <a href="https://docs.snowflake.com/user-guide/snowflake-cortex/skill-catalog" target="_blank" rel="noopener">Skills and Plugin catalog docs<span class="lm-status">Private Preview</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB: ai-models-ml                                             -->
+<!-- ============================================================ -->
+<section class="tab-panel" data-tab="ai-models-ml">
+  <h1>AI Models and ML</h1>
+  <p class="lead">AI and ML run where your data lives, so teams train, fine-tune, and operationalize models without moving data out of Snowflake. Snowflake ML covers the full lifecycle in one platform: prepare data, build features, train on CPU or GPU, track experiments, register and serve models, then monitor them in production. The newest shift is agentic ML, where CoCo drives that lifecycle from natural language prompts.</p>
+
+  <div class="subtabs">
+  <div class="subtab-nav">
+    <button class="subtab-btn is-active" data-subtab="ml-train">Train &amp; Tune</button>
+    <button class="subtab-btn" data-subtab="ml-functions">AI Functions</button>
+    <button class="subtab-btn" data-subtab="ml-features">Feature Store</button>
+  </div>
+
+  <div class="subtab-panel is-active" data-subtab="ml-train">
+  <h2>Agentic ML with CoCo <span class="tag tag-oob">GA</span></h2>
+  <p>The headline shift in Snowflake ML: CoCo autonomously plans, executes, and iterates on machine learning workflows on your behalf. From a natural language prompt, it can explore data, engineer features, train and evaluate models, debug issues, and prepare models for deployment. You can hand it a single task or a broader goal that needs multi-step reasoning, with native context awareness across your data, models, notebooks, and features.</p>
+  <div class="callout callout-key">
+    <h4>Why this matters for a data science team</h4>
+    <p>The bottleneck in enterprise ML has rarely been the algorithm. It is the infrastructure work around it: moving data, standing up environments, wiring pipelines, keeping training and serving consistent. Agentic ML collapses that work into prompts against governed data that never leaves Snowflake.</p>
+  </div>
+
+  <h2>Cortex Training <span class="tag tag-custom">Private Preview</span></h2>
+  <p>Fine-tune open-weight models such as Qwen and Mistral on your enterprise data inside Snowflake, without moving that data out. Use it for domain adaptation and reinforcement-learning-based improvement, so a general model learns your business rather than a generic one.</p>
+
+  <h2>Training infrastructure</h2>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Container Runtime</div>
+      <div class="metric-label">Distributed CPU and GPU training</div>
+      <div class="metric-sublabel">A prebuilt ML environment optimized for efficient data loading, distributed training, and hyperparameter tuning at scale, with no manual configuration. PyTorch, XGBoost, and scikit-learn preinstalled, plus any package from HuggingFace or PyPI.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">ML Jobs</div>
+      <div class="metric-label">Operationalize and work from your IDE</div>
+      <div class="metric-sublabel">Automate ML pipelines, and let teams who prefer VS Code, PyCharm, or SageMaker dispatch functions, files, or modules down to Snowflake's Container Runtime.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Experiments</div>
+      <div class="metric-label">Pick the best model on evidence</div>
+      <div class="metric-sublabel">Record training results and evaluate a collection of models against set metrics in Snowsight. Log during training on Snowflake, or upload metadata and artifacts from prior training elsewhere.</div>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="subtab-panel" data-subtab="ml-functions">
+  <h2>Cortex AI Function Studio <span class="tag tag-new">Public Preview</span></h2>
+  <p>Create, evaluate, and optimize Cortex AI Functions in one place. Public Preview as of May 20, 2026. It turns the loop of writing an AI function, testing it against your data, and tuning the prompt or model into a guided workflow rather than a manual, trial-and-error exercise.</p>
+
+  <h2>The AI Function library <span class="tag tag-oob">GA</span></h2>
+  <p>Run unstructured analytics on text and images with models from OpenAI, Anthropic, Meta, Mistral, and DeepSeek, all deployed inside the Snowflake service perimeter. The core set is generally available and callable from SQL or Python.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Generate and reason</div>
+      <div class="metric-label">AI_COMPLETE, AI_AGG, AI_SUMMARIZE_AGG</div>
+      <div class="metric-sublabel">AI_COMPLETE for most generative tasks. AI_AGG and AI_SUMMARIZE_AGG aggregate insight across many rows and are not bound by context-window limits.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Classify and filter</div>
+      <div class="metric-label">AI_CLASSIFY, AI_FILTER, AI_SENTIMENT</div>
+      <div class="metric-sublabel">AI_FILTER returns true or false, so you can use natural language directly in WHERE and JOIN clauses. AI_CLASSIFY handles user-defined categories on text or images.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Extract and transform</div>
+      <div class="metric-label">AI_EXTRACT, AI_PARSE_DOCUMENT, AI_REDACT</div>
+      <div class="metric-sublabel">Pull structured fields from text, images, and documents, OCR or layout-parse files on a stage, redact PII, translate, transcribe audio and video, and embed for similarity search.</div>
+    </div>
+  </div>
+  <div class="callout callout-info">
+    <h4>Two practical notes worth raising</h4>
+    <p>AI Functions are optimized for throughput, so they are the right tool for batch work over large tables. For interactive, latency-sensitive paths use the REST APIs (Complete, Embed, Agents) instead. On access: calling them requires the <code>USE AI FUNCTIONS</code> account privilege plus the <code>CORTEX_USER</code> or <code>AI_FUNCTIONS_USER</code> database role, and you can now grant per-function privileges such as <code>USE AI FUNCTION AI_COMPLETE</code> for finer control.</p>
+  </div>
+
+  <h2>Multimodal and document AI functions</h2>
+  <p>Cortex AI Functions keep expanding across modalities and document types. A few that landed in 2026:</p>
+  <table class="data-table compact">
+    <thead>
+      <tr><th>Capability</th><th>What it does</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Multimodal video and audio analysis</td><td>Marketing and brand insights from video and audio, including Gemini 3.5 Flash support in Cortex AI Functions.</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>AI_CLASSIFY document classification</td><td>Classify documents by type, not just rows of text.</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>AI_COMPLETE document intelligence</td><td>Document-level intelligence and extraction with structured outputs.</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Fine-tuning arctic-extract models</td><td>Fine-tune arctic-extract for domain-specific document extraction so it handles your forms and contracts better.</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>AI_EXTRACT extraction scores</td><td>Confidence scores on extraction results so you know what to trust.</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>AI_TRANSCRIBE AAC audio</td><td>Transcription now supports AAC audio files in addition to existing formats.</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+    </tbody>
+  </table>
+
+  </div>
+
+  <div class="subtab-panel" data-subtab="ml-features">
+  <h2>Online Feature Store <span class="tag tag-new">Public Preview</span></h2>
+  <p>A production feature store for real-time ML, Public Preview as of July 10, 2026. Define features once, serve them online at low latency, and keep training and serving consistent so the features a model trained on are the features it scores with. It is backed by a managed Snowflake Postgres serving layer and built for fraud detection, recommendations, and personalization.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">10 ms p50</div>
+      <div class="metric-label">Serving latency via REST query API</div>
+      <div class="metric-sublabel">Sub-15 ms p95 and sub-20 ms p99 in general. Snowflake publishes a benchmark kit so you can reproduce the numbers in your own environment.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Under 2 seconds</div>
+      <div class="metric-label">End-to-end stream freshness</div>
+      <div class="metric-sublabel">From source event to served feature value using stream ingestion. For offline-to-online sync instead, target lag is configurable from 10 seconds to 8 days.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">No sync jobs</div>
+      <div class="metric-label">Online stays in step with offline</div>
+      <div class="metric-sublabel">The online store synchronizes with your offline feature pipeline automatically, so there is no separate sync infrastructure to build or operate.</div>
+    </div>
+  </div>
+
+  <h3>Three ways to define a feature</h3>
+  <table class="data-table compact">
+    <thead>
+      <tr><th>Feature view type</th><th>When you use it</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Batch</td><td>Features computed on a schedule and synced to the online store. Serves the latest row per entity key.</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Stream</td><td>Ingest events in real time through a REST endpoint and serve continuously updated features, including rolling time-windowed aggregates such as spend over 48 hours.</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Real-time</td><td>Compute at query time from per-request inputs plus upstream features, for values that cannot be precomputed such as the current transaction amount or live location.</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Feature groups bundle multiple feature views into one versioned set, so a model fetches everything in a single round-trip and the same group can generate the training set. Point-in-time correct training joins keep future data from leaking into a model.</p>
+
+  <h2>Model Registry and serving <span class="tag tag-oob">GA</span></h2>
+  <p>Models are first-class Snowflake schema objects, so they inherit the governance you already run: RBAC, tags, roles, and sharing. Log models trained anywhere, then run inference at scale from Python, SQL, or a REST endpoint, in a warehouse or on Snowpark Container Services for GPU serving. Built-in support covers scikit-learn, XGBoost, LightGBM, PyTorch, TensorFlow, Keras, Prophet, CatBoost, HuggingFace pipelines, and MLflow, plus your own custom code.</p>
+  <div class="callout callout-key">
+    <h4>Close the loop: features feed inference automatically</h4>
+    <p>Deploy a registered model as a real-time inference service and map a feature view to a model method. At inference time the service fetches any missing feature columns from the online store itself, so your application can send just the entity IDs and let Snowflake retrieve the rest.</p>
+  </div>
+
+  <h2>ML Observability, Explainability, and Lineage <span class="tag tag-oob">GA</span></h2>
+  <p>Models degrade quietly. Input drift, stale training assumptions, and pipeline changes do not throw errors, they just make predictions worse. ML Observability tracks production model quality across performance, drift, and volume for regression, binary, and multi-class classification, and metrics are queryable through SQL table functions so you can build your own dashboards alongside the Snowsight views.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Segment monitoring</div>
+      <div class="metric-label">Quality by slice, not just in aggregate</div>
+      <div class="metric-sublabel">Monitor performance for subsets such as region or customer tier, so a model failing for one group does not hide inside a healthy overall average.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Explainability</div>
+      <div class="metric-label">Shapley values on registry models</div>
+      <div class="metric-sublabel">Compute which input features drive a prediction, for any model in the registry regardless of where it was trained.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">ML Lineage</div>
+      <div class="metric-label">Source data to features to models</div>
+      <div class="metric-sublabel">Trace end-to-end lineage of ML artifacts for reproducibility, compliance, and debugging across the full lifecycle.</div>
+    </div>
+  </div>
+
+  </div>
+  </div><!-- /subtabs -->
+
+  <div class="callout callout-key">
+    <h4>Why it matters for the conversation</h4>
+    <p>CoWork and CoCo are how users and builders work with AI. This tab is how teams bring their own models and functions to that experience: fine-tune a model on your data, package an AI function, serve features at low latency, and apply it to documents, audio, and video, all without the data leaving Snowflake.</p>
+  </div>
+  <div class="learn-more">
+    <span class="lm-label">Learn more</span>
+    <div class="lm-links">
+      <a href="https://www.snowflake.com/en/blog/snowflake-for-ai-enterprise-ai-platform" target="_blank" rel="noopener">Snowflake for AI blog<span class="lm-status">Cortex Training, Private Preview</span></a>
+      <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning" target="_blank" rel="noopener">Cortex Fine-tuning docs</a>
+      <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/ai-function-studio" target="_blank" rel="noopener">Cortex AI Function Studio docs<span class="lm-status">Public Preview</span></a>
+      <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/ai-multimodal" target="_blank" rel="noopener">Multimodal AI Functions docs</a>
+      <a href="https://docs.snowflake.com/en/guides-overview-ai-features" target="_blank" rel="noopener">Snowflake AI and ML overview</a>
+      <a href="https://docs.snowflake.com/en/developer-guide/snowflake-ml/overview" target="_blank" rel="noopener">Snowflake ML: End-to-End Agentic ML<span class="lm-status">GA</span></a>
+      <a href="https://docs.snowflake.com/en/developer-guide/snowflake-ml/feature-store/online-feature-store" target="_blank" rel="noopener">Online Feature Store docs<span class="lm-status">Public Preview</span></a>
+      <a href="https://docs.snowflake.com/en/developer-guide/snowflake-ml/model-registry/model-observability" target="_blank" rel="noopener">ML Observability docs</a>
+      <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/aisql" target="_blank" rel="noopener">Cortex AI Functions docs</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB: horizon-context                                          -->
+<!-- ============================================================ -->
+<section class="tab-panel" data-tab="horizon-context">
+  <h1>Horizon Context</h1>
+  <p class="lead">Context exists in your organization, but it is fragmented and inactive. Your schemas are in Snowflake, your query patterns are in query history, your transformation logic is in SQL and dbt, and your BI definitions live in Tableau and Power BI. None of that flows automatically to your AI agents today. Horizon Context changes that through three phases: Collect, Enrich, and Activate.</p>
+
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Collect</div>
+      <div class="metric-label">From every connected source</div>
+      <div class="metric-sublabel">Out-of-the-box connectors and the OpenLineage API gather metadata, query logs, lineage signals, and BI definitions.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Enrich</div>
+      <div class="metric-label">Into governed business semantics</div>
+      <div class="metric-sublabel">Popularity rankings, AI-generated documentation, end-to-end lineage, and Semantic View Autopilot that generates governed semantic views automatically.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Activate</div>
+      <div class="metric-label">At query time, automatically</div>
+      <div class="metric-sublabel">The right context is injected for every CoCo session, every Snowflake Intelligence query, and every BI tool via MCP, from the same governed foundation.</div>
+    </div>
+  </div>
+
+  <div class="subtabs">
+  <div class="subtab-nav">
+    <button class="subtab-btn is-active" data-subtab="hc-semantic">Semantic Views</button>
+    <button class="subtab-btn" data-subtab="hc-connectors">Metadata Connectors</button>
+    <button class="subtab-btn" data-subtab="hc-search">Universal Search and OSI</button>
+    <button class="subtab-btn" data-subtab="hc-sense">Cortex Sense</button>
+  </div>
+
+  <div class="subtab-panel is-active" data-subtab="hc-semantic">
+    <h2>Semantic Views <span class="tag tag-oob">GA</span></h2>
+    <p>One definition, now more powerful, and far easier to build. Semantic Views are how Horizon Context reaches the agent. Your tables, joins, metrics, and filters are described once in a governed model, and that definition becomes the single source of truth that Cortex Analyst, Power BI, and your custom apps all resolve against. One version of the truth, everywhere.</p>
+    <p>Semantic Views are now significantly enhanced: complex calculations, composable definitions you reuse across models, and automatic query rewrite so Horizon picks the most efficient path without the agent having to know.</p>
+
+    <h3>Semantic View Autopilot <span class="tag tag-oob">GA</span></h3>
+    <p>The bigger announcement is how much easier it is to build Semantic Views. Give Autopilot your existing SQL queries, your Tableau workbooks, your Power BI reports, the logic your analysts have already built and validated, and it generates a complete semantic view automatically. Your tribal knowledge becomes a governed semantic layer, without anyone starting from scratch.</p>
+    <div class="callout callout-key">
+      <h4>Autopilot proposes. Humans approve. AI executes with confidence.</h4>
+      <p>The generated view is a proposal a person reviews and approves before it goes live, so governed definitions stay human-controlled.</p>
+    </div>
+
+    <h3>Snowflake Semantic Studio <span class="tag tag-custom">Private Preview</span></h3>
+    <p>A purpose-built IDE for building, testing, and deploying semantic views, built into Snowsight.</p>
+    <div class="metric-grid">
+      <div class="metric-tile">
+        <div class="metric-value">Visual editing</div>
+        <div class="metric-label">See your model at a glance</div>
+        <div class="metric-sublabel">See tables, joins, metrics, and dimensions at a glance, with inline validation that catches errors as you type.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">Git-native</div>
+        <div class="metric-label">Branch, edit, push, merge</div>
+        <div class="metric-sublabel">Full version history with CI/CD integration through GitHub.</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">AI-assisted</div>
+        <div class="metric-label">Cortex Code built in</div>
+        <div class="metric-sublabel">Ask it to add a metric, explain a join, or review your model for gaps, and iterate in natural language without leaving the editor.</div>
+      </div>
+    </div>
+
+    <h3>Built for complexity</h3>
+    <p>Enterprise data models require more than simple star schemas. Semantic Views now support the patterns real businesses have.</p>
+    <table class="data-table compact">
+      <thead>
+        <tr><th>Capability</th><th>What it handles</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Semi-additive metrics</td><td>Metrics that aggregate across some dimensions but not others, like account balances that sum over geography but take the last value over time.</td><td><span class="tag tag-oob">GA</span></td></tr>
+        <tr><td>Ratio and derived metrics</td><td>Calculates numerator and denominator at different grains before dividing, like revenue per employee.</td><td><span class="tag tag-oob">GA</span></td></tr>
+        <tr><td>Level-of-detail</td><td>Automatically calculates at the correct grain regardless of query context.</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+        <tr><td>Range relationships</td><td>SCD Type-2 support via BETWEEN and EXCLUSIVE joins on start and end dates.</td><td><span class="tag tag-oob">GA</span></td></tr>
+        <tr><td>Composable views</td><td>A new IMPORTS section to reuse dimensions across different Semantic Views.</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+        <tr><td>Many-to-many</td><td>Complex associations using intermediate bridge tables.</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Integrated with Horizon Governance</h3>
+    <div class="two-col">
+      <div class="callout callout-key">
+        <h4>Model-level lineage</h4>
+        <p>Model-level lineage for Semantic Views makes AI insights more trustworthy by showing exactly how business metrics are derived.</p>
+      </div>
+      <div class="callout callout-key">
+        <h4>Tagging in Semantic Views</h4>
+        <p>Tagging support lets teams consistently classify and govern metrics, models, dimensions, and facts across the analytics stack.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="subtab-panel" data-subtab="hc-connectors">
+    <h2>Metadata Connectors <span class="tag tag-custom">Private Preview</span></h2>
+    <p>Select Star technology, acquired by Snowflake, is now native to Horizon Catalog, shipping as out-of-the-box metadata connectors. This is more than ingesting table schemas.</p>
+    <p>Five connectors are available now in Private Preview: PostgreSQL, SQL Server, dbt, Tableau, and Power BI. Configure one, point it at your system, and Horizon collects the technical metadata: schemas, column names, and asset relationships. It also collects behavioral signals: query logs that show which tables your analysts actually run, dashboard definitions that encode business logic, and BI-to-table lineage that tells you which dashboard depends on which table. Five more connectors are planned for Q3.</p>
+    <div class="metric-grid">
+      <div class="metric-tile">
+        <div class="metric-value">PostgreSQL</div>
+        <div class="metric-label">External database</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">SQL Server</div>
+        <div class="metric-label">External database</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">dbt</div>
+        <div class="metric-label">Transformation</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">Tableau</div>
+        <div class="metric-label">BI platform</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">Power BI</div>
+        <div class="metric-label">BI platform</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subtab-panel" data-subtab="hc-search">
+    <h2>Universal Search <span class="tag tag-oob">GA</span></h2>
+    <p>Universal Search is now 30% faster, covers more asset types (Tableau dashboards, dbt models, external database tables, Iceberg tables in Glue), and has smarter relevance that understands asset relationships, not just keywords. One search box, every connected system.</p>
+    <div class="callout callout-key">
+      <h4>Agentic catalog discovery</h4>
+      <p>The bigger announcement: ask Cortex Code in plain English, "Show me all tables tagged as EMEA customer data with a churn signal." CoCo searches Horizon Catalog, finds matching assets across every connected platform, and brings them back with schema, ownership, and full context. No SQL, no manual browsing.</p>
+    </div>
+
+    <h2>Open Semantic Interchange (OSI) <span class="tag tag-oob">GA</span></h2>
+    <p>To make governed semantics portable across the entire industry, Snowflake co-founded the Open Semantic Interchange. Since launch, OSI has grown 400%, from 16 founding partners to over 80 today, including 26 new partners through OSI for Financial Services. The V1 spec is finalized and live on GitHub under Apache 2.0.</p>
+    <div class="metric-grid">
+      <div class="metric-tile">
+        <div class="metric-value">Standardization</div>
+        <div class="metric-label">A uniform language for definitions</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">Interoperability</div>
+        <div class="metric-label">Seamless exchange across tools and platforms</div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-value">Extensibility</div>
+        <div class="metric-label">Adapts as your data needs evolve</div>
+      </div>
+    </div>
+    <p class="muted">Any agent, BI tool, or analytics engine that supports OSI can read your governed definitions from Horizon Context without translation.</p>
+
+    <h3>AI Copilot for Horizon Catalog <span class="tag tag-soon">Coming Soon</span></h3>
+    <p>A conversational interface to the metadata and usage data in your Snowflake account, right in the UI. It lets data governors, stewards, and security admins self-serve without SQL knowledge or familiarity with the account usage views, so governance and security insights arrive faster and depend less on specialized data teams.</p>
+  </div>
+
+  <div class="subtab-panel" data-subtab="hc-sense">
+  <h2>Cortex Sense <span class="tag tag-custom">Private Preview</span></h2>
+  <p>The managed context runtime that continuously builds and maintains a Snowflake-managed knowledge layer from metadata, documentation, query history, lineage, and connected systems. It improves the accuracy of CoCo, CoWork, and Cortex Agents with minimal manual setup, so production-grade agents ship in days, not weeks. In Snowflake's testing it delivered 3.5x higher accuracy on enterprise business questions compared with Claude Code.</p>
+  <div class="callout callout-spotlight">
+    <h4>The accuracy jump, in numbers</h4>
+    <p>Without a semantic model, CoCo or CoWork answers are around 47% accurate. With Cortex Sense, that climbs to 86%, the level where agents deliver real business value. The cost is small: roughly $0.49 to $0.59 per prompt, for a 3.6x improvement in accuracy. Cortex Sense is fully managed by Snowflake, so there is no infrastructure to run and no semantic layer to maintain by hand.</p>
+  </div>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Auto-learns your business</div>
+      <div class="metric-label">No manual ontology setup</div>
+      <div class="metric-sublabel">Builds context from query history, table metadata, and BI connections like Tableau, Power BI, Redshift, and Postgres.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Runtime, not static</div>
+      <div class="metric-label">Context at query time</div>
+      <div class="metric-sublabel">Assembles the meaning of your business and serves the relevant pieces to the agent the moment a question arrives.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Spans every surface</div>
+      <div class="metric-label">CoCo, CoWork, and Cortex Agents</div>
+      <div class="metric-sublabel">One context runtime that lifts accuracy across all of Snowflake's agent surfaces, not just one.</div>
+    </div>
+  </div>
+  <div class="callout callout-key">
+    <h4>How it fits with the rest of this tab</h4>
+    <p>Three related but distinct things. <strong>Horizon Context</strong> is the governed context layer that connects and organizes enterprise context. <strong>Semantic Views</strong> remain the gold standard for curated, governed domains, the metrics you hand-model and trust most. <strong>Cortex Sense</strong> is the managed context runtime that extends AI-ready context across the long tail of enterprise data, the questions you did not model in advance. Cortex Sense treats your governed Semantic Views as the authoritative signal and defers to them, so the pieces reinforce each other rather than drift apart.</p>
+  </div>
+  </div>
+  </div><!-- /subtabs -->
+
+  <div class="learn-more">
+    <span class="lm-label">Learn more</span>
+    <div class="lm-links">
+      <a href="https://www.snowflake.com/en/blog/horizon-context-governed-context" target="_blank" rel="noopener">Horizon Context blog</a>
+      <a href="https://www.snowflake.com/en/blog/trusted-data-trusted-ai/" target="_blank" rel="noopener">Trusted Data, Trusted AI blog<span class="lm-status">Semantic Studio, Private Preview</span></a>
+      <a href="https://docs.snowflake.com/en/user-guide/views-semantic/overview" target="_blank" rel="noopener">Semantic Views docs</a>
+      <a href="https://docs.snowflake.com/en/release-notes/2025/9_40" target="_blank" rel="noopener">Semantic View Autopilot release notes<span class="lm-status">GA</span></a>
+      <a href="https://www.snowflake.com/en/blog/enterprise-ai-agents-grounded-context/" target="_blank" rel="noopener">Cortex Sense blog<span class="lm-status">Private Preview</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB: ai-security                                             -->
+<!-- ============================================================ -->
+<section class="tab-panel" data-tab="ai-security">
+  <h1>AI Security and Governance</h1>
+  <p class="lead">As agents reach your data, security has to be built in, not bolted on. Snowflake's approach layers agent security on top of the platform and data security it has had for years: authentication, RBAC, network policies, sensitive data protection, encryption, and data integrity, now extended to data exfiltration and ransomware protection, and then to purpose-built controls for the agentic era.</p>
+
+  <div class="subtabs">
+  <div class="subtab-nav">
+    <button class="subtab-btn is-active" data-subtab="sec-gov">Governance &amp; Classification</button>
+    <button class="subtab-btn" data-subtab="sec-dashboard">AI Governance Dashboard</button>
+    <button class="subtab-btn" data-subtab="sec-agent">Agent Security</button>
+    <button class="subtab-btn" data-subtab="sec-gateway">Cortex AI Gateway</button>
+  </div>
+
+  <div class="subtab-panel is-active" data-subtab="sec-gov">
+  <h2>Intent-Driven Governance <span class="tag tag-soon">Coming Soon</span></h2>
+  <p>Describe the intent. Snowflake implements it. A Cortex Code skill that turns plain-English governance intent into fully deployed Snowflake controls: masking policies, row access, classification, tagging, drift detection, and alerts. Your CISO approves the intent, and Snowflake enforces it.</p>
+  <div class="callout callout-key">
+    <h4>A sentence, not an engineer</h4>
+    <p>Your CISO says, "We need HIPAA-compliant data handling." That intent, one sentence, goes into Cortex Code. Cortex Code generates a plain-English specification the CISO reads and approves, no Snowflake knowledge required. Before deployment, a plan report shows exactly what will be configured. After, a full audit package traces every configured object back to that spec. Tag-based enforcement covers your entire estate, including tables that do not exist yet. And CoCo monitors continuously for drift.</p>
+  </div>
+  <p class="muted">Built on three governance skills already in production: Data Governance, Data Quality, and Lineage. Intent-Driven Governance is the CISO-level orchestration layer on the same foundation.</p>
+
+  <h2>AI-powered Sensitive Data Protection</h2>
+  <div class="two-col">
+    <div class="callout callout-key">
+      <h4>Find it: Sensitive Data Classification <span class="tag tag-custom">Private Preview</span></h4>
+      <p>150+ LLM-integrated classifiers covering PII and PCI categories detect sensitive data regardless of column names, continuously, as data evolves, and auto-tag detected columns across your entire estate. No infrastructure setup, no manual column-by-column review.</p>
+    </div>
+    <div class="callout callout-key">
+      <h4>Protect it: Tag-based policies <span class="tag tag-new">Public Preview</span></h4>
+      <p>Tag-based Row Access and Projection Policies attach protection to the tag itself, not to individual tables. One policy covers thousands of tables, including ones that do not exist yet. The same tag that governs a Power BI dashboard now governs AI agent outputs, so no special AI policy is required.</p>
+    </div>
+  </div>
+  <div class="callout callout-info">
+    <h4>Why it matters</h4>
+    <p>Supports compliance requirements (GDPR, CCPA, HIPAA, PCI-DSS) with AI-powered classification that works at scale, automatically. The protection travels with the data: SQL, BI, and AI outputs, everywhere.</p>
+  </div>
+
+  </div>
+
+  <div class="subtab-panel" data-subtab="sec-dashboard">
+  <h2>AI Governance Dashboard <span class="tag tag-oob">GA</span></h2>
+  <p>See every agent, skill, and MCP server, and govern them by asking. How many agents are running in your account right now, not deployed but actually running and touching data? Most teams do not know. The AI Governance Dashboard gives you that inventory: every agent, skill, and MCP server, which ones are touching sensitive objects, and the full audit record for every interaction.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Dashboard</div>
+      <div class="metric-label">Inventory and policy coverage</div>
+      <div class="metric-sublabel">Open the Central AI Governance Dashboard under Governance and Security, then AI Governance.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Agent Quality</div>
+      <div class="metric-label">Accuracy signals and incidents</div>
+      <div class="metric-sublabel">When quality degrades, Agent Quality Incident Response traces root cause automatically via lineage, in minutes not hours.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Guardrails</div>
+      <div class="metric-label">Policy firing log and audit</div>
+      <div class="metric-sublabel">A complete audit trail for compliance, including EU AI Act and NIST AI RMF.</div>
+    </div>
+  </div>
+  <div class="callout callout-info">
+    <h4>Govern your AI estate by asking</h4>
+    <p>"Why is my churn agent returning stale answers?" "Which agents are touching sensitive data?" "Are any agents reading PII without masking policies?" The dashboard identifies governance gaps with immediate, actionable fixes.</p>
+  </div>
+
+  </div>
+
+  <div class="subtab-panel" data-subtab="sec-agent">
+  <h2>Horizon AI Guardrails <span class="tag tag-oob">GA</span></h2>
+  <p>Prompt injection is one of the top AI security attack vectors. Snowflake provides built-in protection for known prompt injection patterns for all customers, no configuration required. On top of that, Horizon AI Guardrails provide zero-day-style prompt injection protection that enterprises can simply enable at the account level. They cover Cortex Code, Cortex Agents, and Snowflake CoWork, a unified governance layer across all AI surfaces.</p>
+
+  <h2>AI Security Posture Management (AI SPM) <span class="tag tag-oob">GA</span></h2>
+  <p>A significant AI security capability, now generally available. Trust Center monitors not just your data but your AI workloads and your agents. A key benefit of the built-in AI Security scanners is that they run within your Snowflake account, so no data leaves your trusted boundary. The dashboard proactively scans for AI-specific risks, assesses compliance posture against emerging regulations, and deploys programmatic remediations to lock down misconfigurations.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Secure by design and default</div>
+      <div class="metric-label">Enforce guardrails</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Runtime protection</div>
+      <div class="metric-label">Discover and remediate</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Runtime auditing</div>
+      <div class="metric-label">Full visibility</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Observability</div>
+      <div class="metric-label">Across 5 pillars</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Supply chain</div>
+      <div class="metric-label">Monitor 1P, 2P, 3P agents</div>
+    </div>
+  </div>
+  <p>Monitor Cortex AI and first-, second-, and third-party agents. Enable via Trust Center, and use it via UI, the CoCo CLI, programmatically, or org-wide.</p>
+
+  <h2>Agent Identity <span class="tag tag-oob">GA</span></h2>
+  <p>One of the most fundamental building blocks, now generally available. Today, when an AI agent takes an action in Snowflake, you cannot easily distinguish what the human did from what the agent did. That is a huge auditability gap. With Agent Identity, every agent gets a unique, recognizable principal within the user session. Every action it takes is stamped with that identity: traceable, auditable, and attributable. Dedicated agent identity tracking is also available in Account Usage views for auditing.</p>
+  <div class="callout callout-key">
+    <h4>Scope what an agent can do</h4>
+    <p>Agent identity also lets you scope agent access to sensitive data, enforcing restrictions like "this agent cannot access masked PII." Use system functions such as <code>SYS_CONTEXT('snowflake$current', 'is_agent_activated')</code> in data governance policies to restrict data access to agents, and use the agent's unique ID in ACCOUNT USAGE views (Query_History and Access_History) to identify actions the agent performed on behalf of the user.</p>
+  </div>
+  <div class="callout callout-info">
+    <h4>Extends to third-party agents</h4>
+    <p>The same identity framework extends to third-party agents through integrations with security partners like 1Password, Aembit, Cyera, Linx Security, Okta, SailPoint, and Saviynt, so the governance policies you apply to Snowflake-native agents can cover external AI tools too.</p>
+  </div>
+  <h3>Restricted Session Scope <span class="tag tag-soon">GA soon</span></h3>
+  <p>Limits what an agent session can do to only what the task requires, so a read-only analysis stays read-only even if the user's role normally allows much more.</p>
+
+  <h2>Advanced Data Exfiltration Protection <span class="tag tag-new">Public Preview</span></h2>
+  <p>It is not a question of whether agents will access your sensitive data, but when. Agentic AI significantly increases the risk of data exfiltration. The Data Exfiltration Prevention (DXP) package is in preview via the Trust Center, paired with Data Movement Policies (now GA) that enforce strict data movement controls.</p>
+  <div class="two-col">
+    <div class="callout callout-key">
+      <h4>Data Movement Policies <span class="tag tag-oob">GA</span></h4>
+      <p>Prevent sensitive data from moving outside approved boundaries. Policies are activated on sensitive data tags with query behavior and results, configured via SQL and DDL.</p>
+    </div>
+    <div class="callout callout-key">
+      <h4>Trust Center Data Exfiltration Detections</h4>
+      <p>Detect and help intercept unauthorized data flows before they exit the ecosystem, including sensitive data fetches triggered by AI agents, unauthorized routing to stages, and mass downloads via UI.</p>
+    </div>
+  </div>
+  <h3>Context-Aware Access Policies <span class="tag tag-custom">Private Preview</span></h3>
+  <p>A zero-trust control that lets security admins author a single policy evaluating identity, network, and client context jointly in one expression, so access decisions consider the full context of the request, not any one signal in isolation.</p>
+  <h3>Ransomware Protection via Multi-Party Approval (MPA) <span class="tag tag-oob">GA</span></h3>
+  <p>Removes single points of failure from your most sensitive architecture by requiring two or more authorizations before any destructive system change can proceed. Even if top-tier administrative credentials are hijacked, ransomware actors cannot unilaterally wipe data or alter configurations.</p>
+  <h3>Client-side CoCo CLI VM Sandbox <span class="tag tag-custom">Private Preview</span></h3>
+  <p>Run AI-assisted development workflows while minimizing exposure of credentials, local storage, or networks to client-side AI workloads. VM sandboxing isolates each CoCo session in a separate Linux kernel, isolated from the host OS, so developers get the full CoCo experience while security teams get the isolation they require. Admin-enforced or self-managed, currently on macOS.</p>
+  </div>
+
+  <div class="subtab-panel" data-subtab="sec-gateway">
+  <h2>Cortex AI Gateway <span class="tag tag-custom">Private Preview</span></h2>
+  <p>The connective layer for all trusted agent activity, built on the Natoma acquisition (a centralized MCP gateway that enforces identity, policy, and audit at the tool-call level). Enterprises are deploying agents everywhere, Claude Code, LangChain apps, internal bots, and more, and today there is no central control plane for what those agents can do. Every new agent type requires manual configuration, there is no audit trail, and AI costs are invisible. Cortex AI Gateway is a single endpoint that sits in front of all of it. Agents route through it, and Snowflake enforces who can call what tool, logs every action, and controls spend.</p>
+  <div class="callout callout-key">
+    <h4>Why it is more than the Natoma gateway it is built on</h4>
+    <p>Governance is tied directly to Snowflake's existing identity and RBAC system, so there is no new security infrastructure to stand up. The model catalog is model-agnostic by design, spanning GPT, Claude, Gemini, Grok, Mistral, and more. Cost controls and intelligent model routing are built in, so simpler tasks route to cheaper models automatically. And every agent trace and tool call lands in customer-owned tables for audit, compliance, and forensics.</p>
+  </div>
+  <p>It governs how AI agents, both first-party (CoCo and CoWork) and third-party (Amazon Bedrock, Azure AI Foundry, ChatGPT, Claude Code, Cursor, and custom LangChain or LlamaIndex apps), access models, data, MCP servers, and enterprise tools. You can adopt it modularly: stand up the MCP Gateway for tool governance, or the Model Gateway for routing, independently. Agent Identity, which it builds on, is GA today.</p>
+
+  <h3>Control</h3>
+  <p>Grant, restrict, and audit model and tool access from a single endpoint, instead of manually configuring each new agent type.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Wide Model Catalog <span class="tag tag-custom">PrPr</span></div>
+      <div class="metric-label">Bring models under one roof</div>
+      <div class="metric-sublabel">GPT, Gemini, Claude, Grok, Mistral, GLM, and more, run in your geography so data stays in region.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Access Governance <span class="tag tag-custom">PrPr</span></div>
+      <div class="metric-label">Reduce sprawl</div>
+      <div class="metric-sublabel">Grant, restrict, and audit tool access from a single endpoint instead of configuring dozens of emerging agent types by hand.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Govern Every Connection <span class="tag tag-custom">PrPr</span></div>
+      <div class="metric-label">100+ MCP servers</div>
+      <div class="metric-sublabel">Streamlined access, data policies, authentication, and fine-grained authorization across 100+ MCP servers including Slack, Jira, Salesforce, databases, and BYO (plus VPC connect), with automatic discovery and monitoring of shadow AI and MCPs.</div>
+    </div>
+  </div>
+
+  <h3>Visibility</h3>
+  <p>Agent actions are captured in real time, so security and compliance teams get the evidence they need without instrumenting each agent individually.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Observability and Tracing <span class="tag tag-custom">PrPr</span></div>
+      <div class="metric-label">Real-time tool-call capture</div>
+      <div class="metric-sublabel">Securely capture agent tool calls in real time for usage tracking, troubleshooting, and forensics.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Agent Action Auditability <span class="tag tag-custom">PrPr</span></div>
+      <div class="metric-label">End-to-end record</div>
+      <div class="metric-sublabel">An end-to-end record of agent actions: which system was touched, in what order, by whom.</div>
+    </div>
+  </div>
+
+  <h3>Cost and performance</h3>
+  <p>Route requests automatically to the right model and enforce spending limits before costs run away.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">AI Cost Control <span class="tag tag-custom">PrPr</span></div>
+      <div class="metric-label">Unified consumption view</div>
+      <div class="metric-sublabel">See AI consumption by team, agent, or workload, apply budget guardrails, and route to cheaper models for simpler tasks without sacrificing quality.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Intelligent Model Routing <span class="tag tag-custom">PrPr</span></div>
+      <div class="metric-label">Right model per request</div>
+      <div class="metric-sublabel">Automatically route agent requests based on cost, latency, capability, and data residency, with prompt management.</div>
+    </div>
+  </div>
+  </div>
+  </div><!-- /subtabs -->
+
+  <div class="learn-more">
+    <span class="lm-label">Learn more</span>
+    <div class="lm-links">
+      <a href="https://www.snowflake.com/en/blog/enterprise-ai-security-agentic-mcp-governance/" target="_blank" rel="noopener">Cortex AI Gateway and AI security blog<span class="lm-status">Private Preview</span></a>
+      <a href="https://www.snowflake.com/en/news/press-releases/snowflake-advances-the-trusted-agentic-enterprise-era-with-unified-monitoring-and-cost-management/" target="_blank" rel="noopener">Trusted Agentic Enterprise press release</a>
+      <a href="https://www.snowflake.com/en/blog/securing-the-agentic-enterprise/" target="_blank" rel="noopener">Securing the Agentic Enterprise blog</a>
+      <a href="https://docs.snowflake.com/user-guide/trust-center/overview" target="_blank" rel="noopener">Trust Center docs</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB: ai-data-engineering                                      -->
+<!-- ============================================================ -->
+<section class="tab-panel" data-tab="ai-data-engineering">
+  <h1>AI-Powered Data Engineering</h1>
+  <p class="lead">The reason most production AI underperforms is the data: whether it is fresh, governed, and complete with the business context AI needs to operate reliably. CoCo is woven into every layer of connectivity, so your data engineering pipelines are not just faster to build and easier to run, they are AI-ready from the moment they go live. Transformation, orchestration, observability, and migration all run natively, with no separate infrastructure to operate.</p>
+
+  <div class="subtabs">
+  <div class="subtab-nav">
+    <button class="subtab-btn is-active" data-subtab="de-build">Build with CoCo</button>
+    <button class="subtab-btn" data-subtab="de-observe">Observability</button>
+    <button class="subtab-btn" data-subtab="de-migrate">Migration &amp; Ingest</button>
+  </div>
+
+  <div class="subtab-panel is-active" data-subtab="de-build">
+  <h2>CoCo at every layer of connectivity <span class="tag tag-oob">GA</span></h2>
+  <p>CoCo is woven into every layer of connectivity. Purpose-built CoCo skills understand these specific products, their patterns, and their failure modes. On ADE Bench, CoCo achieved a 72.1% pass rate, outperforming both Claude Code and OpenAI Codex (each at 65.1%), and versus Claude Code on the same model it uses 51% fewer tokens and takes roughly an hour less. Two design choices drive that efficiency: targeted rather than exhaustive exploration, and a SQL-native approach that leans on native execution instead of heavy bash-based workflows.</p>
+
+  <h2>Snowpipe Automatic Setup with AI <span class="tag tag-custom">Private Preview</span></h2>
+  <p>Snowflake automates the cloud setup that used to take hours of manual work and troubleshooting. Give your cloud storage path to CoCo and ask to set up a pipe in natural language. Snowflake handles the cloud plumbing end to end: the IAM role creation, the SQS queue configuration, the notification setup, and the pipe creation. Go from raw files in object storage to a live, continuously-ingesting pipe in minutes.</p>
+
+  <h2>AI-Assisted Troubleshooting in Snowsight <span class="tag tag-custom">Private Preview</span></h2>
+  <p>When a pipeline fails, CoCo diagnoses the issue and recommends a fix right inside Snowsight, with context from the Openflow observability dashboard. Built-in observability shows what moved, where it went, and when, so pipeline failures are never silent.</p>
+
+  <h2>dbt Projects on Snowflake <span class="tag tag-oob">GA</span></h2>
+  <p>The full dbt lifecycle runs inside Snowflake: develop, deploy, orchestrate, and observe your transformations in the same place the data already lives. Snowflake provides managed dbt Core and dbt Fusion runtimes, so there is no Python environment to maintain, no Airflow cluster to scale, and no dbt CLI version drift across developer machines. Executions use a virtual warehouse at standard compute rates, with no licensing or per-user fees.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">No infrastructure</div>
+      <div class="metric-label">Managed dbt Core and dbt Fusion</div>
+      <div class="metric-sublabel">Pin a version or set an account-level default. Develop in Snowflake Workspaces, in CoCo Desktop, or keep your local IDE and deploy through CI/CD.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Native orchestration</div>
+      <div class="metric-label">Snowflake tasks, no external scheduler</div>
+      <div class="metric-sublabel">Schedule with tasks or integrate Apache Airflow. Chain steps with the AFTER clause, and run different slices of the DAG on different cadences.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Governed configuration</div>
+      <div class="metric-label">One Git-versioned env.yml</div>
+      <div class="metric-sublabel">Manage per-developer schemas, production time windows, and secrets in a single auditable file instead of .env files that drift across machines.</div>
+    </div>
+  </div>
+  <div class="callout callout-key">
+    <h4>Where CoCo speeds this up</h4>
+    <p>CoCo is integrated with Horizon Catalog, so it can generate <code>sources.yml</code> and <code>models.yml</code> documentation from catalog metadata that already exists (table comments, column comments, tags), scaffold dbt data quality tests into your <code>schema.yml</code>, and inspect the files of a deployed dbt project object to debug a production run.</p>
+  </div>
+  <div class="callout callout-info">
+    <h4>Two things worth flagging to a data engineering team</h4>
+    <p>Deploy to production through CI/CD, not from a workspace. The Snowflake CLI runs in GitHub Actions, GitLab, or Azure DevOps with OIDC ephemeral tokens, so there are no long-lived credentials stored as repo secrets, and every pull request is validated with <code>dbt build</code> before merge. Second, permissions are deliberately split: the MONITOR privilege on a dbt project object exposes lineage, run history, and artifacts, but it does not grant SELECT on the tables the pipeline creates. Building a pipeline and reading its output are separate grants.</p>
+  </div>
+  <p class="muted">Practical limits to plan around: one concurrent execution per dbt project object, and up to 20,000 files per object. Semantic views can be codified in the pipeline using the Snowflake Semantic View dbt package, so they are version-controlled and promoted through the same review process as your models.</p>
+
+  </div>
+
+  <div class="subtab-panel" data-subtab="de-observe">
+  <h2>AI-Native Observability <span class="tag tag-new">Public Preview</span></h2>
+  <p>You do not need deep telemetry expertise to self-serve monitoring. Next-Generation Event Tables eliminate setup, access, and scale barriers. They are zero-config, RBAC-governed, and performance-optimized.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">AI-Assisted Alerts</div>
+      <div class="metric-label">Build, edit, and tune in plain language</div>
+      <div class="metric-sublabel">Describe what to monitor and Snowflake automatically detects event data, builds the alert logic, wires notifications, checks privileges, and generates the final alert.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Monitor visually</div>
+      <div class="metric-label">In the Snowsight Alerts UI</div>
+      <div class="metric-sublabel">Track status, review history, and pause or resume alerts without SQL.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Troubleshoot with context</div>
+      <div class="metric-label">Guided insights from native entry points</div>
+      <div class="metric-sublabel">Ask CoCo to diagnose failures in the context of your existing workflow or via the Alerts UI.</div>
+    </div>
+  </div>
+
+  <h2>AI Observability and Cortex Agent evaluations <span class="tag tag-new">Public Preview</span></h2>
+  <p>Pipelines are not the only thing that needs observability once agents are in production. Cortex Agent evaluations let you test, baseline, and improve an agent's behavior so you know when it is actually ready for users. Rather than grading only the final answer, evaluation follows Snowflake's Goal-Plan-Action framework and scores the agent at each stage of its reasoning, so you can pinpoint where it went wrong instead of just seeing that it did.</p>
+  <table class="data-table compact">
+    <thead>
+      <tr><th>Metric</th><th>What it measures</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Tool selection accuracy</td><td>Goal to plan: did the orchestration layer invoke the tools you expected for the user's goal. Penalizes too few calls, too many, and the wrong ones.</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Tool execution accuracy</td><td>Plan to action: did each tool receive appropriate input and return output that meets your requirements.</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Answer correctness</td><td>Closes the loop back to the goal: how closely the final response matches expected ground truth.</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Logical consistency</td><td>Spans the whole loop: consistency across instructions, planning, and tool calls. Reference-free, so it needs no ground truth dataset at all.</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-key">
+    <h4>CoCo runs the evaluation loop, not just the pipeline</h4>
+    <p>CoCo can generate a synthetic evaluation dataset from your agent configuration, import real queries from production monitoring, run the evaluation, investigate failures, and then suggest and test changes that improve the agent's scores. You can also define custom LLM-judge metrics for domain criteria the streamed answer does not expose, such as which tables the agent actually touched.</p>
+  </div>
+  <p class="muted">Compare up to three runs side by side to see how a configuration change moved each metric, and drill into any single record for the full trace: planning, each tool invocation, and response generation. One caveat to set expectations on: evaluations do not currently support MCP server tools, the code execution tool, or skills.</p>
+
+  </div>
+
+  <div class="subtab-panel" data-subtab="de-migrate">
+  <h2>Snowflake AIM: AI-driven modernization <span class="tag tag-new">Public Preview</span></h2>
+  <p>Snowflake AIM is the AI-driven modernization and virtualization platform for migrations to Snowflake. Instead of manually untangling complex environments, AIM analyzes code, workflows, and dependencies to create a clear migration plan and identify operational risk early. At the center is the Snowflake CoCo Migration Agent, providing AI-powered code understanding and translation across the process.</p>
+  <div class="two-col">
+    <div class="callout callout-key">
+      <h4>Virtualization</h4>
+      <p>Run Teradata workloads directly on Snowflake with minimal SQL rewrites and zero downtime. Escape renewal pressure, keep applications running unchanged, protect mission-critical operations, and modernize on your terms. Powered by Snowflake CoCo.</p>
+    </div>
+    <div class="callout callout-key">
+      <h4>Modernization</h4>
+      <p>Automate migration of warehouses, ETL workflows, and Spark workloads into Snowflake-native architectures. AIM handles assessment and dependency analysis, automated code conversion, testing and validation, and ETL modernization, with shared migration state across the whole project.</p>
+    </div>
+  </div>
+  <p class="muted">Supported sources include Oracle, SQL Server, Teradata, AWS Redshift, Google BigQuery, Greenplum, Sybase, Synapse, Netezza, PostgreSQL, and Databricks SQL.</p>
+
+  <h2>Protect Sensitive Data Before It Ever Lands <span class="tag tag-custom">Private Preview</span></h2>
+  <p>Tokenize sensitive data during COPY and Snowpipe loads so raw values never reach your destination tables. Bring your preferred third-party tokenization service via external functions and apply policies directly to columns. This minimizes post-load ETL for data protection and gives you one consistent protection pattern across both bulk ingestion and Snowpipe.</p>
+
+  </div>
+  </div><!-- /subtabs -->
+
+  <div class="learn-more">
+    <span class="lm-label">Learn more</span>
+    <div class="lm-links">
+      <a href="https://www.snowflake.com/en/blog/snowflake-aim-enterprise-migration-modernization/" target="_blank" rel="noopener">Snowflake AIM blog<span class="lm-status">Public Preview</span></a>
+      <a href="https://www.snowflake.com/en/blog/engineering/snowflake-aim-migration-agent/" target="_blank" rel="noopener">AIM Migration Agent engineering blog</a>
+      <a href="https://www.snowflake.com/en/migrate-to-the-cloud/virtualization/" target="_blank" rel="noopener">Teradata Virtualization with AIM</a>
+      <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/ai-observability" target="_blank" rel="noopener">AI Observability docs<span class="lm-status">Public Preview</span></a>
+      <a href="https://www.snowflake.com/en/blog/interoperable-lakehouse-architecture/" target="_blank" rel="noopener">Interoperable Lakehouse blog<span class="lm-status">Snowpipe Auto Setup, Private Preview</span></a>
+      <a href="https://docs.snowflake.com/en/user-guide/data-engineering/dbt-projects-on-snowflake" target="_blank" rel="noopener">dbt Projects on Snowflake docs<span class="lm-status">GA</span></a>
+      <a href="https://docs.snowflake.com/en/user-guide/data-engineering/dbt-projects-on-snowflake-best-practices" target="_blank" rel="noopener">dbt on Snowflake best practices</a>
+      <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents-evaluations" target="_blank" rel="noopener">Cortex Agent evaluations docs<span class="lm-status">Public Preview</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB: ai-sharing                                              -->
+<!-- ============================================================ -->
+<section class="tab-panel" data-tab="ai-sharing">
+  <h1>AI in Sharing and Marketplace</h1>
+  <p class="lead">Data products are becoming agentic. Snowflake now makes it effortless to turn your data shares and listings into conversational agents, so consumers ask questions in natural language, explore follow-ups, and discover new use cases right on top of your data.</p>
+
+  <h2>Auto-gen Agents for Data Shares and Listings <span class="tag tag-new">Public Preview</span></h2>
+  <p>Instantly create a Semantic View and Cortex Agent from any data listing's schema, metadata, and query history. Edit and test before publishing, with full governance and first-party enrichment built in. Enterprise security and governance are included, and consumers can seamlessly combine third-party data with their own first-party data.</p>
+
+  <h2>Cortex Agent Sharing <span class="tag tag-new">Public Preview</span></h2>
+  <p>Distribute these agents across internal teams, partners, or the broader Snowflake ecosystem via Marketplace. Consumers add an agent to Snowflake CoWork in one click. Providers you already trust, like Crunchbase and Dun &amp; Bradstreet, have added agents on top of their existing data listings, giving customers a more conversational way to explore their data.</p>
+
+  <h2>AI-powered Marketplace Discovery <span class="tag tag-research">Research Preview</span></h2>
+  <p>A conversational way to find the right data, apps, and AI, powered by Cortex Code.</p>
+  <div class="metric-grid">
+    <div class="metric-tile">
+      <div class="metric-value">Describe your problem</div>
+      <div class="metric-label">By business use case</div>
+      <div class="metric-sublabel">Tell Marketplace what you are trying to solve, by challenge or goal, and get matched to relevant products instantly.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Refine with follow-ups</div>
+      <div class="metric-label">Chat with an expert</div>
+      <div class="metric-sublabel">Ask follow-up questions to narrow results, explore alternatives, or dig deeper into specific data categories.</div>
+    </div>
+    <div class="metric-tile">
+      <div class="metric-value">Tailored recommendations</div>
+      <div class="metric-label">By industry, role, use case</div>
+      <div class="metric-sublabel">Curated suggestions across data, apps, connectors, and AI solutions, based on your context.</div>
+    </div>
+  </div>
+  <div class="callout callout-info">
+    <h4>Why it is unique</h4>
+    <p>Every major cloud platform is moving toward conversational Marketplace discovery, and Snowflake is doing the same. The unique advantage is that Snowflake is the platform where your data lives and where your analysis happens, so discovery can leverage your context to find the right third-party data, AI, and applications for your existing workflows.</p>
+  </div>
+
+  <div class="learn-more">
+    <span class="lm-label">Learn more</span>
+    <div class="lm-links">
+      <a href="https://docs.snowflake.com/en/collaboration/auto-generated-data-agents" target="_blank" rel="noopener">Automatic Data Agents docs<span class="lm-status">Public Preview</span></a>
+      <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents-sharing" target="_blank" rel="noopener">Share Cortex Agents docs<span class="lm-status">Public Preview</span></a>
+      <a href="https://www.snowflake.com/en/blog/snowflake-marketplace-agentic-ai-growth/" target="_blank" rel="noopener">Marketplace agentic AI growth blog</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- TAB: availability                                            -->
+<!-- ============================================================ -->
+<section class="tab-panel" data-tab="availability">
+  <h1>Availability Summary</h1>
+  <p class="lead">Every AI feature in this doc, with its status. The new and upcoming answer on a single page. Status was verified against Snowflake release notes as of early August 2026, so several capabilities that were previously "coming soon" have since gone GA or Public Preview.</p>
+
+  <div class="legend">
+    <span class="legend-item"><span class="tag tag-oob">GA</span> Generally available now</span>
+    <span class="legend-item"><span class="tag tag-new">Public Preview</span> In public preview</span>
+    <span class="legend-item"><span class="tag tag-custom">Private Preview</span> In private preview</span>
+    <span class="legend-item"><span class="tag tag-soon">Coming Soon</span> In development or on the near roadmap</span>
+    <span class="legend-item"><span class="tag tag-research">Research Preview</span> Early research release</span>
+  </div>
+
+  <table class="data-table compact">
+    <thead>
+      <tr><th>Feature</th><th>Area</th><th>Availability</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Snowflake CoWork (the workspace)</td><td class="area-cell">CoWork</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Personal Agent</td><td class="area-cell">CoWork</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>User Memory</td><td class="area-cell">CoWork</td><td><span class="tag tag-soon">Coming Soon</span></td></tr>
+      <tr><td>User Skills</td><td class="area-cell">CoWork</td><td><span class="tag tag-soon">Coming Soon</span></td></tr>
+      <tr><td>Prebuilt Plugins (Finance and Sales)</td><td class="area-cell">CoWork</td><td><span class="tag tag-soon">Coming Soon</span></td></tr>
+      <tr><td>CoWork Mobile (iOS)</td><td class="area-cell">CoWork</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Automations (scheduled briefings)</td><td class="area-cell">CoWork</td><td><span class="tag tag-soon">Coming Soon</span></td></tr>
+      <tr><td>Deep Research</td><td class="area-cell">CoWork</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Analytical Search</td><td class="area-cell">CoWork</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Cortex Sense</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Code Execution Tool (Python in CoWork)</td><td class="area-cell">CoWork</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Artifacts: Live Dashboards</td><td class="area-cell">CoWork</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Multi-tile Northstar Dashboards</td><td class="area-cell">CoWork</td><td><span class="tag tag-soon">Coming Soon</span></td></tr>
+      <tr><td>Conversation Sharing</td><td class="area-cell">CoWork</td><td><span class="tag tag-soon">Coming Soon</span></td></tr>
+      <tr><td>Agent Studio (build, manage, govern)</td><td class="area-cell">CoWork</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>MCP sub-agents (Sales, Finance, Ops, Product)</td><td class="area-cell">CoWork</td><td><span class="tag tag-oob">GA</span></td></tr>
+
+      <tr><td>CoCo CLI</td><td class="area-cell">CoCo</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>CoCo in Snowsight</td><td class="area-cell">CoCo</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>CoCo for VS Code</td><td class="area-cell">CoCo</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>CoCo Plugin for Claude Code</td><td class="area-cell">CoCo</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>CoCo Desktop</td><td class="area-cell">CoCo</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Cloud Agents (powering CoCo in Snowsight)</td><td class="area-cell">CoCo</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>CoCo Slack Bot</td><td class="area-cell">CoCo</td><td><span class="tag tag-soon">Coming Soon</span></td></tr>
+      <tr><td>CoCo Mobile App</td><td class="area-cell">CoCo</td><td><span class="tag tag-soon">Coming Soon</span></td></tr>
+      <tr><td>Skills and Plugin Sharing</td><td class="area-cell">CoCo</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>CoCo Agent SDK</td><td class="area-cell">CoCo</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>CoCo MCP Server</td><td class="area-cell">CoCo</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>CoCo ACP Support</td><td class="area-cell">CoCo</td><td><span class="tag tag-oob">GA</span></td></tr>
+
+      <tr><td>Cortex Training (fine-tune open-weight models)</td><td class="area-cell">AI Models and ML</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Cortex AI Function Studio</td><td class="area-cell">AI Models and ML</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Online Feature Store</td><td class="area-cell">AI Models and ML</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Multimodal video and audio analysis</td><td class="area-cell">AI Models and ML</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>AI_CLASSIFY document classification</td><td class="area-cell">AI Models and ML</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>AI_COMPLETE document intelligence</td><td class="area-cell">AI Models and ML</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Fine-tuning arctic-extract models</td><td class="area-cell">AI Models and ML</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>AI_EXTRACT extraction scores</td><td class="area-cell">AI Models and ML</td><td><span class="tag tag-oob">GA</span></td></tr>
+
+      <tr><td>Semantic Views</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Semantic View Autopilot</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Snowflake Semantic Studio</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Level-of-detail metrics</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Composable Views</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Many-to-many relationships</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Model-level lineage for Semantic Views</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Tagging in Semantic Views</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Metadata Connectors (PostgreSQL, SQL Server, dbt, Tableau, Power BI)</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Universal Search</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Agentic catalog discovery (via CoCo)</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Open Semantic Interchange (OSI)</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>AI Copilot for Horizon Catalog</td><td class="area-cell">Horizon Context</td><td><span class="tag tag-soon">Coming Soon</span></td></tr>
+
+      <tr><td>Intent-Driven Governance</td><td class="area-cell">AI Security</td><td><span class="tag tag-soon">Coming Soon</span></td></tr>
+      <tr><td>AI-powered Sensitive Data Classification</td><td class="area-cell">AI Security</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Tag-based Row Access and Projection Policies</td><td class="area-cell">AI Security</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>AI Governance Dashboard</td><td class="area-cell">AI Security</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Agent Quality Incident Response (via CoCo)</td><td class="area-cell">AI Security</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Horizon AI Guardrails</td><td class="area-cell">AI Security</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>AI Security Posture Management (AI SPM)</td><td class="area-cell">AI Security</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Agent Identity</td><td class="area-cell">AI Security</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Restricted Session Scope</td><td class="area-cell">AI Security</td><td><span class="tag tag-soon">GA soon</span></td></tr>
+      <tr><td>Third-Party Agent Identity integrations (1Password, Okta, SailPoint, etc.)</td><td class="area-cell">AI Security</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Context-Aware Access Policies</td><td class="area-cell">AI Security</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Advanced Data Exfiltration Prevention (DXP)</td><td class="area-cell">AI Security</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Data Movement Policies</td><td class="area-cell">AI Security</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Ransomware Protection via Multi-Party Approval (MPA)</td><td class="area-cell">AI Security</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Client-side CoCo CLI VM Sandbox</td><td class="area-cell">AI Security</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>Cortex AI Gateway</td><td class="area-cell">AI Security</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+
+      <tr><td>CoCo at every layer of connectivity</td><td class="area-cell">Data Engineering</td><td><span class="tag tag-oob">GA</span></td></tr>
+      <tr><td>Snowpipe Automatic Setup with AI</td><td class="area-cell">Data Engineering</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>AI-Assisted Troubleshooting in Snowsight</td><td class="area-cell">Data Engineering</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+      <tr><td>AI-Native Observability (Next-Gen Event Tables, AI-Assisted Alerts)</td><td class="area-cell">Data Engineering</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Snowflake AIM (AI Migration Agent)</td><td class="area-cell">Data Engineering</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Protect Sensitive Data at Ingest (tokenize during COPY and Snowpipe)</td><td class="area-cell">Data Engineering</td><td><span class="tag tag-custom">Private Preview</span></td></tr>
+
+      <tr><td>Auto-gen Agents for Data Shares and Listings</td><td class="area-cell">Sharing</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>Cortex Agent Sharing</td><td class="area-cell">Sharing</td><td><span class="tag tag-new">Public Preview</span></td></tr>
+      <tr><td>AI-powered Marketplace Discovery</td><td class="area-cell">Sharing</td><td><span class="tag tag-research">Research Preview</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-info">
+    <h4>A note on roadmap items</h4>
+    <p>Anything tagged Coming Soon, Private Preview, Public Preview, or Research Preview is directional. Timing may change, and features under development may ship in a different form. For anything generally available, official Snowflake documentation is the source of truth.</p>
+  </div>
+
+  <div class="learn-more">
+    <span class="lm-label">Product blogs</span>
+    <div class="lm-links">
+      <a href="https://www.snowflake.com/en/blog/snowflake-cowork-personal-work-agent" target="_blank" rel="noopener">CoWork</a>
+      <a href="https://www.snowflake.com/en/blog/cortex-code-governed-agent-data-stack/" target="_blank" rel="noopener">Cortex Code</a>
+      <a href="https://www.snowflake.com/en/blog/horizon-context-governed-context" target="_blank" rel="noopener">Horizon Context</a>
+      <a href="https://www.snowflake.com/en/blog/snowflake-for-ai-enterprise-ai-platform" target="_blank" rel="noopener">Snowflake for AI</a>
+      <a href="https://www.snowflake.com/en/blog/snowflake-aim-enterprise-migration-modernization/" target="_blank" rel="noopener">Snowflake AIM</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>What's New in AI &middot; <strong>Snowflake</strong> &middot; High-level feature overview</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var CONFIG = {
+    tabs: [
+      { id: 'overview',            label: '1. Overview' },
+      { id: 'cowork',               label: '2. Snowflake CoWork' },
+      { id: 'coco',                 label: '3. Snowflake CoCo' },
+      { id: 'ai-models-ml',         label: '4. AI Models and ML' },
+      { id: 'horizon-context',      label: '5. Horizon Context' },
+      { id: 'ai-security',          label: '6. AI Security and Governance' },
+      { id: 'ai-data-engineering',  label: '7. AI-Powered Data Engineering' },
+      { id: 'ai-sharing',           label: '8. AI in Sharing and Marketplace' },
+      { id: 'availability',         label: '9. Availability Summary' }
+    ]
+  };
+
+  var TAB_ORDER = CONFIG.tabs.map(function (t) { return t.id; });
+
+  var tabContainer = document.getElementById('tab-buttons');
+  if (tabContainer) {
+    tabContainer.innerHTML = '';
+    CONFIG.tabs.forEach(function (t, i) {
+      var btn = document.createElement('button');
+      btn.className = 'tab-btn' + (i === 0 ? ' is-active' : '');
+      btn.dataset.tab = t.id;
+      btn.textContent = t.label;
+      tabContainer.appendChild(btn);
+    });
+  }
+
+  var tabButtons = document.querySelectorAll('.tab-btn');
+  var tabPanels  = document.querySelectorAll('.tab-panel');
+
+  function activateTab(tabId) {
+    if (!tabId || TAB_ORDER.indexOf(tabId) === -1) return;
+    tabButtons.forEach(function (btn) { btn.classList.toggle('is-active', btn.dataset.tab === tabId); });
+    tabPanels.forEach(function (panel) { panel.classList.toggle('is-active', panel.dataset.tab === tabId); });
+    if (history.replaceState) history.replaceState(null, '', '#' + tabId);
+    var tabNav = document.querySelector('.tab-nav');
+    if (tabNav) window.scrollTo({ top: tabNav.offsetTop, behavior: 'smooth' });
+  }
+
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () { activateTab(btn.dataset.tab); });
+  });
+
+  document.querySelectorAll('.subtab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var scope = btn.closest('.subtabs');
+      if (!scope) return;
+      var id = btn.dataset.subtab;
+      scope.querySelectorAll('.subtab-btn').forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+      scope.querySelectorAll('.subtab-panel').forEach(function (p) { p.classList.toggle('is-active', p.dataset.subtab === id); });
+    });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var tag = (e.target.tagName || '').toLowerCase();
+    if (['input', 'select', 'textarea'].indexOf(tag) !== -1) return;
+    if (e.target.isContentEditable) return;
+    var currentBtn = document.querySelector('.tab-btn.is-active');
+    if (!currentBtn) return;
+    var currentIdx = TAB_ORDER.indexOf(currentBtn.dataset.tab);
+    if (currentIdx === -1) return;
+    if (e.key === 'ArrowRight' && currentIdx < TAB_ORDER.length - 1) { activateTab(TAB_ORDER[currentIdx + 1]); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' && currentIdx > 0) { activateTab(TAB_ORDER[currentIdx - 1]); e.preventDefault(); }
+  });
+
+  var initialHash = window.location.hash.replace('#', '');
+  if (initialHash && TAB_ORDER.indexOf(initialHash) !== -1) activateTab(initialHash);
+})();
+</script>
+
+</body>
+</html>
