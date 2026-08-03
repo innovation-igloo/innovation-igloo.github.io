@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="snowflake-source" content="cortex-agent-authored" />
+<title>The Case, Opening Statement &middot; Beyond a Reasonable dbt</title>
+<link rel="stylesheet" href="../../assets/base.css" />
+<link rel="stylesheet" href="../../assets/doc.css" />
+<link rel="stylesheet" href="../../assets/courtroom.css" />
+</head>
+<body class="courtroom">
+
+<header class="site-header">
+  <div class="container">
+    <a class="home-link" href="../../"><span class="home-arrow" aria-hidden="true">&larr;</span> All pages</a>
+    <div class="brand">
+      <span class="brand-mark">&#10052;</span>
+      <span class="brand-text">Snowflake <span class="divider">|</span> Beyond a Reasonable dbt</span>
+    </div>
+  </div>
+</header>
+
+<nav class="section-bar" aria-label="Deck sections">
+  <div class="container">
+    <a class="up" href="../">Overview</a>
+    <span class="up-sep" aria-hidden="true"></span>
+    <span class="cur">The Case</span>
+    <a href="../proceedings/">The Proceedings</a>
+    <a href="../exhibit-a/">Exhibit A</a>
+    <a href="../exhibit-b/">Exhibit B</a>
+    <a href="../exhibit-c/">Exhibit C</a>
+  </div>
+</nav>
+
+<main class="container">
+  <h1>Beyond a Reasonable <span class="pun">dbt</span></h1>
+  <p class="lead">Trustworthy pipelines for AI agents. How to manage the full Cortex Agent lifecycle (semantic views, agent specs, evaluations, and scheduling) as version-controlled, tested, reproducible code with dbt Projects on Snowflake.</p>
+
+  <h2>The Case</h2>
+  <p>An AI agent is only as trustworthy as the data and the process behind it. Yet most agents are assembled by <strong>click-ops</strong> in a UI: no version history, no peer review, no tests, and no reliable way to promote the same thing from dev to prod. When the agent gives a wrong answer, there is nothing to diff and nothing to roll back.</p>
+  <div class="case-grid">
+    <div class="case-col problem">
+      <h3>The charge: click-ops agents</h3>
+      <ul>
+        <li><strong>No version control</strong>: changes live only in the UI</li>
+        <li><strong>No peer review</strong>: nobody signs off before prod</li>
+        <li><strong>No tests</strong>: accuracy is a vibe, not a metric</li>
+        <li><strong>No reproducibility</strong>: dev and prod drift apart</li>
+        <li><strong>No promotion path</strong>: rebuilding by hand per environment</li>
+      </ul>
+    </div>
+    <div class="case-col fix">
+      <h3>The defense: agents as code</h3>
+      <ul>
+        <li><strong>Git-backed</strong>: every change diffed and reviewable</li>
+        <li><strong>PR review + CI</strong>: builds on dev before merge</li>
+        <li><strong>Measured</strong>: evaluations gate on &ge;95% correctness</li>
+        <li><strong>One codebase</strong>: <code>env.yml</code> targets dev / staging / prod</li>
+        <li><strong>One command</strong>: <code>EXECUTE DBT PROJECT</code> rebuilds it all</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Exhibits, entered into evidence</h2>
+  <div class="metric-grid">
+    <div class="metric-tile"><div class="metric-value">5</div><div class="metric-label">Phases from questions to production</div></div>
+    <div class="metric-tile"><div class="metric-value">3</div><div class="metric-label">Environments, one codebase</div></div>
+    <div class="metric-tile"><div class="metric-value">&ge;95%</div><div class="metric-label">Answer-correctness bar to ship</div></div>
+    <div class="metric-tile"><div class="metric-value">0</div><div class="metric-label">Click-ops steps</div></div>
+    <div class="metric-tile"><div class="metric-value">1</div><div class="metric-label"><code>EXECUTE DBT PROJECT</code> to rebuild</div></div>
+  </div>
+
+  <h2>The lifecycle, at a glance</h2>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 1000 240" role="img" aria-label="Cortex Agent lifecycle: Sources to Staging to Semantic View to Agent to Evaluations to Ship, with a feedback loop from Evaluations back to Semantic View.">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#11567F"></path>
+        </marker>
+        <marker id="arrow-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#B07A2A"></path>
+        </marker>
+      </defs>
+      <!-- Stage boxes -->
+      <g font-family="-apple-system, Segoe UI, sans-serif" font-size="14" text-anchor="middle">
+        <g>
+          <rect x="8"   y="70" width="140" height="60" rx="8" fill="#E8F6FC" stroke="#29B5E8" stroke-width="1.5"></rect>
+          <text x="78"  y="95" font-weight="700" fill="#11567F">1. Sources</text>
+          <text x="78"  y="114" font-size="11" fill="#5A6872">sources.yml</text>
+        </g>
+        <g>
+          <rect x="180" y="70" width="140" height="60" rx="8" fill="#E8F6FC" stroke="#29B5E8" stroke-width="1.5"></rect>
+          <text x="250" y="95" font-weight="700" fill="#11567F">2. Staging</text>
+          <text x="250" y="114" font-size="11" fill="#5A6872">stg_*.sql</text>
+        </g>
+        <g>
+          <rect x="352" y="70" width="150" height="60" rx="8" fill="#D9EEF9" stroke="#11567F" stroke-width="2"></rect>
+          <text x="427" y="93" font-weight="700" fill="#11567F">3. Semantic View</text>
+          <text x="427" y="112" font-size="11" fill="#5A6872">Exhibit A</text>
+        </g>
+        <g>
+          <rect x="534" y="70" width="150" height="60" rx="8" fill="#D9EEF9" stroke="#11567F" stroke-width="2"></rect>
+          <text x="609" y="93" font-weight="700" fill="#11567F">4. Agent</text>
+          <text x="609" y="112" font-size="11" fill="#5A6872">Exhibit B</text>
+        </g>
+        <g>
+          <rect x="716" y="70" width="150" height="60" rx="8" fill="#FBF4E6" stroke="#B07A2A" stroke-width="2"></rect>
+          <text x="791" y="93" font-weight="700" fill="#8A5E1F">5. Evaluations</text>
+          <text x="791" y="112" font-size="11" fill="#5A6872">The Verdict</text>
+        </g>
+        <g>
+          <rect x="898" y="70" width="94" height="60" rx="8" fill="#F1F8F4" stroke="#2E7D32" stroke-width="1.5"></rect>
+          <text x="945" y="95" font-weight="700" fill="#2E7D32">Ship</text>
+          <text x="945" y="114" font-size="10" fill="#5A6872">SI / Teams</text>
+        </g>
+      </g>
+      <!-- Forward arrows -->
+      <g stroke="#11567F" stroke-width="2" fill="none">
+        <line x1="150" y1="100" x2="178" y2="100" marker-end="url(#arrow)"></line>
+        <line x1="322" y1="100" x2="350" y2="100" marker-end="url(#arrow)"></line>
+        <line x1="504" y1="100" x2="532" y2="100" marker-end="url(#arrow)"></line>
+        <line x1="686" y1="100" x2="714" y2="100" marker-end="url(#arrow)"></line>
+        <line x1="868" y1="100" x2="896" y2="100" marker-end="url(#arrow)"></line>
+      </g>
+      <!-- Feedback loop: Evaluations back to Semantic View -->
+      <path d="M 791 132 C 791 200, 427 200, 427 134" stroke="#B07A2A" stroke-width="2" fill="none" stroke-dasharray="5 4" marker-end="url(#arrow-loop)"></path>
+      <text x="609" y="222" text-anchor="middle" font-family="-apple-system, Segoe UI, sans-serif" font-size="12" fill="#8A5E1F">iterate: inspect trace &rarr; fix the right layer &rarr; re-run</text>
+    </svg>
+    <div class="diagram-caption">One dbt project builds every box. The feedback loop is where evaluation scores drive the next improvement cycle.</div>
+  </div>
+
+  <h2>The proceedings &amp; the exhibits</h2>
+  <div class="card-grid cols-2">
+    <a class="card is-link" href="../proceedings/">
+      <div class="card-eyebrow">The Proceedings</div>
+      <div class="card-title">The Full Build, Phase by Phase</div>
+      <div class="card-desc">The five-phase runbook from business questions to a shipped agent (orientation, semantic view, orchestration, response, tools, and the evaluation verdict) with the exact dbt commands to run live.</div>
+      <div class="card-cta">Enter the courtroom <span class="arrow">&rarr;</span></div>
+    </a>
+    <a class="card is-link" href="../exhibit-a/">
+      <div class="card-eyebrow">Exhibit A</div>
+      <div class="card-title">The Semantic View</div>
+      <div class="card-desc">Where accuracy is won or lost: business names, KPIs as metrics, verified queries, the additive AI_SQL_GENERATION and AI_QUESTION_CATEGORIZATION clauses, and the enforced clause order.</div>
+      <div class="card-cta">Examine the evidence <span class="arrow">&rarr;</span></div>
+    </a>
+    <a class="card is-link" href="../exhibit-b/">
+      <div class="card-eyebrow">Exhibit B</div>
+      <div class="card-title">The Agent Spec</div>
+      <div class="card-desc">The three-layer model (orchestration, response, and tool descriptions) plus the four-part tool-description formula that drives routing accuracy, and the failure patterns to watch for.</div>
+      <div class="card-cta">Examine the evidence <span class="arrow">&rarr;</span></div>
+    </a>
+    <a class="card is-link" href="../exhibit-c/">
+      <div class="card-eyebrow">Exhibit C</div>
+      <div class="card-title">Cortex Agent Evaluations</div>
+      <div class="card-desc">How the verdict is reached: the Goal-Plan-Action metrics, the ground-truth dataset, running an evaluation, and iterating to the &ge;95% ship bar.</div>
+      <div class="card-cta">Examine the evidence <span class="arrow">&rarr;</span></div>
+    </a>
+  </div>
+
+  <div class="visual-ph">
+    <div class="vp-tag">Visual</div>
+    <div class="vp-hint">Drop an opening screenshot here, e.g. the Snowsight Workspace with the dbt project open, or the finished agent answering a question in Snowflake Intelligence.</div>
+  </div>
+
+  <h2>About this deck</h2>
+  <p class="muted">Built from the <code>cortex-agents-dbt-project-template</code> (see <a href="https://docs.snowflake.com/en/user-guide/data-engineering/dbt-projects-on-snowflake">dbt Projects on Snowflake</a>). The walkthrough mirrors the project's <code>WORKING-SESSION.md</code> runbook; the exhibits draw on its <code>README.md</code> best practices.</p>
+
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>Beyond a Reasonable dbt &middot; <strong>Snowflake | Cortex Agents &amp; dbt</strong> &middot; <a href="../../">All pages</a></p>
+  </div>
+</footer>
+
+<script src="../../assets/doc.js"></script>
+
+</body>
+</html>

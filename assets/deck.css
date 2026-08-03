@@ -1,0 +1,178 @@
+/* ==========================================================================
+   deck.css — full-screen slide deck page type
+   A viewport-locked, keyboard-driven presentation. This is the second page
+   type in the site, alongside tabbed docs (base.css + doc.css).
+   Load after base.css, which supplies the design tokens.
+   Pair with deck.js.
+   ========================================================================== */
+
+/* --- base.css overrides --------------------------------------------------
+   A slide deck owns the viewport, so it has to reclaim a few document-flow
+   rules that base.css sets for scrolling pages. Kept together and explicit
+   rather than scattered, so it is obvious what is being overridden and why.
+   ------------------------------------------------------------------------- */
+
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  background: var(--sf-blue-darker);   /* was --bg */
+  overflow: hidden;                    /* the deck scrolls by slide, not by pixel */
+}
+h1 { font-size: clamp(2.2rem, 7vh, 5rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.02; margin: 0 0 1.5vh; color: var(--sf-blue-deep); }
+h2 { font-size: clamp(1.8rem, 5.2vh, 3.4rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.08; margin: 0 0 2vh; color: var(--sf-blue-deep); padding: 0; border: none; }
+.lead { font-size: clamp(1.05rem, 2.6vh, 1.7rem); color: var(--text-muted); max-width: 34ch; line-height: 1.45; margin: 0; }
+h1 .pun { color: var(--sf-blue); }
+
+/* --- deck viewport ------------------------------------------------------- */
+
+.deck { position: fixed; inset: 0; }
+.slide {
+  position: absolute; inset: 0;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  padding: 7vh 8vw 9vh;
+  background: var(--bg);
+  animation: slideFade 0.35s ease;
+}
+.slide.active { display: flex; }
+@keyframes slideFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* --- hero (dark) slides -------------------------------------------------- */
+
+.slide.hero {
+  background: linear-gradient(135deg, var(--sf-blue-deep) 0%, var(--sf-blue-darker) 100%);
+  color: #fff;
+}
+.slide.hero .eyebrow { color: var(--sf-cyan); }
+.slide.hero h1, .slide.hero h2 { color: #fff; }
+.slide.hero .lead { color: rgba(255, 255, 255, 0.88); }
+
+/* --- slide typography ---------------------------------------------------- */
+
+.eyebrow {
+  font-size: clamp(0.7rem, 1.5vh, 0.95rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--gavel, #B07A2A);
+  margin-bottom: 1.2vh;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.eyebrow::before { content: "\00A7"; font-size: 1.1em; opacity: 0.7; }
+.slide.wide .lead { max-width: 48ch; }
+.kicker { font-size: clamp(1rem, 2.4vh, 1.5rem); color: var(--text-muted); margin-top: 2.5vh; max-width: 46ch; line-height: 1.4; }
+
+/* --- title slide --------------------------------------------------------- */
+
+.title-brand { display: flex; align-items: center; gap: 0.6rem; font-size: clamp(1rem, 2.3vh, 1.4rem); font-weight: 600; margin-bottom: 4vh; color: #fff; }
+.title-brand .divider { color: var(--sf-cyan); margin: 0 0.4rem; font-weight: 300; }
+.title-sub { font-size: clamp(1.1rem, 3vh, 2rem); color: var(--sf-cyan); font-weight: 500; margin-top: 1vh; }
+.title-foot { position: absolute; bottom: 6vh; left: 8vw; right: 8vw; font-size: clamp(0.75rem, 1.6vh, 1rem); color: rgba(255, 255, 255, 0.7); display: flex; justify-content: space-between; }
+
+/* --- agenda -------------------------------------------------------------- */
+
+.agenda { list-style: none; padding: 0; margin: 2vh 0 0; display: flex; flex-direction: column; gap: 1.4vh; }
+.agenda li { display: flex; align-items: baseline; gap: 1rem; font-size: clamp(1.05rem, 3vh, 1.9rem); font-weight: 600; color: #fff; cursor: pointer; padding: 0.4vh 0; border-radius: 6px; transition: color 0.15s ease, transform 0.15s ease; }
+.agenda li:hover { color: var(--sf-cyan); transform: translateX(6px); }
+.agenda .num { color: var(--sf-cyan); font-variant-numeric: tabular-nums; font-weight: 800; min-width: 1.6em; }
+.agenda .hint { font-size: clamp(0.8rem, 1.7vh, 1.05rem); font-weight: 400; color: rgba(255, 255, 255, 0.6); margin-left: 0.4rem; }
+
+/* --- contrast: problem vs fix ------------------------------------------- */
+
+.contrast { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5vw; margin-top: 3vh; }
+.contrast .col { border-radius: 14px; padding: 3vh 2.2vw; box-shadow: 0 6px 20px rgba(17, 86, 127, 0.08); }
+.contrast .problem { background: #FFF6F0; border: 1px solid #F3C7A6; border-top: 6px solid var(--warning); }
+.contrast .fix { background: #F1F8F4; border: 1px solid #B6DCC0; border-top: 6px solid var(--success); }
+.contrast h3 { margin: 0 0 1.5vh; font-size: clamp(1.05rem, 2.6vh, 1.6rem); }
+.contrast .problem h3 { color: var(--warning); }
+.contrast .fix h3 { color: var(--success); }
+.contrast ul { margin: 0; padding-left: 1.2em; }
+.contrast li { font-size: clamp(0.95rem, 2.2vh, 1.35rem); margin: 1vh 0; color: var(--text); }
+
+/* --- pillars ------------------------------------------------------------- */
+
+.pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.6vw; margin-top: 3.5vh; }
+.pillar { background: var(--bg-alt); border: 1px solid var(--border); border-top: 5px solid var(--sf-blue); border-radius: 14px; padding: 3vh 1.4vw; }
+.pillar .pnum { font-size: clamp(1.4rem, 4vh, 2.6rem); font-weight: 800; color: var(--sf-blue); line-height: 1; }
+.pillar h3 { margin: 1.5vh 0 0.8vh; font-size: clamp(1rem, 2.4vh, 1.45rem); color: var(--sf-blue-deep); }
+.pillar p { margin: 0; font-size: clamp(0.85rem, 1.9vh, 1.15rem); color: var(--text-muted); line-height: 1.35; }
+.pillars.cols-3 { grid-template-columns: repeat(3, 1fr); margin-top: 3vh; }
+
+/* --- big stat ------------------------------------------------------------ */
+
+.statrow { display: flex; align-items: center; gap: 4vw; margin-top: 2vh; flex-wrap: wrap; }
+.bigstat { font-size: clamp(4rem, 18vh, 13rem); font-weight: 800; color: var(--gavel, #B07A2A); line-height: 0.9; letter-spacing: -0.03em; }
+.bigstat .unit { font-size: 0.4em; color: var(--gavel-deep, #8A5E1F); }
+.statcopy { flex: 1 1 20ch; }
+.statcopy h2 { margin-top: 0; }
+
+/* --- inline SVG frame ---------------------------------------------------- */
+
+.svg-frame { margin-top: 3vh; width: 100%; }
+.svg-frame svg { display: block; width: 100%; height: auto; max-height: 46vh; }
+.svg-cap { text-align: center; color: var(--text-muted); font-size: clamp(0.85rem, 1.8vh, 1.1rem); margin-top: 2vh; }
+
+/* --- ship channels ------------------------------------------------------- */
+
+.channels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.6vw; margin-top: 4vh; }
+.channel { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 14px; padding: 3.5vh 1.2vw; text-align: center; }
+.channel .ico { font-size: clamp(1.6rem, 5vh, 3rem); line-height: 1; }
+.channel h3 { margin: 1.5vh 0 0.5vh; font-size: clamp(0.95rem, 2.3vh, 1.35rem); color: var(--sf-blue-deep); }
+.channel p { margin: 0; font-size: clamp(0.78rem, 1.7vh, 1.05rem); color: var(--text-muted); }
+
+/* --- ruling / CTA -------------------------------------------------------- */
+
+.ruling-points { list-style: none; padding: 0; margin: 2.5vh 0 0; display: flex; flex-direction: column; gap: 1.6vh; }
+.ruling-points li { font-size: clamp(1.05rem, 2.8vh, 1.8rem); color: rgba(255, 255, 255, 0.92); display: flex; gap: 0.9rem; align-items: baseline; }
+.ruling-points .mark { color: var(--sf-cyan); font-weight: 800; }
+.ruling-cta { margin-top: 4vh; font-size: clamp(0.9rem, 2vh, 1.25rem); color: rgba(255, 255, 255, 0.75); }
+.ruling-cta a { color: var(--sf-cyan); font-weight: 600; }
+.ruling-cta code { font-family: var(--font-mono); background: rgba(255, 255, 255, 0.12); color: #fff; padding: 0.15em 0.5em; border-radius: 5px; border: none; }
+
+/* --- chrome: progress, counter, nav ------------------------------------- */
+
+.progress { position: fixed; top: 0; left: 0; height: 5px; background: var(--sf-blue); width: 0; transition: width 0.3s ease; z-index: 30; }
+.counter { position: fixed; bottom: 3vh; right: 3vw; font-size: clamp(0.8rem, 1.7vh, 1.05rem); font-weight: 700; color: var(--text-muted); font-variant-numeric: tabular-nums; z-index: 30; background: rgba(255, 255, 255, 0.65); padding: 0.2em 0.7em; border-radius: 20px; }
+.navbtns { position: fixed; bottom: 3vh; left: 3vw; display: flex; gap: 0.6rem; z-index: 30; }
+.navbtn { width: 2.6rem; height: 2.6rem; border-radius: 50%; border: 1px solid var(--border-strong); background: rgba(255, 255, 255, 0.85); color: var(--sf-blue-deep); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s ease, transform 0.15s ease; box-shadow: 0 2px 8px rgba(17, 86, 127, 0.12); }
+.navbtn:hover { background: #fff; transform: translateY(-2px); }
+.navbtn:active { transform: translateY(0); }
+.hint-help { position: fixed; bottom: 3vh; left: 50%; transform: translateX(-50%); font-size: clamp(0.68rem, 1.4vh, 0.9rem); color: var(--text-muted); z-index: 30; opacity: 0.7; }
+
+/* Back to the site index, positioned so it does not fight the deck chrome. */
+.deck-home {
+  position: fixed;
+  top: 1.4vh;
+  left: 3vw;
+  z-index: 31;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  color: var(--sf-blue-deep);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  transition: background 0.15s ease;
+}
+.deck-home:hover { background: #fff; }
+
+/* --- responsive ---------------------------------------------------------- */
+
+@media (max-width: 820px) {
+  .contrast, .pillars, .pillars.cols-3, .channels { grid-template-columns: 1fr; }
+  .slide { padding: 6vh 7vw 10vh; }
+}
+
+/* --- print: one slide per page ------------------------------------------ */
+
+@media print {
+  body { overflow: visible; background: #fff; }
+  .deck { position: static; }
+  .slide { position: relative; display: flex !important; inset: auto; height: 100vh; page-break-after: always; box-shadow: none; animation: none; }
+  .progress, .counter, .navbtns, .hint-help, .deck-home { display: none !important; }
+  .agenda li { cursor: default; }
+}
