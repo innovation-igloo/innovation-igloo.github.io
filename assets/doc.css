@@ -69,6 +69,27 @@
 .callout ol, .callout ul { margin: 0.5rem 0; padding-left: 1.25rem; }
 .callout li { margin-bottom: 0.5rem; }
 
+/* --- code blocks ---------------------------------------------------------
+   Dark block with two hand-applied highlight spans. There is no syntax
+   highlighter here on purpose: mark comments with <span class="cmt"> and
+   keywords with <span class="kw">.
+   ------------------------------------------------------------------------- */
+
+pre {
+  background: var(--sf-blue-darker);
+  color: var(--sf-blue-pale);
+  border-radius: var(--radius);
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.83rem;
+  line-height: 1.55;
+  margin: 0.75rem 0;
+}
+pre code { background: none; color: inherit; padding: 0; border: none; }
+pre .cmt { color: var(--sf-cyan); }
+pre .kw { color: #FFD27F; font-weight: 600; }
+
 /* --- two column ---------------------------------------------------------- */
 
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 1.5rem 0; align-items: stretch; }
