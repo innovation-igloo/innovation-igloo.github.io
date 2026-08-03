@@ -29,24 +29,74 @@ Customer-specific collateral stays in the local working directory.
 
 ## Hosted pages
 
-| Page | Description |
-| --- | --- |
-| [snowflake-ai.html](https://innovation-igloo.github.io/snowflake-ai.html) | What's New in AI at Snowflake. Feature breakdown by functional area with availability tags. |
+| Page | URL | Description |
+| --- | --- | --- |
+| What's New in AI at Snowflake | [/snowflake-ai/](https://innovation-igloo.github.io/snowflake-ai/) | Snowflake's new and upcoming AI capabilities by functional area, with availability tags. |
+
+## Structure
+
+```
+.
+├── index.html            landing page, indexes everything below
+├── assets/
+│   ├── base.css          design tokens, reset, typography, site chrome, status tags
+│   ├── doc.css           doc components: tabs, tables, callouts, metric tiles
+│   ├── home.css          landing page only
+│   └── doc.js            tab and subtab behavior, no per-page config
+├── _template/
+│   └── index.html        starter for a new doc, copy this
+├── snowflake-ai/
+│   └── index.html        served at /snowflake-ai/
+├── .nojekyll             serve files verbatim, no Jekyll
+└── README.md
+```
+
+One folder per document, each containing `index.html`. That gives clean extensionless
+URLs (`/snowflake-ai/` rather than `/snowflake-ai.html`) and a natural home for any
+images or sub-pages a document needs later.
+
+Asset paths are **relative** (`../assets/base.css`), so the site works both when served
+from Pages and when you open the files straight off disk in a browser.
 
 ## Adding a page
 
 1. Confirm the content clears the scope rules above.
-2. Copy the `.html` file to the repository root.
-3. Add a card for it in [index.html](index.html) and a row in the table above.
-4. Commit and push to `main`. Pages rebuilds automatically, usually within a minute or two.
+2. `cp -r _template <slug>` and edit `<slug>/index.html`.
+3. Add a card in [index.html](index.html) pointing at `<slug>/` and a row in the
+   Hosted pages table.
+4. Open `<slug>/index.html` in a browser to check it renders.
+5. Commit and push to `main`. Pages rebuilds in under a minute.
+
+### Adding a section to a doc
+
+Copy a `<section class="tab-panel">` block and give it a `data-tab` slug plus a
+`data-tab-label`:
+
+```html
+<section class="tab-panel" data-tab="my-section" data-tab-label="4. My Section">
+  ...
+</section>
+```
+
+`doc.js` builds the tab strip from the panels, so there is no separate tab list to keep
+in sync. Panel order is tab order. Exactly one panel should carry `is-active`. The
+active tab is written to the URL hash, so `/snowflake-ai/#coco` links straight to a
+section.
 
 ## Conventions
 
-- **Self-contained HTML.** Inline the CSS and use inline SVG for graphics. No CDN
-  scripts or stylesheets. Pages that depend on external libraries break when opened
-  from the local filesystem and leak referrer data to third parties when opened from
-  the web.
+- **Shared styling.** Pages link `assets/base.css` and, for tabbed docs,
+  `assets/doc.css`. Do not paste a private copy of the design system into a page. If a
+  component is genuinely reusable, add it to `doc.css`; if it is truly one-off, a small
+  inline `<style>` block in that page is fine.
+- **No external dependencies.** No CDN scripts or stylesheets, and no web fonts. Pages
+  that reach out to third parties break offline and leak referrer data.
 - **No build step.** Files are served exactly as committed. `.nojekyll` disables Jekyll
   processing.
-- **Availability tags.** Label any feature that is not generally available with its
-  actual status.
+- **Availability tags.** Label any capability that is not generally available with its
+  actual status, using the `.tag-*` classes in `base.css`.
+- **Print works.** `doc.css` expands every tab under `@media print`, so printing or
+  saving to PDF captures the whole document rather than just the visible tab.
+
+Directories starting with `_` (such as `_template`) are still served by Pages because
+`.nojekyll` is present. They are simply not linked from the landing page.

@@ -22,132 +22,8 @@
   ]
 }
 </script>
-<style>
-:root {
-  --sf-blue: #29B5E8;
-  --sf-blue-deep: #11567F;
-  --sf-blue-darker: #0A3D5A;
-  --sf-cyan: #71D3DC;
-  --sf-blue-pale: #E8F6FC;
-  --bg: #FFFFFF;
-  --bg-alt: #F7F9FB;
-  --bg-code: #F5F7FA;
-  --text: #1E1E1E;
-  --text-muted: #5A6872;
-  --border: #E5EAF0;
-  --border-strong: #CFD7E0;
-  --success: #2E7D32;
-  --warning: #E65100;
-  --error: #C62828;
-  --radius: 6px;
-  --radius-lg: 10px;
-  --shadow-sm: 0 1px 2px rgba(17, 86, 127, 0.06);
-  --shadow-md: 0 4px 12px rgba(17, 86, 127, 0.08);
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: "SF Mono", Menlo, Consolas, "Courier New", monospace;
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--text);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
-}
-.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-.site-header {
-  background: linear-gradient(135deg, var(--sf-blue-deep) 0%, var(--sf-blue-darker) 100%);
-  color: white;
-  padding: 1.5rem 0;
-  border-bottom: 3px solid var(--sf-blue);
-}
-.brand { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; }
-.brand-mark { font-size: 1.5rem; color: var(--sf-blue); }
-.brand-text .divider { color: var(--sf-cyan); margin: 0 0.5rem; font-weight: 300; }
-.meta { display: flex; flex-wrap: wrap; gap: 0.25rem 2rem; font-size: 0.875rem; color: rgba(255,255,255,0.85); }
-.meta-label { color: var(--sf-cyan); font-weight: 600; margin-right: 0.5rem; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
-.tab-nav { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 100; box-shadow: var(--shadow-sm); }
-.tab-nav .container { display: flex; gap: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
-.tab-nav .container::-webkit-scrollbar { height: 5px; }
-.tab-nav .container::-webkit-scrollbar-track { background: transparent; }
-.tab-nav .container::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; }
-.tab-nav .container:hover::-webkit-scrollbar-thumb { background: var(--sf-blue); }
-.tab-btn { background: transparent; border: none; padding: 1rem 1.5rem; font-family: inherit; font-size: 0.95rem; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s ease; white-space: nowrap; }
-.tab-btn:hover { color: var(--sf-blue-deep); background: var(--bg-alt); }
-.tab-btn.is-active { color: var(--sf-blue-deep); border-bottom-color: var(--sf-blue); font-weight: 600; }
-.tab-panel { display: none; padding: 2.5rem 0 4rem; animation: fadeIn 0.2s ease; }
-.tab-panel.is-active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-h1 { font-size: 2.25rem; font-weight: 700; color: var(--sf-blue-deep); margin: 0 0 0.5rem; letter-spacing: -0.02em; }
-h2 { font-size: 1.5rem; font-weight: 600; color: var(--sf-blue-deep); margin: 2.5rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
-h2 .tag, h3 .tag, h4 .tag { margin-left: 0.5rem; }
-h3 { font-size: 1.15rem; font-weight: 600; color: var(--text); margin: 1.75rem 0 0.75rem; }
-h4 { font-size: 1rem; font-weight: 600; margin: 1rem 0 0.5rem; color: var(--text); }
-.lead { font-size: 1.125rem; color: var(--text-muted); margin: 0 0 2rem; max-width: 68ch; }
-p { margin: 0.75rem 0; }
-ul, ol { margin: 0.75rem 0; padding-left: 1.35rem; }
-li { margin-bottom: 0.4rem; }
-code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-code); padding: 0.15em 0.4em; border-radius: 3px; color: var(--sf-blue-darker); border: 1px solid var(--border); }
-.muted { color: var(--text-muted); }
-.tag { display:inline-block; font-size:0.7rem; font-weight:700; padding:0.15em 0.5em; border-radius:4px; text-transform:uppercase; letter-spacing:0.04em; vertical-align:middle; }
-.tag-new { background:var(--sf-blue-pale); color:var(--sf-blue-deep); border:1px solid var(--sf-blue); }
-.tag-oob { background:#F1F8F4; color:var(--success); border:1px solid #A5D6A7; }
-.tag-custom { background:#FFF7ED; color:var(--warning); border:1px solid #FBBF24; }
-.tag-confirm { background:#FEF2F2; color:var(--error); border:1px solid #FCA5A5; }
-.tag-soon { background:#EEF1F4; color:#5A6872; border:1px solid var(--border-strong); }
-.tag-research { background:#F3E8FF; color:#6B21A8; border:1px solid #D8B4FE; }
-.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
-.metric-tile { background: linear-gradient(135deg, var(--sf-blue-pale) 0%, #FFFFFF 100%); border: 1px solid var(--border); border-left: 4px solid var(--sf-blue); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm); }
-.metric-value { font-size: 1.5rem; font-weight: 700; color: var(--sf-blue-deep); line-height: 1.2; margin-bottom: 0.25rem; }
-.metric-label { font-size: 0.875rem; color: var(--text-muted); }
-.metric-sublabel { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
-.data-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.925rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
-.data-table th { background: var(--sf-blue-deep); color: white; text-align: left; padding: 0.75rem 1rem; font-weight: 600; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.03em; }
-.data-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
-.data-table tr:last-child td { border-bottom: none; }
-.data-table tr:nth-child(even) td { background: var(--bg-alt); }
-.data-table.compact { font-size: 0.875rem; }
-.data-table.compact td, .data-table.compact th { padding: 0.5rem 0.75rem; }
-.data-table .area-cell { font-weight: 600; color: var(--sf-blue-deep); white-space: nowrap; }
-.callout { border-radius: var(--radius); padding: 1rem 1.25rem; margin: 1.5rem 0; border-left: 4px solid var(--sf-blue); background: var(--sf-blue-pale); }
-.callout h4 { margin-top: 0; color: var(--sf-blue-deep); }
-.callout.callout-info { border-left-color: var(--sf-blue); background: var(--sf-blue-pale); }
-.callout.callout-warn { border-left-color: #F59E0B; background: #FFFBEB; }
-.callout.callout-key { border-left-color: var(--success); background: #F1F8F4; }
-.callout.callout-spotlight { border-left-color: var(--sf-blue); background: linear-gradient(135deg, var(--sf-blue-deep) 0%, var(--sf-blue-darker) 100%); color: #EAF6FC; }
-.callout.callout-spotlight h4 { color: #FFFFFF; }
-.callout.callout-spotlight a { color: var(--sf-blue); }
-.callout ol, .callout ul { margin: 0.5rem 0; padding-left: 1.25rem; }
-.callout li { margin-bottom: 0.5rem; }
-.site-footer { background: var(--sf-blue-darker); color: rgba(255,255,255,0.75); padding: 1.25rem 0; margin-top: 4rem; font-size: 0.875rem; text-align: center; }
-.site-footer strong { color: var(--sf-cyan); }
-.subtab-nav { display:flex; gap:0.5rem; flex-wrap:wrap; margin:1.5rem 0 2rem; }
-.subtab-btn { background:var(--bg-alt); border:1px solid var(--border-strong); color:var(--text-muted); padding:0.5rem 1.1rem; font-family:inherit; font-size:0.9rem; font-weight:600; border-radius:999px; cursor:pointer; transition:all 0.15s ease; white-space:nowrap; }
-.subtab-btn:hover { color:var(--sf-blue-deep); border-color:var(--sf-blue); background:var(--sf-blue-pale); }
-.subtab-btn.is-active { background:var(--sf-blue-deep); color:#fff; border-color:var(--sf-blue-deep); }
-.subtab-panel { display:none; animation:fadeIn 0.2s ease; }
-.subtab-panel.is-active { display:block; }
-.subtab-panel > h2:first-child { margin-top:0; }
-.two-col { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin:1.5rem 0; align-items:stretch; }
-.two-col .callout { margin:0; height:100%; }
-@media (max-width:760px){ .two-col { grid-template-columns:1fr; } }
-.legend { display:flex; flex-wrap:wrap; gap:0.75rem 1.5rem; margin:1rem 0; }
-.legend-item { display:inline-flex; align-items:center; gap:0.5rem; font-size:0.875rem; }
-.legend-note { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
-.learn-more { margin: 1.75rem 0 0; padding: 0.9rem 1.1rem; background: var(--bg-alt); border: 1px solid var(--border); border-left: 4px solid var(--sf-cyan); border-radius: var(--radius); }
-.learn-more .lm-label { display:block; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color: var(--sf-blue-deep); margin-bottom: 0.55rem; }
-.learn-more .lm-links { display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; }
-.learn-more a { display:inline-block; font-size:0.85rem; padding:0.3rem 0.7rem; border-radius:999px; background:#fff; border:1px solid var(--border-strong); color:var(--sf-blue-deep); text-decoration:none; transition: all 0.15s ease; line-height:1.3; }
-.learn-more a:hover { border-color: var(--sf-blue); background: var(--sf-blue-pale); }
-.learn-more .lm-status { font-size:0.68rem; font-weight:700; color: var(--text-muted); margin-left:0.4rem; text-transform:uppercase; letter-spacing:0.03em; }
-.learn-more .lm-note { display:block; font-size:0.8rem; color: var(--text-muted); margin-top:0.6rem; }
-@media (max-width: 900px) { .metric-grid { grid-template-columns: repeat(2, 1fr); } h1 { font-size: 1.75rem; } }
-@media (max-width: 600px) { .metric-grid { grid-template-columns: 1fr; } .tab-btn { padding: 0.75rem 1rem; font-size: 0.875rem; } .container { padding: 0 1rem; } .data-table { font-size: 0.8rem; } .data-table td, .data-table th { padding: 0.5rem; } }
-@media print { body { font-size: 12px; } .tab-nav { display:none; } .tab-panel { display:block !important; page-break-after: always; } .callout, .metric-tile { box-shadow:none; } }
-</style>
+<link rel="stylesheet" href="../assets/base.css" />
+<link rel="stylesheet" href="../assets/doc.css" />
 </head>
 <body>
 
@@ -174,7 +50,7 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
 <!-- ============================================================ -->
 <!-- TAB: overview                                                 -->
 <!-- ============================================================ -->
-<section class="tab-panel is-active" data-tab="overview">
+<section class="tab-panel is-active" data-tab="overview" data-tab-label="1. Overview">
   <h1>What's New in AI at Snowflake</h1>
   <p class="lead">AI is no longer a promise. It is creating real opportunity today, and the shift is fundamental: work is becoming a partnership with intelligent agents that operate across your business, continuously and autonomously. This is the agentic enterprise, and these are Snowflake's new and upcoming AI features, grouped by functional area.</p>
 
@@ -243,7 +119,7 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
 <!-- ============================================================ -->
 <!-- TAB: cowork                                                  -->
 <!-- ============================================================ -->
-<section class="tab-panel" data-tab="cowork">
+<section class="tab-panel" data-tab="cowork" data-tab-label="2. Snowflake CoWork">
   <h1>Snowflake CoWork</h1>
   <p class="lead">Snowflake Intelligence is now Snowflake CoWork. The name evolved and the vision sharpened: one AI workspace where every enterprise context comes together and work gets done. CoWork reached general availability on November 4, 2025, and several capabilities have gone GA or Public Preview since.</p>
 
@@ -429,7 +305,7 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
 <!-- ============================================================ -->
 <!-- TAB: coco                                                     -->
 <!-- ============================================================ -->
-<section class="tab-panel" data-tab="coco">
+<section class="tab-panel" data-tab="coco" data-tab-label="3. Snowflake CoCo">
   <h1>Snowflake CoCo <span class="tag tag-new">Cortex Code</span></h1>
   <p class="lead">Snowflake CoCo is the AI coding agent for data. It moves you from "I have an idea" to "it's deployed" fast, turning data engineering, machine learning, and agent-building tasks into simple conversations. It is deeply aware of enterprise data, compute, governance, and operational semantics across the stack, and it is governed by Snowflake's RBAC wherever you build.</p>
 
@@ -626,7 +502,7 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
 <!-- ============================================================ -->
 <!-- TAB: ai-models-ml                                             -->
 <!-- ============================================================ -->
-<section class="tab-panel" data-tab="ai-models-ml">
+<section class="tab-panel" data-tab="ai-models-ml" data-tab-label="4. AI Models and ML">
   <h1>AI Models and ML</h1>
   <p class="lead">AI and ML run where your data lives, so teams train, fine-tune, and operationalize models without moving data out of Snowflake. Snowflake ML covers the full lifecycle in one platform: prepare data, build features, train on CPU or GPU, track experiments, register and serve models, then monitor them in production. The newest shift is agentic ML, where CoCo drives that lifecycle from natural language prompts.</p>
 
@@ -802,7 +678,7 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
 <!-- ============================================================ -->
 <!-- TAB: horizon-context                                          -->
 <!-- ============================================================ -->
-<section class="tab-panel" data-tab="horizon-context">
+<section class="tab-panel" data-tab="horizon-context" data-tab-label="5. Horizon Context">
   <h1>Horizon Context</h1>
   <p class="lead">Context exists in your organization, but it is fragmented and inactive. Your schemas are in Snowflake, your query patterns are in query history, your transformation logic is in SQL and dbt, and your BI definitions live in Tableau and Power BI. None of that flows automatically to your AI agents today. Horizon Context changes that through three phases: Collect, Enrich, and Activate.</p>
 
@@ -997,7 +873,7 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
 <!-- ============================================================ -->
 <!-- TAB: ai-security                                             -->
 <!-- ============================================================ -->
-<section class="tab-panel" data-tab="ai-security">
+<section class="tab-panel" data-tab="ai-security" data-tab-label="6. AI Security and Governance">
   <h1>AI Security and Governance</h1>
   <p class="lead">As agents reach your data, security has to be built in, not bolted on. Snowflake's approach layers agent security on top of the platform and data security it has had for years: authentication, RBAC, network policies, sensitive data protection, encryption, and data integrity, now extended to data exfiltration and ransomware protection, and then to purpose-built controls for the agentic era.</p>
 
@@ -1201,7 +1077,7 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
 <!-- ============================================================ -->
 <!-- TAB: ai-data-engineering                                      -->
 <!-- ============================================================ -->
-<section class="tab-panel" data-tab="ai-data-engineering">
+<section class="tab-panel" data-tab="ai-data-engineering" data-tab-label="7. AI-Powered Data Engineering">
   <h1>AI-Powered Data Engineering</h1>
   <p class="lead">The reason most production AI underperforms is the data: whether it is fresh, governed, and complete with the business context AI needs to operate reliably. CoCo is woven into every layer of connectivity, so your data engineering pipelines are not just faster to build and easier to run, they are AI-ready from the moment they go live. Transformation, orchestration, observability, and migration all run natively, with no separate infrastructure to operate.</p>
 
@@ -1334,7 +1210,7 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
 <!-- ============================================================ -->
 <!-- TAB: ai-sharing                                              -->
 <!-- ============================================================ -->
-<section class="tab-panel" data-tab="ai-sharing">
+<section class="tab-panel" data-tab="ai-sharing" data-tab-label="8. AI in Sharing and Marketplace">
   <h1>AI in Sharing and Marketplace</h1>
   <p class="lead">Data products are becoming agentic. Snowflake now makes it effortless to turn your data shares and listings into conversational agents, so consumers ask questions in natural language, explore follow-ups, and discover new use cases right on top of your data.</p>
 
@@ -1381,7 +1257,7 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
 <!-- ============================================================ -->
 <!-- TAB: availability                                            -->
 <!-- ============================================================ -->
-<section class="tab-panel" data-tab="availability">
+<section class="tab-panel" data-tab="availability" data-tab-label="9. Availability Summary">
   <h1>Availability Summary</h1>
   <p class="lead">Every AI feature in this doc, with its status. The new and upcoming answer on a single page. Status was verified against Snowflake release notes as of early August 2026, so several capabilities that were previously "coming soon" have since gone GA or Public Preview.</p>
 
@@ -1506,80 +1382,7 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
   </div>
 </footer>
 
-<script>
-(function () {
-  'use strict';
-
-  var CONFIG = {
-    tabs: [
-      { id: 'overview',            label: '1. Overview' },
-      { id: 'cowork',               label: '2. Snowflake CoWork' },
-      { id: 'coco',                 label: '3. Snowflake CoCo' },
-      { id: 'ai-models-ml',         label: '4. AI Models and ML' },
-      { id: 'horizon-context',      label: '5. Horizon Context' },
-      { id: 'ai-security',          label: '6. AI Security and Governance' },
-      { id: 'ai-data-engineering',  label: '7. AI-Powered Data Engineering' },
-      { id: 'ai-sharing',           label: '8. AI in Sharing and Marketplace' },
-      { id: 'availability',         label: '9. Availability Summary' }
-    ]
-  };
-
-  var TAB_ORDER = CONFIG.tabs.map(function (t) { return t.id; });
-
-  var tabContainer = document.getElementById('tab-buttons');
-  if (tabContainer) {
-    tabContainer.innerHTML = '';
-    CONFIG.tabs.forEach(function (t, i) {
-      var btn = document.createElement('button');
-      btn.className = 'tab-btn' + (i === 0 ? ' is-active' : '');
-      btn.dataset.tab = t.id;
-      btn.textContent = t.label;
-      tabContainer.appendChild(btn);
-    });
-  }
-
-  var tabButtons = document.querySelectorAll('.tab-btn');
-  var tabPanels  = document.querySelectorAll('.tab-panel');
-
-  function activateTab(tabId) {
-    if (!tabId || TAB_ORDER.indexOf(tabId) === -1) return;
-    tabButtons.forEach(function (btn) { btn.classList.toggle('is-active', btn.dataset.tab === tabId); });
-    tabPanels.forEach(function (panel) { panel.classList.toggle('is-active', panel.dataset.tab === tabId); });
-    if (history.replaceState) history.replaceState(null, '', '#' + tabId);
-    var tabNav = document.querySelector('.tab-nav');
-    if (tabNav) window.scrollTo({ top: tabNav.offsetTop, behavior: 'smooth' });
-  }
-
-  tabButtons.forEach(function (btn) {
-    btn.addEventListener('click', function () { activateTab(btn.dataset.tab); });
-  });
-
-  document.querySelectorAll('.subtab-btn').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var scope = btn.closest('.subtabs');
-      if (!scope) return;
-      var id = btn.dataset.subtab;
-      scope.querySelectorAll('.subtab-btn').forEach(function (b) { b.classList.toggle('is-active', b === btn); });
-      scope.querySelectorAll('.subtab-panel').forEach(function (p) { p.classList.toggle('is-active', p.dataset.subtab === id); });
-    });
-  });
-
-  document.addEventListener('keydown', function (e) {
-    var tag = (e.target.tagName || '').toLowerCase();
-    if (['input', 'select', 'textarea'].indexOf(tag) !== -1) return;
-    if (e.target.isContentEditable) return;
-    var currentBtn = document.querySelector('.tab-btn.is-active');
-    if (!currentBtn) return;
-    var currentIdx = TAB_ORDER.indexOf(currentBtn.dataset.tab);
-    if (currentIdx === -1) return;
-    if (e.key === 'ArrowRight' && currentIdx < TAB_ORDER.length - 1) { activateTab(TAB_ORDER[currentIdx + 1]); e.preventDefault(); }
-    else if (e.key === 'ArrowLeft' && currentIdx > 0) { activateTab(TAB_ORDER[currentIdx - 1]); e.preventDefault(); }
-  });
-
-  var initialHash = window.location.hash.replace('#', '');
-  if (initialHash && TAB_ORDER.indexOf(initialHash) !== -1) activateTab(initialHash);
-})();
-</script>
+<script src="../assets/doc.js"></script>
 
 </body>
 </html>
