@@ -103,3 +103,24 @@ section.
 
 Directories starting with `_` (such as `_template`) are still served by Pages because
 `.nojekyll` is present. They are simply not linked from the landing page.
+
+## After you push a CSS or JS change
+
+Pages serves assets with `cache-control: max-age=600`, so a browser that already loaded
+a page will keep the old `base.css`, `doc.css`, or `doc.js` for up to ten minutes. The
+usual symptom is new styling not appearing at all, for example a styled link rendering
+as a plain blue or purple underlined one.
+
+Hard reload to confirm before assuming the change is broken:
+
+- macOS: `Cmd + Shift + R`
+- Or fetch the asset directly, which shows what is actually deployed:
+  `curl -s https://innovation-igloo.github.io/assets/base.css | grep my-new-class`
+
+Build status for the exact commit you pushed:
+
+```sh
+gh api repos/innovation-igloo/innovation-igloo.github.io/pages/builds/latest \
+  --jq '.status + " " + .commit[0:7]'
+```
+
