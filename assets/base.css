@@ -68,6 +68,28 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
   padding: 1.5rem 0;
   border-bottom: 3px solid var(--sf-blue);
 }
+/* Back link to the site index. Sits above the brand on every doc page. */
+.home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+  padding: 0.25rem 0.7rem 0.25rem 0.55rem;
+  border: 1px solid rgba(113, 211, 220, 0.45);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--sf-cyan);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.home-link:hover { background: rgba(255, 255, 255, 0.14); border-color: var(--sf-cyan); color: #fff; }
+.home-link .home-arrow { transition: transform 0.15s ease; }
+.home-link:hover .home-arrow { transform: translateX(-2px); }
+
 .brand { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; }
 .brand-mark { font-size: 1.5rem; color: var(--sf-blue); }
 .brand-text .divider { color: var(--sf-cyan); margin: 0 0.5rem; font-weight: 300; }
@@ -94,4 +116,4 @@ code { font-family: var(--font-mono); font-size: 0.875em; background: var(--bg-c
 
 @media (max-width: 900px) { h1 { font-size: 1.75rem; } }
 @media (max-width: 600px) { .container { padding: 0 1rem; } }
-@media print { body { font-size: 12px; } }
+@media print { body { font-size: 12px; } .home-link { display: none; } }

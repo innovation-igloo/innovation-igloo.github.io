@@ -93,6 +93,9 @@ section.
   that reach out to third parties break offline and leak referrer data.
 - **No build step.** Files are served exactly as committed. `.nojekyll` disables Jekyll
   processing.
+- **Navigation home.** Every doc carries an "All pages" link in its header and footer,
+  pointing at `../`. Both are in `_template`, so a copied template already has them.
+  The header link is hidden when printing.
 - **Availability tags.** Label any capability that is not generally available with its
   actual status, using the `.tag-*` classes in `base.css`.
 - **Print works.** `doc.css` expands every tab under `@media print`, so printing or
