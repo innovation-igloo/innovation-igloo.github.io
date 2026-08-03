@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="snowflake-source" content="cortex-agent-authored" />
+<title>Beyond a Reasonable dbt: Executive Briefing</title>
+<script type="application/json" id="snowflake-report-metadata">
+{
+  "generated": "2026-07-27",
+  "intent": "Executive slide deck (VP/Director of Data altitude) for 'Beyond a Reasonable dbt: Trustworthy Pipelines for AI Agents'. Single self-contained HTML file with an inline dependency-free slide engine (keyboard + button nav, progress bar, slide numbers, jump-to agenda, URL-hash sync, print-to-PDF). Companion to the technical deep-dive doc-site in the same folder (index.html).",
+  "sources": [
+    { "type": "file", "path": "_github/cortex-agents-dbt-project-template/README.md" },
+    { "type": "file", "path": "_github/cortex-agents-dbt-project-template/WORKING-SESSION.md" },
+    { "type": "file", "path": "_github/cortex-agents-dbt-project-template/presentations/index.html" }
+  ],
+  "slides": [
+    { "n": 1, "title": "Title" },
+    { "n": 2, "title": "The Docket (agenda)" },
+    { "n": 3, "title": "The Shift" },
+    { "n": 4, "title": "The Case (the risk)" },
+    { "n": 5, "title": "The Reframe (thesis)" },
+    { "n": 6, "title": "The Payoff (4 pillars)" },
+    { "n": 7, "title": "The Evidence (lifecycle)" },
+    { "n": 8, "title": "The Verdict (measurable trust)" },
+    { "n": 9, "title": "The Standing Order (dev to prod)" },
+    { "n": 10, "title": "Closing Arguments (ship anywhere)" },
+    { "n": 11, "title": "The Ruling (bottom line + CTA)" }
+  ]
+}
+</script>
+<link rel="stylesheet" href="../../assets/base.css" />
+<link rel="stylesheet" href="../../assets/deck.css" />
+</head>
+<body>
+
+<a class="deck-home" href="../">&larr; Beyond a Reasonable dbt</a>
+
+<div class="progress" id="progress"></div>
+
+<div class="deck" id="deck">
+
+  <!-- 1. TITLE -->
+  <section class="slide hero active">
+    <div class="title-brand"><span>&#10052;</span><span>Snowflake <span class="divider">|</span> Cortex Agents &amp; dbt</span></div>
+    <div class="eyebrow">Opening statement</div>
+    <h1>Beyond a Reasonable <span class="pun">dbt</span></h1>
+    <div class="title-sub">Trustworthy pipelines for AI agents</div>
+    <div class="title-foot">
+      <span>Executive briefing</span>
+      <span>Managing the Cortex Agent lifecycle as code</span>
+    </div>
+  </section>
+
+  <!-- 2. AGENDA -->
+  <section class="slide hero wide">
+    <div class="eyebrow">The docket</div>
+    <h2>What we'll cover</h2>
+    <ul class="agenda">
+      <li data-goto="3"><span class="num">01</span><span>The shift<span class="hint">: agents are the new front door to data</span></span></li>
+      <li data-goto="4"><span class="num">02</span><span>The risk<span class="hint">: why most agents can't be trusted</span></span></li>
+      <li data-goto="5"><span class="num">03</span><span>The reframe<span class="hint">: treat agents like production software</span></span></li>
+      <li data-goto="7"><span class="num">04</span><span>How it works<span class="hint">: one project, the whole lifecycle</span></span></li>
+      <li data-goto="8"><span class="num">05</span><span>The payoff<span class="hint">: measurable trust, governed delivery</span></span></li>
+    </ul>
+  </section>
+
+  <!-- 3. THE SHIFT -->
+  <section class="slide wide">
+    <div class="eyebrow">The shift</div>
+    <h2>Every team wants an AI agent</h2>
+    <p class="lead">Conversational agents are becoming the front door to enterprise data. Business users ask questions in plain language and expect a trustworthy answer, without writing SQL or waiting on a report.</p>
+    <p class="kicker">The demand is real and accelerating. The question is no longer <em>whether</em> you'll build agents; it's whether you can trust the ones you ship.</p>
+  </section>
+
+  <!-- 4. THE CASE (risk) -->
+  <section class="slide">
+    <div class="eyebrow">The case</div>
+    <h2>But most agents are built by click-ops</h2>
+    <div class="contrast">
+      <div class="col problem">
+        <h3>The charge</h3>
+        <ul>
+          <li>Assembled by hand in a UI</li>
+          <li>No version control or history</li>
+          <li>No peer review before production</li>
+          <li>No tests: accuracy is a vibe</li>
+          <li>Dev and prod quietly drift apart</li>
+        </ul>
+      </div>
+      <div class="col fix">
+        <h3>The consequence</h3>
+        <ul>
+          <li>Wrong answers, no way to diff or roll back</li>
+          <li>One person holds the whole thing</li>
+          <li>Every environment rebuilt by hand</li>
+          <li>Trust erodes on the first bad answer</li>
+          <li>Adoption stalls</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. THE REFRAME -->
+  <section class="slide wide">
+    <div class="eyebrow">The reframe</div>
+    <h2>Treat AI agents like production software</h2>
+    <p class="lead">An agent is only as trustworthy as the process behind it. So manage the <strong>entire lifecycle as code</strong> (the data model, the agent, its tests, and its schedule) natively on Snowflake, with dbt.</p>
+    <p class="kicker">Same discipline you already apply to the rest of your data platform: version it, review it, test it, promote it.</p>
+  </section>
+
+  <!-- 6. THE PAYOFF -->
+  <section class="slide wide">
+    <div class="eyebrow">The payoff</div>
+    <h2>What "as code" delivers</h2>
+    <div class="pillars">
+      <div class="pillar"><div class="pnum">1</div><h3>Versioned &amp; reviewed</h3><p>Every change is in Git, diffed, and approved in a pull request before it reaches users.</p></div>
+      <div class="pillar"><div class="pnum">2</div><h3>Measurable trust</h3><p>Evaluations score the agent against known answers; ship only when it clears the bar.</p></div>
+      <div class="pillar"><div class="pnum">3</div><h3>One codebase</h3><p>The same code targets dev, staging, and prod. No rebuilding by hand per environment.</p></div>
+      <div class="pillar"><div class="pnum">4</div><h3>Ship anywhere</h3><p>Deliver the same governed agent to Snowflake Intelligence, Teams, an API, or MCP.</p></div>
+    </div>
+  </section>
+
+  <!-- 7. THE EVIDENCE (lifecycle) -->
+  <section class="slide wide">
+    <div class="eyebrow">The evidence</div>
+    <h2>One project builds all of it</h2>
+    <div class="svg-frame">
+      <svg viewBox="0 0 1000 210" role="img" aria-label="Lifecycle: Sources to Staging to Semantic View to Agent to Evaluation to Ship, with a feedback loop from Evaluation back to Semantic View.">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#11567F"></path></marker>
+          <marker id="arrl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#B07A2A"></path></marker>
+        </defs>
+        <g font-family="-apple-system, Segoe UI, sans-serif" font-size="15" text-anchor="middle">
+          <g><rect x="6" y="58" width="150" height="62" rx="9" fill="#E8F6FC" stroke="#29B5E8" stroke-width="1.5"></rect><text x="81" y="85" font-weight="700" fill="#11567F">Data Sources</text><text x="81" y="106" font-size="12" fill="#5A6872">your tables</text></g>
+          <g><rect x="188" y="58" width="150" height="62" rx="9" fill="#E8F6FC" stroke="#29B5E8" stroke-width="1.5"></rect><text x="263" y="85" font-weight="700" fill="#11567F">Semantic Model</text><text x="263" y="106" font-size="12" fill="#5A6872">business meaning</text></g>
+          <g><rect x="370" y="58" width="150" height="62" rx="9" fill="#D9EEF9" stroke="#11567F" stroke-width="2"></rect><text x="445" y="85" font-weight="700" fill="#11567F">The Agent</text><text x="445" y="106" font-size="12" fill="#5A6872">answers questions</text></g>
+          <g><rect x="552" y="58" width="150" height="62" rx="9" fill="#FBF4E6" stroke="#B07A2A" stroke-width="2"></rect><text x="627" y="85" font-weight="700" fill="#8A5E1F">Evaluation</text><text x="627" y="106" font-size="12" fill="#5A6872">the verdict</text></g>
+          <g><rect x="734" y="58" width="150" height="62" rx="9" fill="#F1F8F4" stroke="#2E7D32" stroke-width="1.5"></rect><text x="809" y="85" font-weight="700" fill="#2E7D32">Ship</text><text x="809" y="106" font-size="12" fill="#5A6872">to your users</text></g>
+        </g>
+        <g stroke="#11567F" stroke-width="2.5" fill="none">
+          <line x1="158" y1="89" x2="186" y2="89" marker-end="url(#arr)"></line>
+          <line x1="340" y1="89" x2="368" y2="89" marker-end="url(#arr)"></line>
+          <line x1="522" y1="89" x2="550" y2="89" marker-end="url(#arr)"></line>
+          <line x1="704" y1="89" x2="732" y2="89" marker-end="url(#arr)"></line>
+        </g>
+        <path d="M627 122 C 627 185, 445 185, 445 124" stroke="#B07A2A" stroke-width="2.5" fill="none" stroke-dasharray="6 5" marker-end="url(#arrl)"></path>
+        <text x="536" y="205" text-anchor="middle" font-family="-apple-system, Segoe UI, sans-serif" font-size="13" fill="#8A5E1F">measure &rarr; improve &rarr; re-run</text>
+      </svg>
+    </div>
+    <div class="svg-cap">One dbt project on Snowflake builds every box, and the loop is where evaluation scores drive the next improvement.</div>
+  </section>
+
+  <!-- 8. THE VERDICT -->
+  <section class="slide">
+    <div class="eyebrow">The verdict</div>
+    <div class="statrow">
+      <div class="bigstat">&ge;95<span class="unit">%</span></div>
+      <div class="statcopy">
+        <h2>Trust becomes a number</h2>
+        <p class="lead">Before an agent ships, it's scored against a set of known questions and answers. The bar to promote: at least 95% answer correctness. Fall short, fix the right layer, and re-run.</p>
+      </div>
+    </div>
+    <p class="kicker">Accuracy stops being a gut feeling and becomes a metric you can track, compare across versions, and hold the line on.</p>
+  </section>
+
+  <!-- 9. THE STANDING ORDER -->
+  <section class="slide wide">
+    <div class="eyebrow">The standing order</div>
+    <h2>From dev to production, governed</h2>
+    <p class="lead">The same code promotes from a developer's sandbox to production: no hand-rebuilding, no drift. Automated pipelines build and test on every change; scheduled jobs keep it fresh.</p>
+    <div class="pillars cols-3">
+      <div class="pillar"><h3>Isolated dev</h3><p>Each engineer builds in their own space, so nobody overwrites anyone else.</p></div>
+      <div class="pillar"><h3>Reviewed promotion</h3><p>Changes merge through pull requests; CI builds and tests before prod.</p></div>
+      <div class="pillar"><h3>Always current</h3><p>Scheduled rebuilds and evaluations run automatically, with no manual toil.</p></div>
+    </div>
+  </section>
+
+  <!-- 10. CLOSING ARGUMENTS -->
+  <section class="slide wide">
+    <div class="eyebrow">Closing arguments</div>
+    <h2>Ship it where people already work</h2>
+    <div class="channels">
+      <div class="channel"><div class="ico">&#128172;</div><h3>Snowflake Intelligence</h3><p>Ask-your-data experience</p></div>
+      <div class="channel"><div class="ico">&#128101;</div><h3>Microsoft Teams</h3><p>In the flow of work</p></div>
+      <div class="channel"><div class="ico">&#128268;</div><h3>REST API</h3><p>Embed in your apps</p></div>
+      <div class="channel"><div class="ico">&#129513;</div><h3>MCP</h3><p>Open agent interop</p></div>
+    </div>
+    <p class="kicker">One governed agent, delivered to every surface your users already live in.</p>
+  </section>
+
+  <!-- 11. THE RULING -->
+  <section class="slide hero wide">
+    <div class="eyebrow">The ruling</div>
+    <h2>The bottom line</h2>
+    <ul class="ruling-points">
+      <li><span class="mark">&#10003;</span><span>AI agents are only as trustworthy as the process behind them.</span></li>
+      <li><span class="mark">&#10003;</span><span>Manage the whole lifecycle as code: versioned, reviewed, tested, promoted.</span></li>
+      <li><span class="mark">&#10003;</span><span>Trust becomes measurable; delivery becomes governed and repeatable.</span></li>
+    </ul>
+    <p class="ruling-cta">Ready to go deeper with your team? The full technical walkthrough lives alongside this deck. Open <a href="../the-case/"><code>the technical walkthrough</code></a>.</p>
+  </section>
+
+</div>
+
+<div class="counter" id="counter">1 / 11</div>
+<div class="navbtns">
+  <button class="navbtn" id="prevBtn" aria-label="Previous slide">&#8249;</button>
+  <button class="navbtn" id="nextBtn" aria-label="Next slide">&#8250;</button>
+</div>
+<div class="hint-help">&larr; &rarr; or space to navigate &middot; click a docket item to jump</div>
+
+<script src="../../assets/deck.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+/* ==========================================================================
+   courtroom.css — components specific to the Beyond a Reasonable dbt deck
+   The courtroom theme's gavel accent plus its bespoke content components.
+   Kept out of doc.css so one document's theme does not leak into the
+   generic layer. Load after base.css and doc.css.
+   ========================================================================== */
+
+:root {
+  --gavel: #B07A2A;
+  --gavel-deep: #8A5E1F;
+  --gavel-pale: #FBF4E6;
+}
+
+/* --- section switcher ----------------------------------------------------
+   Links across the deck's section pages. Replaces the per-page topnav
+   breadcrumb that used to be hand-written into all 22 documents.
+
+   This is a light bar that sits BELOW the dark site header, not inside it,
+   and sticks to the top of the viewport. doc.css already makes .tab-nav
+   sticky at top:0, so on these pages the tab strip has to be pushed down by
+   exactly the height of this bar or the two would overlap. That height is
+   pinned via --section-bar-h and the bar is kept to a single line at every
+   width (nowrap + horizontal scroll) so the value cannot drift.
+   ------------------------------------------------------------------------- */
+
+.courtroom { --section-bar-h: 49px; }
+
+.section-bar {
+  position: sticky;
+  top: 0;
+  z-index: 101;                 /* above .tab-nav, which is 100 */
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.section-bar .container {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 48px;             /* + 1px border = --section-bar-h */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.section-bar .container::-webkit-scrollbar { display: none; }
+
+.section-bar a,
+.section-bar .cur {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.36rem 0.85rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.section-bar a { color: var(--text-muted); }
+.section-bar a:hover {
+  color: var(--sf-blue-deep);
+  background: var(--sf-blue-pale);
+  border-color: var(--sf-blue);
+}
+.section-bar a:focus-visible { outline: 2px solid var(--sf-blue); outline-offset: 1px; }
+.section-bar .cur {
+  background: var(--sf-blue-deep);
+  color: #fff;
+  border-color: var(--sf-blue-deep);
+}
+
+/* "Overview" is the parent chooser, not a sibling section, so it gets an
+   arrow and a divider to set it apart from the section pills. */
+.section-bar .up { margin-right: 0.5rem; }
+.section-bar .up::before { content: '\2190'; margin-right: 0.4rem; }
+.section-bar .up-sep {
+  flex: 0 0 auto;
+  width: 1px;
+  align-self: stretch;
+  margin: 0.6rem 0.6rem 0.6rem 0;
+  background: var(--border);
+}
+
+/* The tab strip must clear the sticky bar above it. */
+.courtroom .tab-nav { top: var(--section-bar-h); }
+
+/* --- headings and eyebrows ----------------------------------------------- */
+
+.eyebrow { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sf-blue); margin-bottom: 0.5rem; }
+.eyebrow.gavel { color: var(--gavel); }
+h1 .pun { color: var(--sf-blue); }
+h2 .exhibit { color: var(--gavel); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.15rem; }
+
+/* --- the case: problem vs fix ------------------------------------------- */
+
+.case-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 1.5rem 0 0.5rem; }
+.case-col { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+.case-col.problem { border-top: 4px solid var(--warning); }
+.case-col.fix { border-top: 4px solid var(--success); }
+.case-col h3 { margin: 0 0 0.75rem; font-size: 1.05rem; color: var(--sf-blue-deep); }
+.case-col ul { margin: 0; padding-left: 1.2rem; }
+.case-col li { margin: 0.4rem 0; color: var(--text-muted); }
+.case-col li strong { color: var(--text); }
+
+/* --- card eyebrow and step label ---------------------------------------- */
+
+.card-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gavel); margin-bottom: 0.4rem; }
+.card-step { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gavel); margin-bottom: 0.35rem; }
+
+/* --- proceedings: numbered phases --------------------------------------- */
+
+.phase {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--sf-blue);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin: 1.25rem 0;
+  box-shadow: var(--shadow-sm);
+  scroll-margin-top: 4rem;
+}
+.phase-head { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.25rem; }
+.phase-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--sf-blue-deep);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0 0.4rem;
+}
+.phase-title { font-size: 1.2rem; font-weight: 700; color: var(--sf-blue-deep); margin: 0; }
+.phase-goal { font-size: 0.95rem; color: var(--text-muted); margin: 0.15rem 0 0.75rem; }
+
+.decide { font-size: 0.9rem; background: var(--bg-alt); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.6rem 0.9rem; margin: 0.75rem 0; }
+.decide .lbl { font-weight: 700; color: var(--gavel-deep); text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.05em; }
+
+.demo { border: 1px solid #A5D6A7; border-left: 5px solid var(--success); background: #F1F8F4; border-radius: var(--radius); padding: 0.9rem 1.1rem; margin: 1rem 0; }
+.demo .demo-lbl { display: inline-block; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--success); border-radius: 4px; padding: 0.15em 0.55em; margin-bottom: 0.5rem; }
+.demo p { margin: 0.3rem 0 0.5rem; font-size: 0.9rem; color: #244a28; }
+.demo pre { margin: 0.4rem 0 0; }
+
+/* --- flow and clause chips ---------------------------------------------- */
+
+.flow { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin: 1.25rem 0; }
+.flow .step { background: var(--sf-blue-pale); border: 1px solid var(--sf-blue); color: var(--sf-blue-deep); border-radius: 20px; padding: 0.3rem 0.85rem; font-size: 0.82rem; font-weight: 700; }
+.flow .arrow { color: var(--border-strong); font-weight: 700; }
+
+.clause-flow { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin: 1rem 0; }
+.clause { background: var(--sf-blue-pale); border: 1px solid var(--sf-blue); color: var(--sf-blue-deep); border-radius: 20px; padding: 0.3rem 0.8rem; font-size: 0.82rem; font-weight: 600; font-family: var(--font-mono); }
+.clause.ai { background: var(--gavel-pale); border-color: var(--gavel); color: var(--gavel-deep); }
+.clause-arrow { color: var(--border-strong); font-weight: 700; }
+
+/* --- exhibit A: levers --------------------------------------------------- */
+
+.lever-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
+.lever { background: var(--bg); border: 1px solid var(--border); border-left: 4px solid var(--sf-blue); border-radius: var(--radius-lg); padding: 1.1rem 1.25rem; box-shadow: var(--shadow-sm); }
+.lever h3 { margin: 0 0 0.3rem; font-size: 1rem; color: var(--sf-blue-deep); }
+.lever p { margin: 0; font-size: 0.9rem; color: var(--text-muted); }
+
+/* --- exhibit B: layers and formula -------------------------------------- */
+
+.layers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.25rem 0; }
+.layer { background: var(--bg); border: 1px solid var(--border); border-top: 4px solid var(--sf-blue); border-radius: var(--radius-lg); padding: 1.1rem 1.2rem; box-shadow: var(--shadow-sm); }
+.layer h3 { margin: 0 0 0.15rem; font-size: 1rem; color: var(--sf-blue-deep); }
+.layer .field { font-family: var(--font-mono); font-size: 0.75rem; color: var(--gavel-deep); margin-bottom: 0.5rem; }
+.layer .put { font-size: 0.85rem; color: var(--text); margin: 0 0 0.4rem; }
+.layer .keep { font-size: 0.82rem; color: var(--warning); }
+.layer .keep strong { color: var(--warning); }
+
+.formula { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: stretch; margin: 1.25rem 0; }
+.formula .part { flex: 1 1 160px; background: var(--gavel-pale); border: 1px solid var(--gavel); border-radius: var(--radius); padding: 0.7rem 0.85rem; }
+.formula .part .n { font-size: 0.7rem; font-weight: 800; color: var(--gavel-deep); letter-spacing: 0.05em; }
+.formula .part .t { font-size: 0.88rem; font-weight: 700; color: var(--sf-blue-deep); }
+.formula .part .d { font-size: 0.8rem; color: var(--text-muted); }
+.plus { align-self: center; color: var(--gavel); font-weight: 700; font-size: 1.1rem; }
+
+/* --- diagrams and visual placeholders ----------------------------------- */
+
+.diagram-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); overflow-x: auto; margin: 1rem 0; }
+.diagram-wrap svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.diagram-caption { font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-top: 0.75rem; }
+
+.visual-ph {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: repeating-linear-gradient(45deg, #FBFDFE, #FBFDFE 10px, #F3F8FB 10px, #F3F8FB 20px);
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  margin: 1.25rem 0;
+}
+.visual-ph .vp-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sf-blue-deep);
+  background: var(--sf-blue-pale);
+  border: 1px solid var(--sf-blue);
+  border-radius: 4px;
+  padding: 0.15em 0.6em;
+  margin-bottom: 0.5rem;
+}
+.visual-ph .vp-hint { font-size: 0.9rem; }
+
+/* --- notes and warnings --------------------------------------------------
+   Deliberately more compact than doc.css's .callout. Kept as the deck's own
+   components so the migration preserves its visual identity rather than
+   silently restyling 23 existing notes.
+   ------------------------------------------------------------------------- */
+
+.note { border-left: 4px solid var(--sf-blue); background: var(--sf-blue-pale); padding: 0.7rem 1rem; border-radius: var(--radius); margin: 1rem 0; font-size: 0.9rem; color: var(--sf-blue-darker); }
+.note strong { color: var(--sf-blue-deep); }
+.warn { border-left: 4px solid var(--warning); background: #FFF7ED; padding: 0.7rem 1rem; border-radius: var(--radius); margin: 1rem 0; font-size: 0.9rem; color: #7A3E00; }
+.warn strong { color: var(--warning); }
+
+/* --- tables --------------------------------------------------------------
+   Scoped to body.courtroom because these are bare element selectors. The
+   deck's lighter pale-blue header differs from doc.css's .data-table, and
+   scoping keeps it from leaking into any other document.
+   ------------------------------------------------------------------------- */
+
+.courtroom table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.92rem; background: var(--bg); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+.courtroom th, .courtroom td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; text-align: left; vertical-align: top; }
+.courtroom th { background: var(--sf-blue-pale); color: var(--sf-blue-deep); font-weight: 700; }
+.courtroom tbody tr:nth-child(even) { background: var(--bg-alt); }
+
+/* --- status badges and pills ---------------------------------------------
+   The deck's own availability markers. Distinct from base.css .tag-*, and
+   kept as-is so the migration does not restyle existing markers.
+   .badge sits inline after prose; .pill is the smaller in-table variant.
+   ------------------------------------------------------------------------- */
+
+.badge { display: inline-block; font-size: 0.72rem; font-weight: 700; border-radius: 20px; padding: 0.15em 0.7em; margin-left: 0.4rem; vertical-align: middle; }
+.badge-ga { background: #F1F8F4; color: var(--success); border: 1px solid #A5D6A7; }
+.badge-pp { background: var(--gavel-pale); color: var(--gavel-deep); border: 1px solid var(--gavel); }
+
+.pill { display: inline-block; font-size: 0.68rem; font-weight: 700; border-radius: 20px; padding: 0.1em 0.55em; }
+.pill-ga { background: #F1F8F4; color: var(--success); border: 1px solid #A5D6A7; }
+.pill-pp { background: var(--gavel-pale); color: var(--gavel-deep); border: 1px solid var(--gavel); }
+
+/* --- responsive ---------------------------------------------------------- */
+
+@media (max-width: 760px) { .layers { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .case-grid { grid-template-columns: 1fr; } }
+
+/* --- print ---------------------------------------------------------------
+   doc.css already hides .tab-nav when printing; the section bar is screen
+   navigation too, so it goes with it.
+   ------------------------------------------------------------------------- */
+
+@media print {
+  .section-bar { display: none; }
+}

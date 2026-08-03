@@ -32,6 +32,7 @@ Customer-specific collateral stays in the local working directory.
 | Page | URL | Description |
 | --- | --- | --- |
 | What's New in AI at Snowflake | [/snowflake-ai/](https://innovation-igloo.github.io/snowflake-ai/) | Snowflake's new and upcoming AI capabilities by functional area, with availability tags. |
+| Beyond a Reasonable dbt | [/beyond-a-reasonable-dbt/](https://innovation-igloo.github.io/beyond-a-reasonable-dbt/) | Managing the Cortex Agent lifecycle as code. A chooser fronting two formats: an eleven-slide executive briefing, and a technical deep dive across five tabbed sections. |
 
 ## Structure
 
@@ -39,14 +40,25 @@ Customer-specific collateral stays in the local working directory.
 .
 ├── index.html            landing page, indexes everything below
 ├── assets/
-│   ├── base.css          design tokens, reset, typography, site chrome, status tags
-│   ├── doc.css           doc components: tabs, tables, callouts, metric tiles
+│   ├── base.css          design tokens, reset, typography, site chrome, tags, cards
+│   ├── doc.css           doc components: tabs, tables, callouts, metric tiles, code
 │   ├── home.css          landing page only
-│   └── doc.js            tab and subtab behavior, no per-page config
+│   ├── doc.js            tab and subtab behavior, no per-page config
+│   ├── deck.css          full-screen slide deck page type
+│   ├── deck.js           slide navigation, no per-page config
+│   └── courtroom.css     theme for the Beyond a Reasonable dbt deck only
 ├── _template/
 │   └── index.html        starter for a new doc, copy this
 ├── snowflake-ai/
 │   └── index.html        served at /snowflake-ai/
+├── beyond-a-reasonable-dbt/
+│   ├── index.html        chooser, served at /beyond-a-reasonable-dbt/
+│   ├── the-case/         section page, the opening statement
+│   ├── proceedings/      section page, leaves as tabs
+│   ├── exhibit-a/        section page, leaves as tabs
+│   ├── exhibit-b/        section page, leaves as tabs
+│   ├── exhibit-c/        section page, leaves as tabs
+│   └── executive/        full-screen slide deck
 ├── .nojekyll             serve files verbatim, no Jekyll
 └── README.md
 ```
@@ -55,8 +67,29 @@ One folder per document, each containing `index.html`. That gives clean extensio
 URLs (`/snowflake-ai/` rather than `/snowflake-ai.html`) and a natural home for any
 images or sub-pages a document needs later.
 
-Asset paths are **relative** (`../assets/base.css`), so the site works both when served
-from Pages and when you open the files straight off disk in a browser.
+A multi-part document nests one level further, as `beyond-a-reasonable-dbt/` does. Its
+`index.html` is a **chooser**: it holds no content of its own beyond a summary, and sends
+the reader to whichever format suits them. Each section below it is its own page whose
+tabs are its subsections, with a sticky `.section-bar` of pills directly below the
+header linking across sections and back to the chooser via its `Overview` entry. That
+bar is a sibling of `<header>`, not a child of it; because `.tab-nav` is already sticky
+at `top: 0`, `courtroom.css` offsets the tab strip by `--section-bar-h` so the two do
+not overlap.
+
+Asset paths are **relative**, so the site works both when served from Pages and when you
+open the files straight off disk. Mind the depth: a top-level doc uses
+`../assets/base.css`, a nested section page uses `../../assets/base.css`.
+
+### Page types
+
+| Type | Loads | Use for |
+| --- | --- | --- |
+| Tabbed doc | `base.css`, `doc.css`, `doc.js` | Reference material, most pages. Start from `_template`. |
+| Slide deck | `base.css`, `deck.css`, `deck.js` | Full-screen presentations driven by arrow keys. |
+
+`deck.css` intentionally overrides a few `base.css` rules (`body`, `h1`, `h2`, `.lead`)
+because a deck owns the viewport rather than scrolling. Those overrides are grouped at
+the top of the file.
 
 ## Adding a page
 
@@ -64,7 +97,9 @@ from Pages and when you open the files straight off disk in a browser.
 2. `cp -r _template <slug>` and edit `<slug>/index.html`.
 3. Add a card in [index.html](index.html) pointing at `<slug>/` and a row in the
    Hosted pages table.
-4. Open `<slug>/index.html` in a browser to check it renders.
+4. Open `<slug>/index.html` in a browser to check it renders. For anything with
+   directory URLs, serve it instead: `python3 -m http.server 8000` from the repo root,
+   because `file://` will not resolve `/<slug>/` to `index.html`.
 5. Commit and push to `main`. Pages rebuilds in under a minute.
 
 ### Adding a section to a doc

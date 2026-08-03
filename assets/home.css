@@ -26,7 +26,9 @@ body.home { background: var(--bg-alt); }
 .hero h1 { color: #fff; font-size: 2.125rem; font-weight: 650; margin: 0 0 12px; letter-spacing: -0.015em; }
 .hero p { margin: 0; max-width: 640px; font-size: 1.0625rem; color: rgba(255, 255, 255, 0.86); }
 
-/* --- page list ----------------------------------------------------------- */
+/* --- page list -----------------------------------------------------------
+   The card grid itself lives in base.css, shared with doc hub pages.
+   ------------------------------------------------------------------------- */
 
 .home-main { padding: 44px 0 64px; }
 .section-label {
@@ -37,57 +39,6 @@ body.home { background: var(--bg-alt); }
   color: var(--text-muted);
   margin: 0 0 18px;
 }
-
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-
-.card {
-  display: flex;
-  flex-direction: column;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  text-decoration: none;
-  color: inherit;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
-}
-.card:hover {
-  border-color: var(--sf-blue);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
-.card-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 9px;
-  background: var(--sf-blue-pale);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-}
-.card h2 {
-  margin: 0 0 8px;
-  padding: 0;
-  border: none;
-  font-size: 1.125rem;
-  font-weight: 640;
-  letter-spacing: -0.01em;
-  color: var(--sf-blue-deep);
-}
-.card p { margin: 0 0 18px; font-size: 0.9375rem; color: var(--text-muted); }
-.card-meta {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-}
-.card-cta { margin-top: 14px; font-size: 0.875rem; font-weight: 600; color: var(--sf-blue-deep); }
-.card-cta span { transition: margin-left 0.15s ease; margin-left: 4px; }
-.card:hover .card-cta span { margin-left: 8px; }
 
 /* --- footer -------------------------------------------------------------- */
 
