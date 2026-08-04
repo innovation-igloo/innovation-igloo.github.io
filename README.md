@@ -34,6 +34,7 @@ Customer-specific collateral stays in the local working directory.
 | What's New in AI at Snowflake | [/snowflake-ai/](https://innovation-igloo.github.io/snowflake-ai/) | Snowflake's new and upcoming AI capabilities by functional area, with availability tags. |
 | Beyond a Reasonable dbt | [/beyond-a-reasonable-dbt/](https://innovation-igloo.github.io/beyond-a-reasonable-dbt/) | Managing the Cortex Agent lifecycle as code. A chooser fronting two formats: an eleven-slide executive briefing, and a technical deep dive across five tabbed sections. |
 | Openflow SQL Server Connector | [/openflow-sql-server/](https://innovation-igloo.github.io/openflow-sql-server/) | Replicating Microsoft SQL Server into Snowflake in near real time. A hub fronting five tabbed sections: evaluation, mode selection, network setup, how the pipeline runs, and a processor reference. |
+| CI/CD with Snowflake Actions and Cortex Code | [/snowflake-actions/](https://innovation-igloo.github.io/snowflake-actions/) | Reviewing changes no linter can check, with Cortex Code judging a pull request against a rubric you own. A hub of use-case tiles; Skill Check is the first built example, as a six-tab section page. |
 
 ## Structure
 
@@ -68,6 +69,9 @@ Customer-specific collateral stays in the local working directory.
 │   ├── network/          section page, leaves as tabs
 │   ├── pipeline/         section page, leaves as tabs
 │   └── reference/        section page, leaves as tabs
+├── snowflake-actions/
+│   ├── index.html        hub of use-case tiles, served at /snowflake-actions/
+│   └── skill-check/      section page, leaves as tabs
 ├── .nojekyll             serve files verbatim, no Jekyll
 └── README.md
 ```

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="snowflake-source" content="cortex-agent-authored" />
+<title>CI/CD with Snowflake Actions and Cortex Code</title>
+<link rel="stylesheet" href="../assets/base.css" />
+<link rel="stylesheet" href="../assets/doc.css" />
+<style>
+  /* One-off: a tile for a use case that is documented but not yet built.
+     .card carries a hover lift and border highlight, which on a non-anchor
+     tile would promise a click that does not exist. */
+  .card.is-planned {
+    background: var(--bg-alt);
+    border-style: dashed;
+  }
+  .card.is-planned:hover {
+    border-color: var(--border);
+    box-shadow: none;
+    transform: none;
+  }
+  .card.is-planned .card-title { color: var(--text-muted); }
+  .card.is-planned .card-cta { color: var(--text-muted); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="home-link" href="../"><span class="home-arrow" aria-hidden="true">&larr;</span> All pages</a>
+    <div class="brand">
+      <span class="brand-mark">&#10052;</span>
+      <span class="brand-text">Snowflake <span class="divider">|</span> CI/CD with Snowflake Actions and Cortex Code</span>
+    </div>
+    <div class="meta">
+      <div class="meta-row"><span class="meta-label">Runs on</span> GitHub Actions</div>
+      <div class="meta-row"><span class="meta-label">Reviewer</span> Cortex Code, headless</div>
+      <div class="meta-row"><span class="meta-label">Gates</span> Pull requests, before merge</div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <h1>Put an agent in your pull request.</h1>
+  <p class="lead">Some changes cannot be checked by a linter. A skill file, a semantic view, a
+     prompt, a policy: these are prose and configuration that no compiler validates, and a bad
+     edit does not fail loudly, it changes behaviour quietly. This is a pattern for reviewing
+     that class of change in CI, where Cortex Code reads the diff, judges it against a rubric
+     you own, and the workflow turns that judgement into a merge decision.</p>
+
+  <div class="pipeline">
+    <div class="pnode pn-src">
+      <div class="pn-t">Pull request</div>
+      <div class="pn-s">A watched path changes &middot; workflow triggers on the diff</div>
+    </div>
+    <div class="parrow">&rarr;<span>changed files</span></div>
+    <div class="pnode">
+      <div class="pn-t">Cortex Code</div>
+      <div class="pn-s">Reads the change &middot; applies your rubric &middot; returns a verdict</div>
+    </div>
+    <div class="parrow">&rarr;<span>verdict</span></div>
+    <div class="pnode pn-dest">
+      <div class="pn-t">Merge decision</div>
+      <div class="pn-s">Check status &middot; PR comment &middot; label &middot; blocked or allowed</div>
+    </div>
+  </div>
+
+  <h2>What stays the same, and what changes</h2>
+  <p>Every use case below shares the same plumbing. A GitHub Action installs and pins the Cortex
+     Code CLI, the workflow computes what the pull request actually changed, the agent runs
+     headlessly with a read-only tool allowlist, and a small script maps the agent's verdict to
+     an exit code. None of that varies.</p>
+  <p>What varies is the rubric and the prompt. That is the point: the judgement lives in a
+     markdown file you can read, review, and change without touching the workflow. Making the
+     gate stricter is a documentation edit, not a code change.</p>
+
+  <h2>Use cases</h2>
+
+  <div class="card-grid cols-2">
+
+    <a class="card is-link" href="skill-check/">
+      <div class="card-title">Skill Check</div>
+      <div class="card-desc">Review a changed <code>SKILL.md</code> before it reaches an agent
+        running in production. Business users own the domain vocabulary in a skill file, but
+        prose has no compiler: a removed description silently stops the skill firing, and a
+        contradictory instruction makes agent behaviour nondeterministic rather than wrong in a
+        fixed way. The gate catches both.</div>
+      <div class="card-meta"><span class="tag tag-oob">Built</span><span>6 sections</span></div>
+      <div class="card-cta">Read <span class="arrow">&rarr;</span></div>
+    </a>
+
+    <div class="card is-planned">
+      <div class="card-title">Semantic View Validation</div>
+      <div class="card-desc">Validate a changed semantic view, confirm its verified queries still
+        resolve, and flag metric or dimension changes that would break the Analyst questions
+        people already ask.</div>
+      <div class="card-meta"><span class="tag tag-soon">Planned</span></div>
+      <div class="card-cta">Not yet written</div>
+    </div>
+
+    <div class="card is-planned">
+      <div class="card-title">dbt Model Review</div>
+      <div class="card-desc">Review a changed dbt model for the correctness traps that produce
+        silently wrong numbers rather than errors, and confirm that new models arrive with
+        tests.</div>
+      <div class="card-meta"><span class="tag tag-soon">Planned</span></div>
+      <div class="card-cta">Not yet written</div>
+    </div>
+
+    <div class="card is-planned">
+      <div class="card-title">Agent Eval Regression</div>
+      <div class="card-desc">Run an agent's eval set against the pull request and block when the
+        pass rate regresses relative to the base branch. The companion to Skill Check: that gate
+        reviews the instructions, this one measures the behaviour.</div>
+      <div class="card-meta"><span class="tag tag-soon">Planned</span></div>
+      <div class="card-cta">Not yet written</div>
+    </div>
+
+  </div>
+
+  <h2>Why an agent rather than a linter</h2>
+  <p>A script can check that a file has a description, that its referenced paths exist, and that
+     its code fences are closed. Those checks are worth having and they are cheap. But the
+     defects that actually cause incidents are not shaped like that. Two instructions that
+     contradict each other are both individually valid. A description that is technically
+     present but uses vocabulary no user would type is syntactically fine. A workflow branch
+     that never terminates parses cleanly.</p>
+  <p>Judging those requires reading the change the way the agent consuming it will read it. That
+     is what this pattern delegates. It also means the gate has to be built so it can never
+     silently approve, because a reviewer that sometimes fails to answer must fail loudly rather
+     than default to yes. Each use case documents how it handles that.</p>
+
+  <div class="callout callout-key">
+    <h4>Prerequisites</h4>
+    <p>A Snowflake account with Cortex Code available, a service user the workflow can
+       authenticate as, and a repository on GitHub Actions. Workload identity federation via
+       OIDC is the recommended auth path because it mints a short-lived token per run and leaves
+       no long-lived secret in the repository.</p>
+  </div>
+
+  <div class="learn-more">
+    <span class="lm-label">Learn more</span>
+    <div class="lm-links">
+      <a href="https://github.com/snowflakedb/snowflake-actions" target="_blank" rel="noopener noreferrer">snowflakedb/snowflake-actions</a>
+      <a href="https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code" target="_blank" rel="noopener noreferrer">Cortex Code</a>
+      <a href="https://docs.snowflake.com/en/user-guide/workload-identity-federation" target="_blank" rel="noopener noreferrer">Workload identity federation</a>
+      <a href="https://docs.snowflake.com/en/developer-guide/snowflake-cli/connecting/configure-connections" target="_blank" rel="noopener noreferrer">Configuring connections</a>
+    </div>
+    <p class="lm-note">The action referenced throughout is the official
+       <code>snowflakedb/snowflake-actions</code>, pinned to a major tag. Each use case explains
+       which parts of it are used and which are deliberately bypassed.</p>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>CI/CD with Snowflake Actions and Cortex Code &middot; <strong>Snowflake</strong> &middot; Agent-reviewed pull requests &middot; <a href="../">All pages</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
