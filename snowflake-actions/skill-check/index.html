@@ -525,8 +525,10 @@ WARNING: agent reported tier PASS but its findings derive BLOCK
 
 <section class="tab-panel" data-tab="setup" data-tab-label="5. Setup and Local Dev">
   <h2>Adopting it</h2>
-  <p>The repository README carries the exact commands. This is the shape of the work and the
-     places it usually goes wrong.</p>
+  <p>The <a href="https://github.com/innovation-igloo/snowflake-actions-template" target="_blank" rel="noopener noreferrer">template
+     repository</a> carries the exact commands, in
+     <code>skill-check/README.md</code>. This is the shape of the work and the places it usually
+     goes wrong.</p>
 
   <div class="step-grid">
     <div class="step-card">
@@ -708,17 +710,40 @@ Max tool call iterations reached
      the verdict contract rather than to the CLI's output format. The stream is still captured as
      a diagnostic artifact, which is the right role for it.</p>
 
-  <h2>Why the CLI version is pinned</h2>
+  <h2>Why the CLI version is not pinned</h2>
   <p>A stale CLI refuses to run headlessly at all:</p>
 
   <pre><code>$ cortex exec "..." --format json
 This version is no longer supported please run `cortex update`</code></pre>
 
-  <p>An unpinned runner eventually hits this and every pull request fails at once, for a reason
-     that has nothing to do with any skill file. Pinning also fixes the set of bundled skills
-     loaded on each run, which keeps verdicts reproducible. Bundled skills load regardless of
-     configuration and there is no flag to suppress them, so the pinned version is the only
-     reproducibility lever available. Bump it deliberately.</p>
+  <p>The instinct is to pin a version so runs are reproducible. That instinct is wrong here, and
+     this gate learned it the hard way on its own first pull request. A pin does not prevent that
+     failure, it schedules it: the pinned build eventually becomes the build the CLI refuses to
+     run, and then every pull request fails at once for a reason unrelated to any skill file. The
+     workflow uses <code>latest</code>, which cannot go stale.</p>
+
+  <p>If you do need strict reproducibility, pin the full build-qualified version rather than a
+     bare semver. A bare version is rejected:</p>
+
+  <pre><code>$ cortex update 1.1.53
+Invalid version format: 1.1.53
+
+<span class="cmt"># the accepted form is what `cortex versions` prints</span>
+$ cortex update 1.1.53+181504.3a965a854064</code></pre>
+
+  <p>The reproducibility a pin buys is smaller than it looks. Bundled skills load on every run
+     regardless of configuration and there is no flag to suppress them, so a pin freezes that set,
+     but the rubric this gate judges against is read from the repository by explicit path.
+     Verdicts are anchored to a file you version, not to whatever shipped with the CLI.</p>
+
+  <div class="callout callout-warn">
+    <h4>This section used to argue the opposite</h4>
+    <p>The first version of this gate pinned <code>1.1.53</code> and this page explained why
+       pinning was correct. The pin failed on the very first run, for two reasons at once: the
+       format was wrong, and the reasoning was wrong. Both are documented here rather than quietly
+       corrected, because the failure is instructive and someone else will reach for a pin for the
+       same plausible reason.</p>
+  </div>
 
   <h2>A flag that was removed</h2>
   <p>An earlier version passed <code>--skills</code> at a committed <code>skills.json</code>,
