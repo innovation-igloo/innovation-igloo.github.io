@@ -11,78 +11,6 @@
   --gavel-pale: #FBF4E6;
 }
 
-/* --- section switcher ----------------------------------------------------
-   Links across the deck's section pages. Replaces the per-page topnav
-   breadcrumb that used to be hand-written into all 22 documents.
-
-   This is a light bar that sits BELOW the dark site header, not inside it,
-   and sticks to the top of the viewport. doc.css already makes .tab-nav
-   sticky at top:0, so on these pages the tab strip has to be pushed down by
-   exactly the height of this bar or the two would overlap. That height is
-   pinned via --section-bar-h and the bar is kept to a single line at every
-   width (nowrap + horizontal scroll) so the value cannot drift.
-   ------------------------------------------------------------------------- */
-
-.courtroom { --section-bar-h: 49px; }
-
-.section-bar {
-  position: sticky;
-  top: 0;
-  z-index: 101;                 /* above .tab-nav, which is 100 */
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
-}
-.section-bar .container {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-height: 48px;             /* + 1px border = --section-bar-h */
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.section-bar .container::-webkit-scrollbar { display: none; }
-
-.section-bar a,
-.section-bar .cur {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.36rem 0.85rem;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-.section-bar a { color: var(--text-muted); }
-.section-bar a:hover {
-  color: var(--sf-blue-deep);
-  background: var(--sf-blue-pale);
-  border-color: var(--sf-blue);
-}
-.section-bar a:focus-visible { outline: 2px solid var(--sf-blue); outline-offset: 1px; }
-.section-bar .cur {
-  background: var(--sf-blue-deep);
-  color: #fff;
-  border-color: var(--sf-blue-deep);
-}
-
-/* "Overview" is the parent chooser, not a sibling section, so it gets an
-   arrow and a divider to set it apart from the section pills. */
-.section-bar .up { margin-right: 0.5rem; }
-.section-bar .up::before { content: '\2190'; margin-right: 0.4rem; }
-.section-bar .up-sep {
-  flex: 0 0 auto;
-  width: 1px;
-  align-self: stretch;
-  margin: 0.6rem 0.6rem 0.6rem 0;
-  background: var(--border);
-}
-
-/* The tab strip must clear the sticky bar above it. */
-.courtroom .tab-nav { top: var(--section-bar-h); }
-
 /* --- headings and eyebrows ----------------------------------------------- */
 
 .eyebrow { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sf-blue); margin-bottom: 0.5rem; }
@@ -248,12 +176,3 @@ h2 .exhibit { color: var(--gavel); font-size: 0.75rem; font-weight: 700; text-tr
 
 @media (max-width: 760px) { .layers { grid-template-columns: 1fr; } }
 @media (max-width: 700px) { .case-grid { grid-template-columns: 1fr; } }
-
-/* --- print ---------------------------------------------------------------
-   doc.css already hides .tab-nav when printing; the section bar is screen
-   navigation too, so it goes with it.
-   ------------------------------------------------------------------------- */
-
-@media print {
-  .section-bar { display: none; }
-}

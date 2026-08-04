@@ -1,15 +1,25 @@
 /* ==========================================================================
    doc.css — components for tabbed documentation pages
-   Tab and subtab navigation, data tables, callouts, metric tiles,
-   legends, learn-more link rails, print rules.
+   Tab and subtab navigation, the cross-section bar, data tables, callouts,
+   metric tiles, legends, learn-more link rails, print rules.
    Load after base.css. Pair with doc.js for the tab behavior.
    ========================================================================== */
+
+/* --- sticky bar offset ---------------------------------------------------
+   A multi-part document puts a .section-bar above the tab strip, and both
+   are sticky, so the strip has to clear the bar or the two overlap. Docs
+   with a bar opt in with class="has-section-bar" on <body>; every other
+   page keeps the default 0px and needs no change.
+   ------------------------------------------------------------------------- */
+
+:root { --section-bar-h: 0px; }
+body.has-section-bar { --section-bar-h: 49px; }
 
 /* --- primary tabs --------------------------------------------------------
    The nav container is populated by doc.js from the panels' data attributes.
    ------------------------------------------------------------------------- */
 
-.tab-nav { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 100; box-shadow: var(--shadow-sm); }
+.tab-nav { position: sticky; top: var(--section-bar-h); background: var(--bg); border-bottom: 1px solid var(--border); z-index: 100; box-shadow: var(--shadow-sm); }
 .tab-nav .container { display: flex; gap: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
 .tab-nav .container::-webkit-scrollbar { height: 5px; }
 .tab-nav .container::-webkit-scrollbar-track { background: transparent; }
@@ -37,6 +47,72 @@
 .subtab-panel.is-active { display: block; }
 .subtab-panel > h2:first-child { margin-top: 0; }
 
+/* --- section switcher ----------------------------------------------------
+   Links across the section pages of a multi-part document. A light bar that
+   sits BELOW the dark site header, not inside it, and sticks to the top of
+   the viewport.
+
+   The tab strip is sticky too, so it has to clear this bar. Its height is
+   pinned by --section-bar-h at the top of this file, and the bar is kept to
+   a single line at every width (nowrap + horizontal scroll) so that value
+   cannot drift when pills would otherwise wrap.
+   ------------------------------------------------------------------------- */
+
+.section-bar {
+  position: sticky;
+  top: 0;
+  z-index: 101;                 /* above .tab-nav, which is 100 */
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.section-bar .container {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 48px;             /* + 1px border = --section-bar-h */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.section-bar .container::-webkit-scrollbar { display: none; }
+
+.section-bar a,
+.section-bar .cur {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.36rem 0.85rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.section-bar a { color: var(--text-muted); }
+.section-bar a:hover {
+  color: var(--sf-blue-deep);
+  background: var(--sf-blue-pale);
+  border-color: var(--sf-blue);
+}
+.section-bar a:focus-visible { outline: 2px solid var(--sf-blue); outline-offset: 1px; }
+.section-bar .cur {
+  background: var(--sf-blue-deep);
+  color: #fff;
+  border-color: var(--sf-blue-deep);
+}
+
+/* "Overview" is the parent chooser, not a sibling section, so it gets an
+   arrow and a divider to set it apart from the section pills. */
+.section-bar .up { margin-right: 0.5rem; }
+.section-bar .up::before { content: '\2190'; margin-right: 0.4rem; }
+.section-bar .up-sep {
+  flex: 0 0 auto;
+  width: 1px;
+  align-self: stretch;
+  margin: 0.6rem 0.6rem 0.6rem 0;
+  background: var(--border);
+}
+
 /* --- metric tiles -------------------------------------------------------- */
 
 .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
@@ -55,6 +131,45 @@
 .data-table.compact { font-size: 0.875rem; }
 .data-table.compact td, .data-table.compact th { padding: 0.5rem 0.75rem; }
 .data-table .area-cell { font-weight: 600; color: var(--sf-blue-deep); white-space: nowrap; }
+
+/* Comparison variant: a row-label column down the left, and one column
+   highlighted as the recommended or default choice. The zebra rule above is
+   more specific than a bare td.hl, so the even-row case is spelled out. */
+.data-table tbody th { background: var(--bg); color: var(--sf-blue-deep); font-weight: 600; font-size: inherit; text-transform: none; letter-spacing: 0; white-space: nowrap; border-bottom: 1px solid var(--border); }
+.data-table tr:nth-child(even) th { background: var(--bg-alt); }
+.data-table thead th.hl { background: var(--sf-blue-darker); }
+.data-table td.hl,
+.data-table tr:nth-child(even) td.hl { background: var(--sf-blue-pale); font-weight: 600; }
+
+/* Wrapper for a table too wide to fit, so the page itself never scrolls. */
+.table-scroll { overflow-x: auto; margin: 1rem 0; }
+.table-scroll .data-table { margin: 0; min-width: 640px; }
+
+/* --- pipeline diagram ----------------------------------------------------
+   Source to destination strip: bordered nodes separated by arrows, built
+   from flex so it wraps on narrow screens. Node accent marks its role.
+   ------------------------------------------------------------------------- */
+
+.pipeline { display: flex; align-items: stretch; gap: 0.5rem; flex-wrap: wrap; margin: 1.25rem 0; }
+.pnode { flex: 1; min-width: 155px; background: var(--bg); border: 1px solid var(--border); border-left: 4px solid var(--sf-blue); border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow-sm); }
+.pnode.pn-src { border-left-color: var(--sf-blue-deep); }
+.pnode.pn-dest { border-left-color: var(--success); }
+.pnode.pn-cheap { border-left-color: var(--success); }
+.pnode.pn-cost { border-left-color: var(--warning); }
+.pn-t { font-weight: 700; color: var(--sf-blue-deep); font-size: 0.95rem; }
+.pn-s { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+.parrow { align-self: center; color: var(--text-muted); font-size: 1.25rem; text-align: center; }
+.parrow span { display: block; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* --- numbered steps ------------------------------------------------------ */
+
+.step-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.1rem; margin: 1.25rem 0; }
+.step-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-sm); }
+.step-num { display: inline-flex; align-items: center; justify-content: center; width: 1.7rem; height: 1.7rem; background: var(--sf-blue-deep); color: #fff; border-radius: 50%; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.6rem; }
+.step-card h3 { margin: 0 0 0.3rem; }
+.step-card p { margin: 0; font-size: 0.88rem; color: var(--text-muted); }
+.step-card p + p { margin-top: 0.5rem; }
+
 
 /* --- callouts ------------------------------------------------------------ */
 
@@ -127,7 +242,7 @@ pre .kw { color: #FFD27F; font-weight: 600; }
    ------------------------------------------------------------------------- */
 
 @media print {
-  .tab-nav { display: none; }
+  .tab-nav, .section-bar { display: none; }
   .tab-panel { display: block !important; page-break-after: always; }
   .subtab-panel { display: block !important; }
   .subtab-nav { display: none; }
