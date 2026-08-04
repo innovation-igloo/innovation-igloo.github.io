@@ -234,7 +234,7 @@
      on PASS, so a fixed pull request does not sit there wearing a stale
      <code>needs-revision</code> tag.</p>
 
-  <p>Every run uploads <code>verdict.txt</code>, the raw NDJSON stream, the rendered comment, and
+  <p>Every run uploads <code>verdict.txt</code>, the full agent output, the rendered comment, and
      the computed file list as an artifact, retained for fourteen days. When the gate errors,
      that artifact is the only place the agent's actual output survives.</p>
 
@@ -306,7 +306,7 @@
   <span class="kw">--bypass</span> \
   <span class="kw">--max-turns</span> 40 \
   <span class="kw">--output-last-message</span> verdict.txt \
-  <span class="kw">--format</span> json &gt; cortex-stream.ndjson 2&gt;&amp;1 || true</code></pre>
+  <span class="kw">--output-last-message</span> verdict.txt &gt; cortex-output.txt 2&gt;&amp;1 || true</code></pre>
 
   <div class="table-scroll">
   <table class="data-table compact">
@@ -318,7 +318,6 @@
       <tr><td class="area-cell"><code>--bypass</code></td><td>Non-interactive. There is no human present to answer a permission prompt, and the allowlist is the real control.</td></tr>
       <tr><td class="area-cell"><code>--max-turns 40</code></td><td>A safety ceiling, set generously. Too low a value trips the ceiling on healthy runs.</td></tr>
       <tr><td class="area-cell"><code>--output-last-message</code></td><td>Writes only the final message. This file, not the exit code, is the verdict.</td></tr>
-      <tr><td class="area-cell"><code>--format json</code></td><td>Kept for the diagnostic artifact only. It is never parsed by the gate.</td></tr>
       <tr><td class="area-cell"><code>|| true</code></td><td>A BLOCK verdict is a successful run of the gate. The verdict file decides the outcome, so this step must not decide it first.</td></tr>
     </tbody>
   </table>
@@ -693,7 +692,7 @@ VERDICT_FILE=verdict.txt bash skill-check/scripts/parse-verdict.sh</code></pre>
   <p>So the verdict comes from a file the agent writes, and the absence of a verdict is its own
      outcome rather than an approval.</p>
 
-  <h2>Why the JSON stream is not parsed</h2>
+  <h2>Why the JSON stream is not parsed, and not even requested</h2>
   <p><code>--format json</code> emits NDJSON with human-readable status lines interleaved:</p>
 
   <pre><code>✓ Auto-apply [_CORTEX_CODE_DEFAULT]: 5 skill repos
@@ -707,8 +706,27 @@ Max tool call iterations reached
      parse, but then the gate depends on which status messages this CLI version happens to print
      and on the shape of the envelope, both of which change between versions.
      <code>--output-last-message</code> writes only the final message, so the gate is coupled to
-     the verdict contract rather than to the CLI's output format. The stream is still captured as
-     a diagnostic artifact, which is the right role for it.</p>
+     the verdict contract rather than to the CLI's output format.</p>
+
+  <p>There is a harder reason than preference. The two flags are mutually exclusive in effect,
+     though nothing in the help text says so: <strong>when <code>--format json</code> is set, the
+     CLI writes no last-message file at all</strong>. The gate hit this on its first successful
+     run against a real pull request. The agent authenticated, read the skill file, applied the
+     rubric, and returned <code>result: success</code>, and the gate still failed with "the agent
+     produced no output file at verdict.txt".</p>
+
+  <div class="callout callout-warn">
+    <h4>Why local testing missed it</h4>
+    <p>Every local run used one flag or the other, never both, so the verdict file always
+       appeared. The workflow used both. That combination existed only in CI, which is exactly the
+       class of bug that survives thorough local testing and then fails on the first real run.
+       The lesson is not "test more locally," it is that the invocation itself is part of what
+       needs exercising in the environment that will run it.</p>
+  </div>
+
+  <p>The verdict file is the contract the whole gate rests on, so the stream format is what goes.
+     Stdout is captured as <code>cortex-output.txt</code> for diagnosis, which is all the NDJSON
+     was ever used for.</p>
 
   <h2>Why the CLI version is not pinned</h2>
   <p>A stale CLI refuses to run headlessly at all:</p>
