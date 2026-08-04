@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="snowflake-source" content="cortex-agent-authored" />
+<title>Openflow SQL Server Connector</title>
+<link rel="stylesheet" href="../assets/base.css" />
+<link rel="stylesheet" href="../assets/doc.css" />
+<link rel="stylesheet" href="../assets/openflow.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="home-link" href="../"><span class="home-arrow" aria-hidden="true">&larr;</span> All pages</a>
+    <div class="brand">
+      <span class="brand-mark">&#10052;</span>
+      <span class="brand-text">Snowflake <span class="divider">|</span> Openflow SQL Server Connector</span>
+    </div>
+    <div class="meta">
+      <div class="meta-row"><span class="meta-label">Source</span> Microsoft SQL Server</div>
+      <div class="meta-row"><span class="meta-label">Destination</span> Snowflake</div>
+      <div class="meta-row"><span class="meta-label">Method</span> Change Tracking or Change Data Capture</div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <h1>SQL Server, replicated into Snowflake.</h1>
+  <p class="lead">The Openflow SQL Server connector streams Microsoft SQL Server into Snowflake in
+     near real time. It is Snowflake-native, with no third-party tooling and no hand-built CDC
+     pipelines. One connector reads every database on the instance and lands each into its own
+     schema.</p>
+
+  <div class="pipeline">
+    <div class="pnode pn-src">
+      <div class="pn-t">Microsoft SQL Server</div>
+      <div class="pn-s">Source instance &middot; Change Tracking or CDC enabled &middot; many databases</div>
+    </div>
+    <div class="parrow">&rarr;<span>TDS / TCP-IP</span></div>
+    <div class="pnode">
+      <div class="pn-t">Openflow runtime</div>
+      <div class="pn-s">SPCS / NiFi &middot; snapshot, then incremental merge</div>
+    </div>
+    <div class="parrow">&rarr;<span>load</span></div>
+    <div class="pnode pn-dest">
+      <div class="pn-t">Snowflake</div>
+      <div class="pn-s">Destination + journal tables &middot; one schema per source DB</div>
+    </div>
+  </div>
+
+  <h2>Where to start</h2>
+
+  <div class="card-grid cols-2">
+
+    <a class="card is-link" href="evaluate/">
+      <div class="card-eyebrow">Start here</div>
+      <div class="card-title">Evaluate</div>
+      <div class="card-desc">What the connector does, the pain it removes, and how it compares to
+        Fivetran and hand-built ETL. Then the best-fit scenarios: warehouse sync, medallion bronze,
+        ETL cost takeout, audit and history.</div>
+      <div class="card-meta"><span class="tag tag-new">Overview</span><span>2 sections</span></div>
+      <div class="card-cta">Open <span class="arrow">&rarr;</span></div>
+    </a>
+
+    <a class="card is-link" href="choose/">
+      <div class="card-eyebrow">Decide</div>
+      <div class="card-title">Choose a mode</div>
+      <div class="card-desc">The two decisions to make before you configure anything: Change Tracking
+        versus Change Data Capture, and one connector per database versus one for the whole instance.
+        Each with a side-by-side comparison and a recommendation.</div>
+      <div class="card-meta"><span class="tag tag-new">Decision guide</span><span>2 sections</span></div>
+      <div class="card-cta">Compare <span class="arrow">&rarr;</span></div>
+    </a>
+
+    <a class="card is-link" href="network/">
+      <div class="card-eyebrow">Configure</div>
+      <div class="card-title">Network</div>
+      <div class="card-desc">The protocol stack, port requirements and TDS encryption modes, the
+        External Access Integration setup with the exact SQL, and the errors you are most likely to
+        hit with the check for each one.</div>
+      <div class="card-meta"><span class="tag tag-new">Setup</span><span>3 sections</span></div>
+      <div class="card-cta">Configure <span class="arrow">&rarr;</span></div>
+    </a>
+
+    <a class="card is-link" href="pipeline/">
+      <div class="card-eyebrow">Operate</div>
+      <div class="card-title">How the pipeline runs</div>
+      <div class="card-desc">Snapshot load then incremental merge, what happens in each phase, and
+        the levers that matter when either one gets slow or expensive. Includes stream staleness,
+        which is a hard failure boundary rather than a tuning problem.</div>
+      <div class="card-meta"><span class="tag tag-new">Runbook</span><span>5 sections</span></div>
+      <div class="card-cta">Read <span class="arrow">&rarr;</span></div>
+    </a>
+
+    <a class="card is-link" href="reference/">
+      <div class="card-eyebrow">Look up</div>
+      <div class="card-title">Processor reference</div>
+      <div class="card-desc">Every processor in the connector flow, grouped by responsibility, for
+        snapshot, incremental and staleness prevention. Dense tables, meant for looking something up
+        rather than reading start to finish.</div>
+      <div class="card-meta"><span class="tag tag-new">Reference</span><span>3 sections</span></div>
+      <div class="card-cta">Look up <span class="arrow">&rarr;</span></div>
+    </a>
+
+  </div>
+
+  <h2>What it replaces</h2>
+  <p>Replicating SQL Server into Snowflake has usually meant one of three things: paying per row for
+     a third-party CDC vendor, hand-building a pipeline that reads change tables and merges them
+     yourself, or accepting a nightly batch and the staleness that comes with it. The connector is a
+     managed alternative that runs inside Snowflake, reads the change feed SQL Server already
+     produces, and keeps the destination current without a pipeline for you to maintain.</p>
+
+  <div class="learn-more">
+    <span class="lm-label">Learn more</span>
+    <div class="lm-links">
+      <a href="https://docs.snowflake.com/en/user-guide/data-load/openflow" target="_blank" rel="noopener noreferrer">Openflow</a>
+      <a href="https://docs.snowflake.com/en/user-guide/data-integration/openflow/connectors/sql-server/setup" target="_blank" rel="noopener noreferrer">Connector setup</a>
+      <a href="https://docs.snowflake.com/en/user-guide/data-integration/openflow/connectors/sql-server-cdc/compare-change-tracking-cdc" target="_blank" rel="noopener noreferrer">Change Tracking vs CDC</a>
+      <a href="https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/server-network-configuration" target="_blank" rel="noopener noreferrer">SQL Server network configuration</a>
+      <a href="https://learn.microsoft.com/en-us/sql/relational-databases/security/networking/tds-8" target="_blank" rel="noopener noreferrer">TDS 8</a>
+      <a href="https://github.com/innovation-igloo/sql-server-openflow-webinar" target="_blank" rel="noopener noreferrer">Reference flow definitions</a>
+    </div>
+    <p class="lm-note">The processor reference is drawn from the flow definitions in the repository
+       above, which hold the connector configuration used throughout this document.</p>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>Openflow SQL Server Connector &middot; <strong>Snowflake | Openflow</strong> &middot; SQL Server to Snowflake CDC &middot; <a href="../">All pages</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

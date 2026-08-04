@@ -33,6 +33,7 @@ Customer-specific collateral stays in the local working directory.
 | --- | --- | --- |
 | What's New in AI at Snowflake | [/snowflake-ai/](https://innovation-igloo.github.io/snowflake-ai/) | Snowflake's new and upcoming AI capabilities by functional area, with availability tags. |
 | Beyond a Reasonable dbt | [/beyond-a-reasonable-dbt/](https://innovation-igloo.github.io/beyond-a-reasonable-dbt/) | Managing the Cortex Agent lifecycle as code. A chooser fronting two formats: an eleven-slide executive briefing, and a technical deep dive across five tabbed sections. |
+| Openflow SQL Server Connector | [/openflow-sql-server/](https://innovation-igloo.github.io/openflow-sql-server/) | Replicating Microsoft SQL Server into Snowflake in near real time. A hub fronting five tabbed sections: evaluation, mode selection, network setup, how the pipeline runs, and a processor reference. |
 
 ## Structure
 
@@ -41,12 +42,13 @@ Customer-specific collateral stays in the local working directory.
 ├── index.html            landing page, indexes everything below
 ├── assets/
 │   ├── base.css          design tokens, reset, typography, site chrome, tags, cards
-│   ├── doc.css           doc components: tabs, tables, callouts, metric tiles, code
+│   ├── doc.css           doc components: tabs, section bar, tables, callouts, code
 │   ├── home.css          landing page only
 │   ├── doc.js            tab and subtab behavior, no per-page config
 │   ├── deck.css          full-screen slide deck page type
 │   ├── deck.js           slide navigation, no per-page config
-│   └── courtroom.css     theme for the Beyond a Reasonable dbt deck only
+│   ├── courtroom.css     theme for the Beyond a Reasonable dbt deck only
+│   └── openflow.css      theme for the Openflow SQL Server doc only
 ├── _template/
 │   └── index.html        starter for a new doc, copy this
 ├── snowflake-ai/
@@ -59,6 +61,13 @@ Customer-specific collateral stays in the local working directory.
 │   ├── exhibit-b/        section page, leaves as tabs
 │   ├── exhibit-c/        section page, leaves as tabs
 │   └── executive/        full-screen slide deck
+├── openflow-sql-server/
+│   ├── index.html        hub, served at /openflow-sql-server/
+│   ├── evaluate/         section page, leaves as tabs
+│   ├── choose/           section page, leaves as tabs
+│   ├── network/          section page, leaves as tabs
+│   ├── pipeline/         section page, leaves as tabs
+│   └── reference/        section page, leaves as tabs
 ├── .nojekyll             serve files verbatim, no Jekyll
 └── README.md
 ```
@@ -67,14 +76,17 @@ One folder per document, each containing `index.html`. That gives clean extensio
 URLs (`/snowflake-ai/` rather than `/snowflake-ai.html`) and a natural home for any
 images or sub-pages a document needs later.
 
-A multi-part document nests one level further, as `beyond-a-reasonable-dbt/` does. Its
-`index.html` is a **chooser**: it holds no content of its own beyond a summary, and sends
-the reader to whichever format suits them. Each section below it is its own page whose
-tabs are its subsections, with a sticky `.section-bar` of pills directly below the
-header linking across sections and back to the chooser via its `Overview` entry. That
-bar is a sibling of `<header>`, not a child of it; because `.tab-nav` is already sticky
-at `top: 0`, `courtroom.css` offsets the tab strip by `--section-bar-h` so the two do
-not overlap.
+A multi-part document nests one level further, as `beyond-a-reasonable-dbt/` and
+`openflow-sql-server/` do. Its `index.html` holds no content of its own beyond a summary and
+sends the reader on: as a **chooser** between formats, or as a **hub** over sections. Each
+section below it is its own page whose tabs are its subsections, with a sticky `.section-bar`
+of pills directly below the header linking across sections and back up via its `Overview`
+entry.
+
+That bar is a sibling of `<header>`, not a child of it. Both it and `.tab-nav` are sticky, so
+the tab strip has to clear it: `doc.css` sets `.tab-nav { top: var(--section-bar-h) }`, which
+defaults to `0px`, and a page with a bar opts in with `class="has-section-bar"` on `<body>`.
+The bar is pinned to a single line at every width so that height cannot drift.
 
 Asset paths are **relative**, so the site works both when served from Pages and when you
 open the files straight off disk. Mind the depth: a top-level doc uses
