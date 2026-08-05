@@ -210,15 +210,18 @@
   '@eval_db.eval_schema.metrics/agent_evaluation_config.yaml'
 );
 
-<span class="cmt">-- check progress (same call, STATUS verb); also CANCEL / DELETE</span>
-<span class="kw">CALL</span> EXECUTE_AI_EVALUATION('STATUS', OBJECT_CONSTRUCT('run_name','run-1'), '@...');</code></pre>
+<span class="cmt">-- check progress. STATUS / CANCEL / DELETE need the object, and take no stage path.</span>
+<span class="kw">CALL</span> EXECUTE_AI_EVALUATION('STATUS', OBJECT_CONSTRUCT(
+  'run_name',    'run-1',
+  'object_name', 'eval_db.eval_schema.evaluated_agent',
+  'object_type', 'CORTEX AGENT'));</code></pre>
   <div class="note"><strong>Schedule it.</strong> Because it is a function call, you can wrap <code>EXECUTE_AI_EVALUATION</code> in a Snowflake Task to run or check evaluations on a cadence, exactly as the walkthrough's <a href="../proceedings/#ship">Ship &amp; Automate</a> step does.</div>
 
   <h2>The config YAML</h2>
   <p>The config has three top-level keys: an optional <code>dataset</code> (to build a dataset from a table), <code>evaluation</code> (which agent + which dataset), and <code>metrics</code> (built-in strings plus any custom definitions).</p>
   <pre><code>evaluation:
   agent_params:
-    agent_name: <span class="cmt">"evaluated_agent"</span>
+    agent_name: <span class="cmt">"eval_db.eval_schema.evaluated_agent"</span>
     agent_type: <span class="cmt">"CORTEX AGENT"</span>
   source_metadata:
     type: <span class="cmt">"dataset"</span>
@@ -226,6 +229,7 @@
 metrics:
   - <span class="cmt">"answer_correctness"</span>
   - <span class="cmt">"logical_consistency"</span></code></pre>
+  <div class="decide"><span class="lbl">Required</span> &nbsp;<code>agent_name</code> must be fully qualified as <code>database.schema.object</code>. A bare name is rejected at start. See <a href="#traps">Traps</a>.</div>
   <div class="note"><strong>Repeat-run gotcha:</strong> if the YAML keeps a <code>dataset:</code> block, Snowflake tries to create the dataset on every run and can fail with "already exists". For repeated runs on the same dataset, remove the <code>dataset:</code> block and keep only <code>evaluation:</code> + <code>metrics:</code>. This is the same fix the template calls out for its eval config.</div>
 
   <h2>Read results back</h2>
@@ -272,7 +276,8 @@ metrics:
   <p>An evaluation runs the agent once per query and then runs LLM judges (the <code>AI_COMPLETE</code> function) to score each metric. You are charged for the agent runs, the judge inference, the warehouse time for the managing tasks and metric queries, and storage for datasets and results.</p>
 
   <h2>Known limits to plan around</h2>
-  <div class="warn"><strong>Not yet supported as evaluated tools:</strong> MCP server tools, the code-execution tool, and skills. An agent that relies on the code-execution tool or skills fails to run; MCP tools simply are not exercised.</div>
+  <div class="warn"><strong>Not supported as evaluated tools:</strong> MCP server tools and the code-execution tool. An agent that relies on the code-execution tool fails to run; MCP tools simply are not exercised.</div>
+  <div class="note"><strong>Skills: documented as unsupported, observed to work.</strong> The documentation lists skills alongside the limits above. In testing on <strong>2026-08-05</strong>, a ten-row evaluation against an agent carrying a stage-based <code>SKILL.md</code> completed normally, with <code>ServerSkillTool_triage</code> spans present in the traces of five rows and all six metrics scoring every row. Note that the skill was <em>not</em> consulted on rows that took the <a href="#reading-the-trace">verified-query fast path</a>. Treat skills as usable but verify against the current documentation before depending on it, since this is preview surface and may differ by account or move.</div>
   <ul>
     <li><strong>Ground-truth staleness:</strong> scope input queries to absolute dates ("revenue between January and March 2026"), not relative ones ("this quarter"), so results stay comparable over time.</li>
     <li><strong>Throughput:</strong> long traces and many tool calls slow a run. If you hit timeouts, split the dataset (for example by common tool invocation) or shorten a custom-metric prompt.</li>
@@ -281,6 +286,181 @@ metrics:
   <div class="note"><strong>Ship gate:</strong> target <strong>&ge;95%</strong> answer correctness before rollout, per the walkthrough's <a href="../proceedings/#ship">Closing Arguments</a>. Fall short, fix the highest-leverage layer, and re-run.</div>
   </section>
 
+  <section class="tab-panel" data-tab="traps" data-tab-label="6 &middot; Traps">
+  <div class="eyebrow">Exhibit C &middot; Section 6 of 7</div>
+  <h1>Traps That Do Not Error</h1>
+  <p class="lead">Five configurations the platform accepts without complaint. Each one returns a completed run and a plausible scorecard, so the only way to know your configuration landed as intended is to check. Each trap below comes with its check.</p>
+
+  <div class="warn"><strong>Why these matter more than failures.</strong> A misconfigured evaluation that throws an error costs you ten minutes. One that returns numbers you trust can send you optimizing the wrong layer for as long as you believe it.</div>
+
+  <h2>1. The four built-in metric names are reserved</h2>
+  <p><code>answer_correctness</code>, <code>logical_consistency</code>, <code>tool_selection_accuracy</code>, and <code>tool_execution_accuracy</code> are built-in. If you define a <strong>custom</strong> metric using one of those names, the built-in takes precedence and your prompt is not used. No error is raised, and the resulting scores look entirely reasonable.</p>
+
+  <div class="case-grid">
+    <div class="case-col problem">
+      <h3>Name collides with a built-in</h3>
+      <ul>
+        <li><strong>Config:</strong> a custom metric named <code>tool_selection_accuracy</code> with your own prompt</li>
+        <li><strong>What runs:</strong> the built-in, not your prompt</li>
+        <li><strong>What you see:</strong> a normal score, no warning</li>
+        <li><strong>Cost:</strong> every workflow rule your rubric encoded is unmeasured</li>
+      </ul>
+    </div>
+    <div class="case-col fix">
+      <h3>Distinct name, both metrics run</h3>
+      <ul>
+        <li><strong>Config:</strong> custom metric named <code>workflow_tool_routing</code></li>
+        <li><strong>Plus:</strong> list <code>"tool_selection_accuracy"</code> separately as a built-in string</li>
+        <li><strong>Result:</strong> the built-in does the generic set comparison; yours checks the rules it cannot see</li>
+        <li><strong>Verify:</strong> <code>metric_type</code> reads <code>custom</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <p>The check, on any eval span:</p>
+  <pre><code><span class="cmt">-- 'custom' = your prompt ran.  'system' = a built-in ran in its place.</span>
+RECORD_ATTRIBUTES:<span class="cmt">"ai.observability.eval.metric_type"</span>::<span class="kw">STRING</span></code></pre>
+  <div class="decide"><span class="lbl">Check</span> &nbsp;Confirm <code>metric_type</code> the first time you add any custom metric, before reading its score.</div>
+
+  <h2>2. <code>agent_name</code> must be fully qualified</h2>
+  <p>A bare object name is rejected at start, with an error that names the required shape:</p>
+  <pre><code>Object name WORKFLOW_AGENT format should be 'database.schema.object'</code></pre>
+  <p>Use <code>MY_DB.MY_SCHEMA.WORKFLOW_AGENT</code> in every config, including single-dimension ones.</p>
+
+  <h2>3. STATUS needs the object, not just the run</h2>
+  <p><code>START</code> takes the run name and a stage path. <code>STATUS</code>, <code>CANCEL</code>, and <code>DELETE</code> instead need <code>object_name</code> and <code>object_type</code> alongside <code>run_name</code>, and take no stage path.</p>
+  <pre><code><span class="kw">CALL</span> EXECUTE_AI_EVALUATION('STATUS', OBJECT_CONSTRUCT(
+  'run_name',    'run-1',
+  'object_name', 'MY_DB.MY_SCHEMA.WORKFLOW_AGENT',  <span class="cmt">-- fully qualified</span>
+  'object_type', 'CORTEX AGENT'));</code></pre>
+  <p>All of them also need a session context. Without <code>USE DATABASE</code>, <code>USE SCHEMA</code>, and <code>USE WAREHOUSE</code> you get <code>The DB is not set for the current session</code>.</p>
+
+  <h2>4. One dataset per source table</h2>
+  <p>Section 4 notes that a <code>dataset:</code> block left in the YAML fails on re-run. The reason is worth knowing, because it bounds the workaround: the dataset <strong>version</strong> name is a fixed constant.</p>
+  <pre><code>Dataset version SYSTEM_AI_OBS_CORTEX_AGENT_DATASET_VERSION_DO_NOT_DELETE already exists</code></pre>
+  <p>Because that name never varies, a second dataset built on the same table collides <em>even under a different</em> <code>dataset_name</code>. In practice there is one dataset per source table. To re-snapshot after changing the rows, either delete the existing dataset or point at a different table.</p>
+
+  <h2>5. Match the status string exactly</h2>
+  <div class="warn"><strong><code>COMPLETED</code> is a substring of <code>INVOCATION_PARTIALLY_COMPLETED</code>.</strong> A polling loop that tests for a substring will report success on a run that stalled partway through invocation. Compare exactly.</div>
+  <p>The progression observed across runs:</p>
+  <pre><code>INVOCATION_IN_PROGRESS &rarr; COMPUTATION_IN_PROGRESS &rarr; PARTIALLY_COMPLETED &rarr; COMPLETED</code></pre>
+  <p>A run can also park at <code>INVOCATION_PARTIALLY_COMPLETED</code> with rows planned and no errored spans, and not advance. <code>CANCEL</code> and re-run, but check for errored spans first rather than assuming the agent failed.</p>
+
+  <div class="note"><strong>The pattern behind all five:</strong> the evaluation framework validates what it must and accepts the rest. Treat a first run as unverified until you have confirmed the metric types, the qualified names, and the status string.</div>
+  </section>
+
+  <section class="tab-panel" data-tab="reading-the-trace" data-tab-label="7 &middot; Reading the Trace">
+  <div class="eyebrow">Exhibit C &middot; Section 7 of 7</div>
+  <h1>Reading the Trace</h1>
+  <p class="lead">Section 4 reads results through the <code>GET_AI_*</code> functions. This section is the layer underneath: which spans a Cortex Agent turn actually emits, why one tool can appear as two spans or none at all, and how to pull scores directly for cross-run work.</p>
+
+  <h2>Span taxonomy</h2>
+  <p>Observed in <code>SNOWFLAKE.LOCAL.AI_OBSERVABILITY_EVENTS</code> across a ten-row run.</p>
+  <table>
+    <thead><tr><th>Span name</th><th>What it is</th></tr></thead>
+    <tbody>
+      <tr><td><code>Agent</code></td><td>Root span for the turn</td></tr>
+      <tr><td><code>Guardrails</code></td><td>Safety check. Present on some turns, not all.</td></tr>
+      <tr><td><code>ReasoningAgentStepPlanning-N</code></td><td>Planning step N. Only these carry <code>tool_execution.*</code> attributes.</td></tr>
+      <tr><td><code>ReasoningAgentStepResponseGeneration-N</code></td><td>Final answer synthesis</td></tr>
+      <tr><td><code>ServerSkillTool_&lt;skill&gt;</code></td><td>A skill was read, for example <code>ServerSkillTool_triage</code></td></tr>
+      <tr><td><code>SemanticContextTool_&lt;tool&gt;</code></td><td>Cortex Analyst <strong>generating</strong> SQL</td></tr>
+      <tr><td><code>SystemExecuteSQLTool_system_execute_sql</code></td><td>The platform <strong>executing</strong> SQL</td></tr>
+      <tr><td><code>SqlExecution_SystemSQL</code></td><td>The execution itself, a child of the above</td></tr>
+      <tr><td><code>ToolCall-&lt;tool&gt;</code></td><td>A custom or generic tool, for example <code>ToolCall-summarize_issue</code></td></tr>
+      <tr><td><code>CortexSearchService_&lt;service&gt;</code></td><td>Cortex Search</td></tr>
+      <tr><td><code>CortexChartToolImpl-data_to_chart</code></td><td>Chart generation</td></tr>
+      <tr><td><code>CortexAgentGroundTruth</code></td><td>One per evaluation row</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><strong>Not all of it is your agent.</strong> This table is account-wide. <code>CodingAgent.Step-N</code> spans are Cortex Code, a different product writing to the same table. Filter by run name or agent name before reading anything.</div>
+
+  <h2>Analyst is two spans, not one</h2>
+  <p><code>SemanticContextTool_Analyst</code> only <em>generates</em> SQL. It never runs it. Execution is always a separate <code>SystemExecuteSQLTool_system_execute_sql</code> plus <code>SqlExecution_SystemSQL</code> pair.</p>
+  <p>Two consequences for ground truth: one <code>ground_truth_invocations</code> entry for an Analyst tool maps onto a span <strong>pair</strong>, and the presence of <code>system_execute_sql</code> does not by itself tell you which path ran, because it appears on both.</p>
+
+  <h2>The verified-query fast path</h2>
+  <p>When a question matches an <code>AI_VERIFIED_QUERIES</code> entry on the semantic view, Analyst does not load the semantic model and <strong>emits no Analyst span</strong>. It runs the verified SQL directly, and the trace shows only the SQL execution, carrying <code>verified_query_used: true</code>.</p>
+  <p>Span presence measured across all ten rows of one run:</p>
+  <table>
+    <thead><tr><th>Question</th><th><code>Analyst</code></th><th>skill</th><th>exec SQL</th></tr></thead>
+    <tbody>
+      <tr><td>How many orders were placed in total?</td><td>yes</td><td>yes</td><td>yes</td></tr>
+      <tr><td>Tell me about the open defects</td><td>yes</td><td>yes</td><td>yes</td></tr>
+      <tr><td>Which product line generated the most revenue?</td><td>yes</td><td>yes</td><td>yes</td></tr>
+      <tr><td>What is total revenue by region?</td><td><strong>no</strong></td><td><strong>no</strong></td><td>yes</td></tr>
+      <tr><td>How did revenue trend by month?</td><td><strong>no</strong></td><td><strong>no</strong></td><td>yes</td></tr>
+      <tr><td>How many open issues are there by severity?</td><td><strong>no</strong></td><td><strong>no</strong></td><td>yes</td></tr>
+      <tr><td>Summarize issue ISS-004</td><td>no</td><td>yes</td><td>no</td></tr>
+      <tr><td>What is going on with ISS-006?</td><td>no</td><td>yes</td><td>no</td></tr>
+      <tr><td>Summarize the issue <span class="muted">(no id given)</span></td><td>no</td><td>no</td><td>no</td></tr>
+      <tr><td>What was total revenue in 2025? <span class="muted">(out of range)</span></td><td>no</td><td>no</td><td>no</td></tr>
+    </tbody>
+  </table>
+  <p>The three rows with no Analyst span are exactly the three verified queries defined on the semantic view. A one-to-one correlation, so the verified query is the cause.</p>
+
+  <div class="case-grid">
+    <div class="case-col problem">
+      <h3>What a span-hunting rubric concludes</h3>
+      <ul>
+        <li><strong>Told to:</strong> find a span named <code>Analyst</code></li>
+        <li><strong>Finds:</strong> <code>system_execute_sql</code> and a chart tool</li>
+        <li><strong>Concludes:</strong> "the expected tool was never called"</li>
+        <li><strong>Scores:</strong> a correct answer at 0.0. Measured: 0.6 on a routing metric, then 0.0 on an arguments metric.</li>
+      </ul>
+    </div>
+    <div class="case-col fix">
+      <h3>What the rubric needs to say</h3>
+      <ul>
+        <li><strong>Treat as an Analyst call:</strong> a span named Analyst, <em>or</em> SQL against the semantic view, <em>or</em> any execution with <code>verified_query_used: true</code></li>
+        <li><strong>Then grade</strong> the SQL's measure, grouping, and filter</li>
+        <li><strong>Never deduct</strong> for the absence of a literally-named Analyst span</li>
+        <li><strong>Note:</strong> the built-in tool metrics handle this already, since they also match on the semantic view name</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="warn"><strong>The skill is skipped too.</strong> On all three verified-query rows there was no <code>ServerSkillTool_*</code> span either, so a workflow encoded only in a skill file was never consulted for those questions. The answers were still well formed, but that came from the agent's instructions rather than the skill. A rule that must always hold belongs in <code>instructions</code>.</div>
+
+  <div class="note"><strong>This is a trade-off, not a defect.</strong> Verified queries buy latency and SQL determinism at the cost of the reasoning layer that enforces your workflow. Decide deliberately which questions want which behavior.</div>
+
+  <h2>Pulling scores directly</h2>
+  <p><code>GET_AI_EVALUATION_DATA</code> in Section 4 is the right tool for one run. For trend work across many runs, query the events table. One structural detail matters: the score and its metadata sit on <strong>different records</strong> that share an <code>eval_root_id</code>, so each side has to be collapsed before joining or the explanation comes back NULL.</p>
+  <pre><code><span class="kw">WITH</span> meta <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> RECORD_ATTRIBUTES:<span class="cmt">"ai.observability.eval.eval_root_id"</span>::<span class="kw">STRING</span> <span class="kw">AS</span> rid,
+         <span class="kw">MAX</span>(RECORD_ATTRIBUTES:<span class="cmt">"ai.observability.eval.metric_name"</span>::<span class="kw">STRING</span>) <span class="kw">AS</span> metric,
+         <span class="kw">MAX</span>(RECORD_ATTRIBUTES:<span class="cmt">"ai.observability.eval.metric_type"</span>::<span class="kw">STRING</span>) <span class="kw">AS</span> metric_type,
+         <span class="kw">MAX</span>(RECORD_ATTRIBUTES:<span class="cmt">"ai.observability.eval.explanation"</span>::<span class="kw">STRING</span>)  <span class="kw">AS</span> explanation
+  <span class="kw">FROM</span> SNOWFLAKE.LOCAL.AI_OBSERVABILITY_EVENTS
+  <span class="kw">WHERE</span> RECORD_ATTRIBUTES:<span class="cmt">"snow.ai.observability.run.name"</span>::<span class="kw">STRING</span> = 'run-1'
+    <span class="kw">AND</span> RECORD_ATTRIBUTES:<span class="cmt">"ai.observability.eval.metric_name"</span> <span class="kw">IS NOT NULL</span>
+  <span class="kw">GROUP BY</span> 1),
+scores <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> RECORD_ATTRIBUTES:<span class="cmt">"ai.observability.eval.eval_root_id"</span>::<span class="kw">STRING</span> <span class="kw">AS</span> rid,
+         <span class="kw">MAX</span>(RECORD_ATTRIBUTES:<span class="cmt">"ai.observability.eval_root.score"</span>::<span class="kw">FLOAT</span>) <span class="kw">AS</span> score
+  <span class="kw">FROM</span> SNOWFLAKE.LOCAL.AI_OBSERVABILITY_EVENTS
+  <span class="kw">WHERE</span> RECORD_ATTRIBUTES:<span class="cmt">"snow.ai.observability.run.name"</span>::<span class="kw">STRING</span> = 'run-1'
+    <span class="kw">AND</span> RECORD_ATTRIBUTES:<span class="cmt">"ai.observability.eval_root.score"</span> <span class="kw">IS NOT NULL</span>
+  <span class="kw">GROUP BY</span> 1)
+<span class="kw">SELECT</span> m.metric, m.metric_type, <span class="kw">ROUND</span>(<span class="kw">AVG</span>(s.score), 3) <span class="kw">AS</span> avg_score,
+       <span class="kw">MIN</span>(s.score) <span class="kw">AS</span> worst
+<span class="kw">FROM</span> meta m <span class="kw">JOIN</span> scores s <span class="kw">USING</span> (rid)
+<span class="kw">GROUP BY</span> 1, 2 <span class="kw">ORDER BY</span> 2 <span class="kw">DESC</span>, 1;</code></pre>
+  <div class="decide"><span class="lbl">Check</span> &nbsp;Read the <code>explanation</code> on the lowest-scoring row before acting on any score. Every false negative described in this exhibit was diagnosed from explanation text, not from the numbers.</div>
+
+  <h2>Judges are not deterministic</h2>
+  <div class="note"><strong>Expect small movement between identical runs.</strong> <code>answer_correctness</code> moved from 0.967 to 0.934 across two runs with the same dataset, the same agent, and no rubric change. Compare distributions and minimums across runs rather than single scores, and do not tune against noise.</div>
+
+  <div class="learn-more">
+    <span class="lm-label">Learn more</span>
+    <div class="lm-links">
+      <a href="https://github.com/innovation-igloo/cortex-agent-custom-eval-template" target="_blank" rel="noopener">Worked template: cortex-agent-custom-eval-template</a>
+      <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents-evaluations" target="_blank" rel="noopener">Cortex Agent evaluations</a>
+      <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/ai-observability" target="_blank" rel="noopener">AI Observability</a>
+    </div>
+    <span class="lm-note">The template is a dbt project implementing everything in Sections 6 and 7: six metrics, a stage-based skill, and the rubric wording that avoids the verified-query false negative.</span>
+  </div>
+  </section>
 
 </main>
 
