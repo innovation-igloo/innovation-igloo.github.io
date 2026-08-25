@@ -51,7 +51,7 @@
     }
   }
 
-  function next() { show(current + 1); }
+  function next() { show(current === total - 1 ? 0 : current + 1); }
   function prev() { show(current - 1); }
 
   document.addEventListener('keydown', function (e) {
