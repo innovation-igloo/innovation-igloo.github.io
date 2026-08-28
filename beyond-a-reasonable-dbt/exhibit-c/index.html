@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="snowflake-source" content="cortex-agent-authored" />
-<title>Cortex Agent Evaluations &middot; Beyond a Reasonable dbt</title>
+<title>Cortex Agent Evaluations &middot; Cortex Agents + dbt Template</title>
 <link rel="stylesheet" href="../../assets/base.css" />
 <link rel="stylesheet" href="../../assets/doc.css" />
 <link rel="stylesheet" href="../../assets/courtroom.css" />
@@ -13,23 +13,23 @@
 
 <header class="site-header">
   <div class="container">
-    <a class="home-link" href="../../"><span class="home-arrow" aria-hidden="true">&larr;</span> All pages</a>
+    <a class="home-link" href="../../index.html"><span class="home-arrow" aria-hidden="true">&larr;</span> All pages</a>
     <div class="brand">
       <span class="brand-mark">&#10052;</span>
-      <span class="brand-text">Snowflake <span class="divider">|</span> Beyond a Reasonable dbt</span>
+      <span class="brand-text">Snowflake <span class="divider">|</span> Cortex Agents + dbt Template</span>
     </div>
   </div>
 </header>
 
 <nav class="section-bar" aria-label="Deck sections">
   <div class="container">
-    <a class="up" href="../">Overview</a>
+    <a class="up" href="../index.html">Hub</a>
     <span class="up-sep" aria-hidden="true"></span>
-    <a href="../the-case/">The Case</a>
-    <a href="../proceedings/">The Proceedings</a>
-    <a href="../exhibit-a/">Exhibit A</a>
-    <a href="../exhibit-b/">Exhibit B</a>
-    <span class="cur">Exhibit C</span>
+    <a href="../the-case/index.html">Why agents-as-code</a>
+    <a href="../proceedings/index.html">Build Runbook</a>
+    <a href="../exhibit-a/index.html">Semantic Views</a>
+    <a href="../exhibit-b/index.html">Agent Spec</a>
+    <span class="cur">Evaluations</span>
   </div>
 </nav>
 
@@ -41,17 +41,17 @@
 <main class="container">
   <section class="tab-panel is-active" data-tab="overview" data-tab-label="Overview">
   <h1>Cortex Agent Evaluations</h1>
-  <p class="lead">This is how "the verdict" is reached. Cortex Agent evaluations let you test, baseline, and hill-climb on an agent's behavior so you know when it is ready to roll out, scoring not just the final answer but each step of its reasoning.</p>
+  <p class="lead">This is how agent readiness is measured. Cortex Agent evaluations let you test, baseline, and hill-climb on an agent's behavior so you know when it is ready to roll out, scoring not just the final answer but each step of its reasoning.</p>
 
   <div class="note"><strong>Status:</strong> Cortex Agent evaluations reached <strong>general availability</strong> on 2026-03-13 (answer correctness, logical consistency, custom metrics). The two tool metrics (tool selection and tool execution accuracy) are in <strong>public preview</strong> as of 2026-06-11. <span class="badge badge-ga">GA</span> <span class="badge badge-pp">Public Preview</span></div>
 
-  <p>Exhibit C is the deep dive behind the walkthrough's <a href="../proceedings/#evaluation">Phase 5: The Verdict</a>. Where the walkthrough shows the commands to run, this exhibit explains the framework, the metrics, and how to iterate.</p>
+  <p>Evaluations is the deep dive behind the walkthrough's <a href="../proceedings/#evaluation">Phase 5: Evaluation</a>. Where the walkthrough shows the commands to run, this page explains the framework, the metrics, and how to iterate.</p>
 
   <p class="muted">Sources: <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-agents-evaluations">Cortex Agent evaluations</a>, <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/ai-observability">AI Observability in Snowflake Cortex</a>.</p>
   </section>
 
   <section class="tab-panel" data-tab="why-evaluate" data-tab-label="1 &middot; Why Evaluate">
-  <div class="eyebrow">Exhibit C &middot; Section 1 of 5</div>
+  <div class="eyebrow">Evaluations &middot; Section 1 of 7</div>
   <h1>Why Evaluate</h1>
   <p class="lead">Cortex Agent evaluations let you test, baseline, and hill-climb on an agent's behavior and performance, so you know when it is ready to roll out. You evaluate against both ground-truth and reference-free metrics, and the agent's activity is traced and monitored so you can see each step on the way to its answer.</p>
 
@@ -68,7 +68,7 @@
         <g><rect x="8" y="70" width="150" height="60" rx="9" fill="#E8F6FC" stroke="#29B5E8" stroke-width="1.5"></rect><text x="83" y="97" font-weight="700" fill="#11567F">Goal</text><text x="83" y="116" font-size="11" fill="#5A6872">the user's question</text></g>
         <g><rect x="262" y="70" width="150" height="60" rx="9" fill="#E8F6FC" stroke="#29B5E8" stroke-width="1.5"></rect><text x="337" y="97" font-weight="700" fill="#11567F">Plan</text><text x="337" y="116" font-size="11" fill="#5A6872">which tools to call</text></g>
         <g><rect x="516" y="70" width="150" height="60" rx="9" fill="#E8F6FC" stroke="#29B5E8" stroke-width="1.5"></rect><text x="591" y="97" font-weight="700" fill="#11567F">Actions</text><text x="591" y="116" font-size="11" fill="#5A6872">tool calls run</text></g>
-        <g><rect x="770" y="70" width="150" height="60" rx="9" fill="#FBF4E6" stroke="#B07A2A" stroke-width="2"></rect><text x="845" y="97" font-weight="700" fill="#8A5E1F">Answer</text><text x="845" y="116" font-size="11" fill="#5A6872">the verdict</text></g>
+        <g><rect x="770" y="70" width="150" height="60" rx="9" fill="#FBF4E6" stroke="#B07A2A" stroke-width="2"></rect><text x="845" y="97" font-weight="700" fill="#8A5E1F">Answer</text><text x="845" y="116" font-size="11" fill="#5A6872">the result</text></g>
       </g>
       <g stroke="#11567F" stroke-width="2.5" fill="none">
         <line x1="158" y1="100" x2="260" y2="100" marker-end="url(#arr)"></line>
@@ -105,11 +105,11 @@
     <li>In Snowsight, <code>USAGE</code> on the warehouse used for the run.</li>
   </ul>
 
-  <div class="note"><strong>Where this sits:</strong> this is the deep dive behind the walkthrough's <a href="../proceedings/#evaluation">Phase 5</a>. The walkthrough runs the commands; this exhibit explains the framework.</div>
+  <div class="note"><strong>Where this sits:</strong> this is the deep dive behind the walkthrough's <a href="../proceedings/#evaluation">Phase 5</a>. The walkthrough runs the commands; this page explains the framework.</div>
   </section>
 
   <section class="tab-panel" data-tab="metrics" data-tab-label="2 &middot; The Metrics">
-  <div class="eyebrow">Exhibit C &middot; Section 2 of 5</div>
+  <div class="eyebrow">Evaluations &middot; Section 2 of 7</div>
   <h1>The Metrics</h1>
   <p class="lead">Four system metrics trace the Goal-Plan-Action loop. Three compare against ground truth; logical consistency is reference-free. All are computed by an LLM judge (the <code>AI_COMPLETE</code> function).</p>
 
@@ -142,7 +142,7 @@
   </section>
 
   <section class="tab-panel" data-tab="dataset" data-tab-label="3 &middot; The Dataset">
-  <div class="eyebrow">Exhibit C &middot; Section 3 of 5</div>
+  <div class="eyebrow">Evaluations &middot; Section 3 of 7</div>
   <h1>The Dataset</h1>
   <p class="lead">An evaluation dataset is a table with two columns: the input query, and a ground-truth VARIANT the judges compare against. What you put in the VARIANT depends on which metrics you enable.</p>
 
@@ -197,7 +197,7 @@
   </section>
 
   <section class="tab-panel" data-tab="running" data-tab-label="4 &middot; Run &amp; Inspect">
-  <div class="eyebrow">Exhibit C &middot; Section 4 of 5</div>
+  <div class="eyebrow">Evaluations &middot; Section 4 of 7</div>
   <h1>Run &amp; Inspect</h1>
   <p class="lead">Drive evaluations from SQL, from a YAML config, or from the Snowsight Evaluations tab. Under the hood it is one function to run and a few functions to read results back.</p>
 
@@ -249,7 +249,7 @@ metrics:
   </section>
 
   <section class="tab-panel" data-tab="iterate" data-tab-label="5 &middot; Iterate">
-  <div class="eyebrow">Exhibit C &middot; Section 5 of 5</div>
+  <div class="eyebrow">Evaluations &middot; Section 5 of 7</div>
   <h1>Iterate &amp; Operate</h1>
   <p class="lead">An evaluation is only useful if it drives the next improvement. The loop: inspect the trace, diagnose the root cause, fix the right layer, and re-run.</p>
 
@@ -258,10 +258,10 @@ metrics:
   <table>
     <thead><tr><th>Score pattern</th><th>Likely cause</th><th>Fix</th></tr></thead>
     <tbody>
-      <tr><td>Low answer correctness</td><td>Weak ground-truth rubric, or wrong tool selected</td><td>Improve the rubric wording; check tool descriptions (<a href="../exhibit-b/#tool-descriptions">Exhibit B</a>)</td></tr>
+      <tr><td>Low answer correctness</td><td>Weak ground-truth rubric, or wrong tool selected</td><td>Improve the rubric wording; check tool descriptions (<a href="../exhibit-b/#tool-descriptions">Agent Spec</a>)</td></tr>
       <tr><td>Low logical consistency</td><td>Agent reasoning contradicts itself or its instructions</td><td>Tighten orchestration; reduce instruction length</td></tr>
       <tr><td>Low tool accuracy</td><td>Tool descriptions too vague</td><td>Sharpen "when to use" / "when NOT to use"</td></tr>
-      <tr><td>High consistency, low correctness</td><td>Agent is honest about limits but not finding the answer</td><td>Improve semantic view coverage; add verified queries (<a href="../exhibit-a/#practices">Exhibit A</a>)</td></tr>
+      <tr><td>High consistency, low correctness</td><td>Agent is honest about limits but not finding the answer</td><td>Improve semantic view coverage; add verified queries (<a href="../exhibit-a/#practices">Semantic Views</a>)</td></tr>
     </tbody>
   </table>
 
@@ -283,11 +283,11 @@ metrics:
     <li><strong>Throughput:</strong> long traces and many tool calls slow a run. If you hit timeouts, split the dataset (for example by common tool invocation) or shorten a custom-metric prompt.</li>
   </ul>
 
-  <div class="note"><strong>Ship gate:</strong> target <strong>&ge;95%</strong> answer correctness before rollout, per the walkthrough's <a href="../proceedings/#ship">Closing Arguments</a>. Fall short, fix the highest-leverage layer, and re-run.</div>
+  <div class="note"><strong>Ship gate:</strong> target <strong>&ge;95%</strong> answer correctness before rollout, per the walkthrough's <a href="../proceedings/#ship">Ship &amp; Automate</a>. Fall short, fix the highest-leverage layer, and re-run.</div>
   </section>
 
   <section class="tab-panel" data-tab="traps" data-tab-label="6 &middot; Traps">
-  <div class="eyebrow">Exhibit C &middot; Section 6 of 7</div>
+  <div class="eyebrow">Evaluations &middot; Section 6 of 7</div>
   <h1>Traps That Do Not Error</h1>
   <p class="lead">Five configurations the platform accepts without complaint. Each one returns a completed run and a plausible scorecard, so the only way to know your configuration landed as intended is to check. Each trap below comes with its check.</p>
 
@@ -350,7 +350,7 @@ RECORD_ATTRIBUTES:<span class="cmt">"ai.observability.eval.metric_type"</span>::
   </section>
 
   <section class="tab-panel" data-tab="reading-the-trace" data-tab-label="7 &middot; Reading the Trace">
-  <div class="eyebrow">Exhibit C &middot; Section 7 of 7</div>
+  <div class="eyebrow">Evaluations &middot; Section 7 of 7</div>
   <h1>Reading the Trace</h1>
   <p class="lead">Section 4 reads results through the <code>GET_AI_*</code> functions. This section is the layer underneath: which spans a Cortex Agent turn actually emits, why one tool can appear as two spans or none at all, and how to pull scores directly for cross-run work.</p>
 
@@ -446,7 +446,7 @@ scores <span class="kw">AS</span> (
        <span class="kw">MIN</span>(s.score) <span class="kw">AS</span> worst
 <span class="kw">FROM</span> meta m <span class="kw">JOIN</span> scores s <span class="kw">USING</span> (rid)
 <span class="kw">GROUP BY</span> 1, 2 <span class="kw">ORDER BY</span> 2 <span class="kw">DESC</span>, 1;</code></pre>
-  <div class="decide"><span class="lbl">Check</span> &nbsp;Read the <code>explanation</code> on the lowest-scoring row before acting on any score. Every false negative described in this exhibit was diagnosed from explanation text, not from the numbers.</div>
+  <div class="decide"><span class="lbl">Check</span> &nbsp;Read the <code>explanation</code> on the lowest-scoring row before acting on any score. Every false negative described on this page was diagnosed from explanation text, not from the numbers.</div>
 
   <h2>Judges are not deterministic</h2>
   <div class="note"><strong>Expect small movement between identical runs.</strong> <code>answer_correctness</code> moved from 0.967 to 0.934 across two runs with the same dataset, the same agent, and no rubric change. Compare distributions and minimums across runs rather than single scores, and do not tune against noise.</div>
@@ -466,7 +466,7 @@ scores <span class="kw">AS</span> (
 
 <footer class="site-footer">
   <div class="container">
-    <p>Beyond a Reasonable dbt &middot; <strong>Snowflake | Cortex Agents &amp; dbt</strong> &middot; <a href="../../">All pages</a></p>
+    <p>Cortex Agents + dbt Template &middot; <strong>Snowflake | Cortex Agents &amp; dbt</strong> &middot; <a href="../../index.html">All pages</a></p>
   </div>
 </footer>
 

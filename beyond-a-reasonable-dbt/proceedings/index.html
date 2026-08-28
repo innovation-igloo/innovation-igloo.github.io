@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="snowflake-source" content="cortex-agent-authored" />
-<title>Building the Agent, Phase by Phase &middot; Beyond a Reasonable dbt</title>
+<title>Building the Agent, Phase by Phase &middot; Cortex Agents + dbt Template</title>
 <link rel="stylesheet" href="../../assets/base.css" />
 <link rel="stylesheet" href="../../assets/doc.css" />
 <link rel="stylesheet" href="../../assets/courtroom.css" />
@@ -13,23 +13,23 @@
 
 <header class="site-header">
   <div class="container">
-    <a class="home-link" href="../../"><span class="home-arrow" aria-hidden="true">&larr;</span> All pages</a>
+    <a class="home-link" href="../../index.html"><span class="home-arrow" aria-hidden="true">&larr;</span> All pages</a>
     <div class="brand">
       <span class="brand-mark">&#10052;</span>
-      <span class="brand-text">Snowflake <span class="divider">|</span> Beyond a Reasonable dbt</span>
+      <span class="brand-text">Snowflake <span class="divider">|</span> Cortex Agents + dbt Template</span>
     </div>
   </div>
 </header>
 
 <nav class="section-bar" aria-label="Deck sections">
   <div class="container">
-    <a class="up" href="../">Overview</a>
+    <a class="up" href="../index.html">Hub</a>
     <span class="up-sep" aria-hidden="true"></span>
-    <a href="../the-case/">The Case</a>
-    <span class="cur">The Proceedings</span>
-    <a href="../exhibit-a/">Exhibit A</a>
-    <a href="../exhibit-b/">Exhibit B</a>
-    <a href="../exhibit-c/">Exhibit C</a>
+    <a href="../the-case/index.html">Why agents-as-code</a>
+    <span class="cur">Build Runbook</span>
+    <a href="../exhibit-a/index.html">Semantic Views</a>
+    <a href="../exhibit-b/index.html">Agent Spec</a>
+    <a href="../exhibit-c/index.html">Evaluations</a>
   </div>
 </nav>
 
@@ -119,7 +119,7 @@ EXECUTE DBT PROJECT ... ENVIRONMENT = 'dev'
     <p>Edit <code>models/sources.yml</code>, optional <code>models/staging/stg_*.sql</code>, and the semantic view <code>models/semantic_views/sv_&lt;name&gt;.sql</code>. Author the clauses in this <strong>enforced order</strong>:</p>
     <pre><code>TABLES &rarr; RELATIONSHIPS &rarr; FACTS &rarr; DIMENSIONS &rarr; METRICS &rarr; COMMENT
       &rarr; AI_SQL_GENERATION &rarr; AI_QUESTION_CATEGORIZATION &rarr; AI_VERIFIED_QUERIES</code></pre>
-    <p>The two <code>AI_*</code> clauses are optional and additive: how the agent writes SQL, and what to do with a question before SQL is attempted. <a class="inline" href="../exhibit-a/">See Exhibit A for the deep dive &rarr;</a></p>
+    <p>The two <code>AI_*</code> clauses are optional and additive: how the agent writes SQL, and what to do with a question before SQL is attempted. <a class="inline" href="../exhibit-a/index.html">See Semantic Views for the deep dive &rarr;</a></p>
     <div class="decide"><span class="lbl">Gate</span> &nbsp;Infer dimensions/metrics and the AI_* rules from your sources, or specify them?</div>
     <div class="demo">
       <span class="demo-lbl">Demo &middot; materialize</span>
@@ -128,7 +128,7 @@ EXECUTE DBT PROJECT ... ENVIRONMENT = 'dev'
     </div>
   </div>
 
-  <div class="note"><strong>Why this matters:</strong> the semantic view is where Cortex Analyst gets its accuracy. Business names, curated synonyms, verified queries, and the two <code>AI_*</code> clauses all live here. <a class="inline" href="../exhibit-a/">Exhibit A</a> covers the high-leverage practices in full.</div>
+  <div class="note"><strong>Why this matters:</strong> the semantic view is where Cortex Analyst gets its accuracy. Business names, curated synonyms, verified queries, and the two <code>AI_*</code> clauses all live here. <a class="inline" href="../exhibit-a/index.html">Semantic Views</a> covers the high-leverage practices in full.</div>
   </section>
 
   <section class="tab-panel" data-tab="agent" data-tab-label="3 &middot; The Agent">
@@ -136,7 +136,7 @@ EXECUTE DBT PROJECT ... ENVIRONMENT = 'dev'
   <h1>The Agent: Orchestration, Response, Tools</h1>
   <p class="lead">Phases 2, 3, and 4 all author the same inline spec, kept in separate layers. The agent object is created once, at the end of Phase 4.</p>
 
-  <div class="note"><strong>One spec, three layers:</strong> Phases 2&ndash;4 all edit the inline <code>spec</code> inside the <code>deploy_&lt;agent&gt;</code> macro in <code>agents/&lt;agent&gt;.sql</code>. Keeping orchestration, response, and tool descriptions separate is the single best way to avoid poor answers. <a class="inline" href="../exhibit-b/">Exhibit B</a> is the full deep dive.</div>
+  <div class="note"><strong>One spec, three layers:</strong> Phases 2&ndash;4 all edit the inline <code>spec</code> inside the <code>deploy_&lt;agent&gt;</code> macro in <code>agents/&lt;agent&gt;.sql</code>. Keeping orchestration, response, and tool descriptions separate is the single best way to avoid poor answers. <a class="inline" href="../exhibit-b/index.html">Agent Spec</a> is the full deep dive.</div>
 
   <!-- PHASE 2 -->
   <div class="phase" id="phase-2">
@@ -162,7 +162,7 @@ EXECUTE DBT PROJECT ... ENVIRONMENT = 'dev'
   <div class="phase" id="phase-4">
     <div class="phase-head"><span class="phase-num">4</span><h3 class="phase-title">Agent Tools &rarr; Tool Descriptions (create the agent)</h3></div>
     <p class="phase-goal">Wire up tools and their resources, then create the agent. Tool descriptions are the single most critical factor for accuracy.</p>
-    <p>For each tool write the 4-part description: what data it accesses, when to use it, <strong>when NOT to use it</strong>, and input/format guidance. Point the Analyst tool at <code>&lt;&lt;DATABASE&gt;&gt;.&lt;&lt;SCHEMA&gt;&gt;.SV_&lt;NAME&gt;</code> and set <code>execution_environment.warehouse</code> to <code>&lt;&lt;WAREHOUSE&gt;&gt;</code>. <a class="inline" href="../exhibit-b/">See Exhibit B for the deep dive &rarr;</a></p>
+    <p>For each tool write the 4-part description: what data it accesses, when to use it, <strong>when NOT to use it</strong>, and input/format guidance. Point the Analyst tool at <code>&lt;&lt;DATABASE&gt;&gt;.&lt;&lt;SCHEMA&gt;&gt;.SV_&lt;NAME&gt;</code> and set <code>execution_environment.warehouse</code> to <code>&lt;&lt;WAREHOUSE&gt;&gt;</code>. <a class="inline" href="../exhibit-b/index.html">See Agent Spec for the deep dive &rarr;</a></p>
     <div class="decide"><span class="lbl">Gate</span> &nbsp;Infer tool descriptions from the semantic view and use case, or specify them?</div>
     <div class="demo">
       <span class="demo-lbl">Demo &middot; create the agent</span>
@@ -178,12 +178,12 @@ dbt run-operation deploy_&lt;agent&gt; --args '{alter: true}'</code></pre>
 
   <section class="tab-panel" data-tab="evaluation" data-tab-label="4 &middot; Evaluation">
   <div class="eyebrow">Step 4 of 5</div>
-  <h1>Evaluation: The Verdict</h1>
+  <h1>Evaluation</h1>
   <p class="lead">Turn the confirmed questions and answers into a measurable evaluation run. Trust stops being a gut feeling and becomes a score you can track, compare, and hold the line on.</p>
 
   <!-- PHASE 5 -->
   <div class="phase" id="phase-5">
-    <div class="phase-head"><span class="phase-num">5</span><h3 class="phase-title">Evaluation &rarr; The Verdict</h3></div>
+    <div class="phase-head"><span class="phase-num">5</span><h3 class="phase-title">Evaluation</h3></div>
     <p class="phase-goal">Turn the confirmed questions and answers into a measurable evaluation run: scores you can track, compare, and improve against.</p>
     <table>
       <thead><tr><th>Metric</th><th>Ground truth?</th><th>What it measures</th></tr></thead>
@@ -214,20 +214,16 @@ SELECT * FROM TABLE(SNOWFLAKE.LOCAL.GET_AI_EVALUATION_DATA(
     <p class="muted"><strong>Done when:</strong> scores return and you can identify the lowest-scoring questions to drive the next cycle.</p>
   </div>
 
-  <div class="visual-ph">
-    <div class="vp-tag">Visual</div>
-    <div>Drop the evaluation results here: the scores table or a bar of answer-correctness by question. This is the "verdict" money shot.</div>
-  </div>
   </section>
 
   <section class="tab-panel" data-tab="ship" data-tab-label="5 &middot; Ship &amp; Automate">
   <div class="eyebrow">Step 5 of 5</div>
   <h1>Ship &amp; Automate</h1>
-  <p class="lead">With a verdict in hand, promote the same code to production, ship the agent where users work, and let CI/CD and scheduled tasks keep it fresh.</p>
+  <p class="lead">With a passing score in hand, promote the same code to production, ship the agent where users work, and let CI/CD and scheduled tasks keep it fresh.</p>
 
   <!-- CLOSING -->
-  <h2 id="closing">Closing Arguments: ship &amp; automate</h2>
-  <p>With a verdict in hand (target <strong>&ge;95%</strong> answer correctness), promote, ship, and automate: same code, prod target.</p>
+  <h2 id="closing">Ship &amp; automate</h2>
+  <p>With a passing score in hand (target <strong>&ge;95%</strong> answer correctness), promote, ship, and automate: same code, prod target.</p>
   <table>
     <thead><tr><th>Move</th><th>How</th></tr></thead>
     <tbody>
@@ -259,10 +255,10 @@ snow dbt execute --env dev DB.SCHEMA.cortex_lifecycle build
 <span class="cmt"># deploy the agent -- the wrapper macro carries the spec, no --args</span>
 snow dbt execute --env prod DB.SCHEMA.cortex_lifecycle run-operation deploy_&lt;agent&gt;</code></pre>
 
-  <!-- OBJECTIONS -->
-  <h2 id="objections">Objections (troubleshooting)</h2>
+  <!-- TROUBLESHOOTING -->
+  <h2 id="objections">Troubleshooting</h2>
   <table>
-    <thead><tr><th>Symptom</th><th>Ruling</th></tr></thead>
+    <thead><tr><th>Symptom</th><th>Fix</th></tr></thead>
     <tbody>
       <tr><td>Eval errors: <em>"dataset already exists"</em></td><td>Remove the <code>dataset:</code> block from the config after the first successful run</td></tr>
       <tr><td><code>ground_truth</code> rejected / wrong type</td><td>Must be VARIANT: keep <code>PARSE_JSON(...)</code> in <code>eval_dataset.sql</code>; do not switch to <code>OBJECT_CONSTRUCT</code></td></tr>
@@ -276,7 +272,7 @@ snow dbt execute --env prod DB.SCHEMA.cortex_lifecycle run-operation deploy_&lt;
     </tbody>
   </table>
 
-  <div class="note"><strong>That's the lifecycle.</strong> Business questions became a governed, evaluated, shipped agent, all built by one dbt project. Head back to <a class="inline" href="../">The Case</a> for the summary, or revisit any step from the tabs above.</div>
+  <div class="note"><strong>That's the lifecycle.</strong> Business questions became a governed, evaluated, shipped agent, all built by one dbt project. Head back to <a class="inline" href="../index.html">Overview</a> for the summary, or revisit any step from the tabs above.</div>
   </section>
 
 
@@ -284,7 +280,7 @@ snow dbt execute --env prod DB.SCHEMA.cortex_lifecycle run-operation deploy_&lt;
 
 <footer class="site-footer">
   <div class="container">
-    <p>Beyond a Reasonable dbt &middot; <strong>Snowflake | Cortex Agents &amp; dbt</strong> &middot; <a href="../../">All pages</a></p>
+    <p>Cortex Agents + dbt Template &middot; <strong>Snowflake | Cortex Agents &amp; dbt</strong> &middot; <a href="../../index.html">All pages</a></p>
   </div>
 </footer>
 

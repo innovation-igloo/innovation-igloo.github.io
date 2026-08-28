@@ -51,8 +51,6 @@
     buttons.forEach(function (b) { b.classList.toggle('is-active', b.dataset.tab === id); });
     panels.forEach(function (p) { p.classList.toggle('is-active', p.dataset.tab === id); });
     if (history.replaceState) history.replaceState(null, '', '#' + id);
-    var nav = document.querySelector('.tab-nav');
-    if (nav) window.scrollTo({ top: nav.offsetTop, behavior: 'smooth' });
   }
 
   buttons.forEach(function (b) {

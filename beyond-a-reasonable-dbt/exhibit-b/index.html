@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="snowflake-source" content="cortex-agent-authored" />
-<title>The Agent Spec &middot; Beyond a Reasonable dbt</title>
+<title>The Agent Spec &middot; Cortex Agents + dbt Template</title>
 <link rel="stylesheet" href="../../assets/base.css" />
 <link rel="stylesheet" href="../../assets/doc.css" />
 <link rel="stylesheet" href="../../assets/courtroom.css" />
@@ -13,23 +13,23 @@
 
 <header class="site-header">
   <div class="container">
-    <a class="home-link" href="../../"><span class="home-arrow" aria-hidden="true">&larr;</span> All pages</a>
+    <a class="home-link" href="../../index.html"><span class="home-arrow" aria-hidden="true">&larr;</span> All pages</a>
     <div class="brand">
       <span class="brand-mark">&#10052;</span>
-      <span class="brand-text">Snowflake <span class="divider">|</span> Beyond a Reasonable dbt</span>
+      <span class="brand-text">Snowflake <span class="divider">|</span> Cortex Agents + dbt Template</span>
     </div>
   </div>
 </header>
 
 <nav class="section-bar" aria-label="Deck sections">
   <div class="container">
-    <a class="up" href="../">Overview</a>
+    <a class="up" href="../index.html">Hub</a>
     <span class="up-sep" aria-hidden="true"></span>
-    <a href="../the-case/">The Case</a>
-    <a href="../proceedings/">The Proceedings</a>
-    <a href="../exhibit-a/">Exhibit A</a>
-    <span class="cur">Exhibit B</span>
-    <a href="../exhibit-c/">Exhibit C</a>
+    <a href="../the-case/index.html">Why agents-as-code</a>
+    <a href="../proceedings/index.html">Build Runbook</a>
+    <a href="../exhibit-a/index.html">Semantic Views</a>
+    <span class="cur">Agent Spec</span>
+    <a href="../exhibit-c/index.html">Evaluations</a>
   </div>
 </nav>
 
@@ -43,13 +43,13 @@
   <h1>The Agent Spec</h1>
   <p class="lead">Agent quality comes mostly from three things, and mixing them is the most common cause of poor answers. Keep them in separate layers, and let tool descriptions do the heavy lifting on routing.</p>
 
-  <div class="note"><strong>Prerequisite:</strong> a strong agent needs a strong semantic view underneath it. If you skipped it, start with <a href="../exhibit-a/">Exhibit A</a>.</div>
+  <div class="note"><strong>Prerequisite:</strong> a strong agent needs a strong semantic view underneath it. If you skipped it, start with <a href="../exhibit-a/index.html">Semantic Views</a>.</div>
 
-  <p class="muted">Start with <strong>Three Layers</strong> and work through the tabs in order. Next exhibit: <a href="../exhibit-c/">Exhibit C, Evaluations</a>.</p>
+  <p class="muted">Start with <strong>Three Layers</strong> and work through the tabs in order. Next: <a href="../exhibit-c/index.html">Evaluations</a>.</p>
   </section>
 
   <section class="tab-panel" data-tab="layers" data-tab-label="1 &middot; Three Layers">
-  <div class="eyebrow">Exhibit B &middot; Section 1 of 4</div>
+  <div class="eyebrow">Agent Spec &middot; Section 1 of 4</div>
   <h1>The Three-Layer Model</h1>
   <p class="lead">Agent quality comes mostly from three things, and mixing them is the most common cause of poor answers. Keep them in separate layers.</p>
 
@@ -77,7 +77,7 @@
   </section>
 
   <section class="tab-panel" data-tab="tool-descriptions" data-tab-label="2 &middot; Tool Descriptions">
-  <div class="eyebrow">Exhibit B &middot; Section 2 of 4</div>
+  <div class="eyebrow">Agent Spec &middot; Section 2 of 4</div>
   <h1>Tool Descriptions Drive Routing Accuracy</h1>
   <p class="lead">Agents pick tools by name and description alone, not by inspecting your data model. This is the single biggest lever on routing accuracy. Write every description with this formula:</p>
 
@@ -95,7 +95,7 @@
   </section>
 
   <section class="tab-panel" data-tab="failure-patterns" data-tab-label="3 &middot; Failure Patterns">
-  <div class="eyebrow">Exhibit B &middot; Section 3 of 4</div>
+  <div class="eyebrow">Agent Spec &middot; Section 3 of 4</div>
   <h1>Failure Patterns &amp; Fixes</h1>
   <p class="lead">When an agent misbehaves, the cause is usually one of a few things, and the fix is almost always in the tool description.</p>
 
@@ -108,11 +108,11 @@
     </tbody>
   </table>
   <div class="warn"><strong>Consistency matters:</strong> use the same terminology across all instructions and descriptions. If orchestration says "customers" but a tool description says "accounts", the agent will misbehave. Keep the total number of tools to 5&ndash;10; smaller, focused agents are faster and more reliable.</div>
-  <p class="muted">Diagnosing routing problems is exactly what evaluations are for. See <a href="../exhibit-c/">Exhibit C</a> for measuring tool selection and execution accuracy.</p>
+  <p class="muted">Diagnosing routing problems is exactly what evaluations are for. See <a href="../exhibit-c/index.html">Evaluations</a> for measuring tool selection and execution accuracy.</p>
   </section>
 
   <section class="tab-panel" data-tab="spec" data-tab-label="4 &middot; The Spec">
-  <div class="eyebrow">Exhibit B &middot; Section 4 of 4</div>
+  <div class="eyebrow">Agent Spec &middot; Section 4 of 4</div>
   <h1>Where the Spec Lives (and How It Deploys)</h1>
   <p class="lead">dbt Projects on Snowflake has no runtime file read, so each agent's spec lives inline in a <code>deploy_&lt;agent&gt;</code> wrapper macro in <code>agents/&lt;agent&gt;.sql</code>. The wrapper passes the spec to <code>create_agent</code> / <code>alter_agent</code>, which substitute the environment tokens with the active target, so the same spec deploys to dev, staging, or prod unchanged.</p>
 
@@ -137,10 +137,6 @@
   <div class="warn"><strong>Required:</strong> every <code>cortex_analyst_text_to_sql</code> tool needs an <code>execution_environment</code> under <code>tool_resources</code> (the warehouse its SQL runs in). Use <code>execution_environment: { type: warehouse, warehouse: &lt;name&gt; }</code>, not a top-level <code>warehouse</code> key.</div>
   <p class="muted">Deploy with <code>dbt run-operation deploy_&lt;agent&gt;</code> (CREATE OR REPLACE). For zero-downtime edits to a live agent, add <code>--args '{alter: true}'</code>.</p>
 
-  <div class="visual-ph">
-    <div class="vp-tag">Visual</div>
-    <div>Drop an agent trace here (Snowsight AI Observability) showing tool routing, great for illustrating a "when NOT to use" fix before/after.</div>
-  </div>
   </section>
 
 
@@ -148,7 +144,7 @@
 
 <footer class="site-footer">
   <div class="container">
-    <p>Beyond a Reasonable dbt &middot; <strong>Snowflake | Cortex Agents &amp; dbt</strong> &middot; <a href="../../">All pages</a></p>
+    <p>Cortex Agents + dbt Template &middot; <strong>Snowflake | Cortex Agents &amp; dbt</strong> &middot; <a href="../../index.html">All pages</a></p>
   </div>
 </footer>
 

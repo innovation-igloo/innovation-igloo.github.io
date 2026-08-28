@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="snowflake-source" content="cortex-agent-authored" />
-<title>The Semantic View &middot; Beyond a Reasonable dbt</title>
+<title>The Semantic View &middot; Cortex Agents + dbt Template</title>
 <link rel="stylesheet" href="../../assets/base.css" />
 <link rel="stylesheet" href="../../assets/doc.css" />
 <link rel="stylesheet" href="../../assets/courtroom.css" />
@@ -13,23 +13,23 @@
 
 <header class="site-header">
   <div class="container">
-    <a class="home-link" href="../../"><span class="home-arrow" aria-hidden="true">&larr;</span> All pages</a>
+    <a class="home-link" href="../../index.html"><span class="home-arrow" aria-hidden="true">&larr;</span> All pages</a>
     <div class="brand">
       <span class="brand-mark">&#10052;</span>
-      <span class="brand-text">Snowflake <span class="divider">|</span> Beyond a Reasonable dbt</span>
+      <span class="brand-text">Snowflake <span class="divider">|</span> Cortex Agents + dbt Template</span>
     </div>
   </div>
 </header>
 
 <nav class="section-bar" aria-label="Deck sections">
   <div class="container">
-    <a class="up" href="../">Overview</a>
+    <a class="up" href="../index.html">Hub</a>
     <span class="up-sep" aria-hidden="true"></span>
-    <a href="../the-case/">The Case</a>
-    <a href="../proceedings/">The Proceedings</a>
-    <span class="cur">Exhibit A</span>
-    <a href="../exhibit-b/">Exhibit B</a>
-    <a href="../exhibit-c/">Exhibit C</a>
+    <a href="../the-case/index.html">Why agents-as-code</a>
+    <a href="../proceedings/index.html">Build Runbook</a>
+    <span class="cur">Semantic Views</span>
+    <a href="../exhibit-b/index.html">Agent Spec</a>
+    <a href="../exhibit-c/index.html">Evaluations</a>
   </div>
 </nav>
 
@@ -41,15 +41,15 @@
 <main class="container">
   <section class="tab-panel is-active" data-tab="overview" data-tab-label="Overview">
   <h1>The Semantic View</h1>
-  <p class="lead">The semantic view is what makes Cortex Analyst accurate. It is the evidence the agent reasons over. Get it right and answers hold up under cross-examination. Get it wrong and no amount of agent tuning saves you.</p>
+  <p class="lead">The semantic view is what makes Cortex Analyst accurate. It is the context the agent reasons over. Get it right and answers stay correct under scrutiny. Get it wrong and no amount of agent tuning compensates.</p>
 
-  <div class="note"><strong>Why it leads the exhibits:</strong> most agent accuracy is won or lost here, before the agent spec is ever written. The three sections below are the highest-leverage moves.</div>
+  <div class="note"><strong>Why this comes first:</strong> most agent accuracy is won or lost here, before the agent spec is ever written. The three sections below are the highest-leverage moves.</div>
 
-  <p class="muted">Start with <strong>Practices</strong> and work through the tabs in order. When you are done here, head to <a href="../exhibit-b/">Exhibit B: The Agent</a>.</p>
+  <p class="muted">Start with <strong>Practices</strong> and work through the tabs in order. When you are done here, head to <a href="../exhibit-b/index.html">Agent Spec</a>.</p>
   </section>
 
   <section class="tab-panel" data-tab="practices" data-tab-label="1 &middot; Practices">
-  <div class="eyebrow">Exhibit A &middot; Section 1 of 3</div>
+  <div class="eyebrow">Semantic Views &middot; Section 1 of 3</div>
   <h1>High-Leverage Practices</h1>
   <p class="lead">The semantic view is where Cortex Analyst gets its accuracy. These six moves deliver the most accuracy per unit of effort.</p>
 
@@ -66,7 +66,7 @@
   </section>
 
   <section class="tab-panel" data-tab="ai-clauses" data-tab-label="2 &middot; AI Clauses">
-  <div class="eyebrow">Exhibit A &middot; Section 2 of 3</div>
+  <div class="eyebrow">Semantic Views &middot; Section 2 of 3</div>
   <h1>The AI_* Clauses: Additive and Independent</h1>
   <p class="lead">Two optional, completely independent modules. Use neither, one, or both. Start with what you know is wrong today; add rules as you find gaps during testing. Over-prompting degrades accuracy and raises token cost.</p>
 
@@ -90,7 +90,7 @@
   </section>
 
   <section class="tab-panel" data-tab="clause-order" data-tab-label="3 &middot; Clause Order">
-  <div class="eyebrow">Exhibit A &middot; Section 3 of 3</div>
+  <div class="eyebrow">Semantic Views &middot; Section 3 of 3</div>
   <h1>Clause Order Is Enforced</h1>
   <p class="lead">Author the DDL in exactly this sequence. <code>COMMENT</code> must come <strong>before</strong> the <code>AI_*</code> clauses, and <code>AI_VERIFIED_QUERIES</code> comes last.</p>
 
@@ -124,10 +124,6 @@
   <span class="kw">WITH AI_VERIFIED_QUERIES</span>  <span class="cmt">-- confirmed Q&amp;A pairs (last)</span> ;</code></pre>
   <p class="muted">Materialize it with <code>dbt build --select sv_&lt;name&gt;</code>, then confirm a sample <code>SELECT ... FROM SEMANTIC_VIEW(sv_&lt;name&gt; ...)</code> returns rows. Built into <code>{DBT_DATABASE}.{DBT_SCHEMA}</code> automatically, since it inherits the dbt target.</p>
 
-  <div class="visual-ph">
-    <div class="vp-tag">Visual</div>
-    <div>Drop a screenshot of the Semantic View editor in Snowsight, or a before/after of a question answered correctly once verified queries were added.</div>
-  </div>
   </section>
 
 
@@ -135,7 +131,7 @@
 
 <footer class="site-footer">
   <div class="container">
-    <p>Beyond a Reasonable dbt &middot; <strong>Snowflake | Cortex Agents &amp; dbt</strong> &middot; <a href="../../">All pages</a></p>
+    <p>Cortex Agents + dbt Template &middot; <strong>Snowflake | Cortex Agents &amp; dbt</strong> &middot; <a href="../../index.html">All pages</a></p>
   </div>
 </footer>
 
